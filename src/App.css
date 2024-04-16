@@ -1,0 +1,242 @@
+html {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+.App {
+  display: grid;
+  font: 16px/1.6 "Poppins", sans-serif;
+}
+
+.h3 {
+  font-family: 'Outfit';
+}
+
+/* Start of Navbar */
+
+.navbar {
+  background-color: white;
+  font-faily: 'Outfit';
+}
+
+.ncf-logo-navbar {
+  width: 60%;
+}
+
+.ncf-logo-navbar:hover {
+  transform: scale(1.2);
+}
+
+.button-navbar {
+  box-shadow: 0px 0px 10px 5px #ddd;
+}
+
+.button-navbar:hover{
+  transform: scale(1.2);
+}
+
+/* Start of PageTitle */
+
+.title-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  height: 12em;
+  background-color: white;
+  font-family: 'Outfit', sans-serif;
+  padding-bottom: 0rem;
+}
+
+.title {
+  font-size: 6em;
+  color: #094D1C;
+  font-weight: 700;
+}
+.title1 {
+  font-size: 4rem;
+  color: #094D1C;
+  font-weight: 500;
+}
+
+
+.title p {
+  display: flex;
+  justify-content: center;
+}
+
+/* Start of Search Bar */
+
+.search-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  padding: 0%;
+}
+
+.h3{
+  font-size: 50px;
+}
+
+.input-wrapper {
+  width: 50rem;
+  height: 4rem;
+  border: none;
+  border-radius: 20px;
+  padding: 0 15px;
+  box-shadow: 0px 0px 8px #616a5e;
+  background-color: white;
+  display: flex;
+  align-items: center;
+}
+
+.input-wrapper:hover{
+  transform: scale(1.1);
+}
+
+input {
+  background-color: transparent;
+  border: none;
+  height: 100%;
+  font-size: 1.25rem;
+  width: 100%;
+  margin-left: 10px;
+
+}
+
+input:focus {
+  outline: none;
+}
+/* Search Result */
+#search-icon {
+  color: #094D1C;
+  margin-right: 10px;
+}
+
+.search-result {
+  padding: 10px 20px;
+}
+
+.search-result:hover {
+  background-color: #efefef;
+}
+
+/* Search Result List */
+
+.search-results-container {
+  display: grid;
+  justify-content: center;
+  align-items: center;
+  padding: 0%;
+}
+
+.results-list {
+  width: 50rem;
+  background-color: white;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  box-shadow: 0px 0px 8px #ddd;
+  border-radius: 10px;
+  margin-top: 1rem;
+  max-height: 270px;
+  overflow-y: auto;
+}
+
+/* Start of Footer */
+
+.footer-block {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 10vh;
+  background-color: transparent;
+  display: grid;
+  justify-content: right;
+  align-items: center;
+  padding-top: 20px;
+}
+
+#footer-icons {
+  border-radius: 50%;
+  box-shadow: 0px 0px 10px 5px #ddd;
+}
+
+#footer-icons:hover {
+  transform: scale(1.2);
+}
+
+.modal {
+  font-family: 'Outfit';
+}
+
+.help-center {
+  color: #094D1C;
+}
+
+.equal-width-tabs {
+  flex-grow: 1;
+}
+
+.accordion {
+  font-family: 'Outfit';
+}
+
+.accordion-header {
+  color: #094D1C;
+}
+
+
+.accordion-body {
+  background-color: #efefef;
+}
+
+.up-container{
+padding-bottom: 100px;
+margin-top: 1rem;
+}
+
+
+/* Categories */
+.categories-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10em;
+  font-family: 'Outfit', sans-serif;
+  padding-bottom: 0rem;
+}
+
+.upload-container{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10em;
+  font-family: 'Outfit', sans-serif;
+  padding-bottom: 0rem;
+}
+
+.category-card-title {
+  font-family: 'Outfit';
+  font-size: 1.5em;
+  font-weight: 400;
+}
+
+.category-cards {
+  flex-grow: 1;
+}
+
+.cards-text {
+  font-size: 1em;
+}
+/* Custom styles for form controls */
+.form-control-custom {
+  height: 40px; /* Adjust the height as needed */
+  /* Add more custom styles here */
+}
+
+/* Additional styles for specific form controls */
+.form-control-custom-textarea {
+  min-height: 100px; /* Example height for textareas */
+  /* Add more custom styles for textareas here */
+}
