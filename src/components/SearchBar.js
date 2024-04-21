@@ -5,9 +5,7 @@ import Fuse from "fuse.js";
 function SearchBar({  setResults }) {
   const [input, setInput] = useState("");
   const [documents, setDocuments] = useState([]); 
- 
 
-    
   useEffect(() => {
     fetch('http://127.0.0.1:9000/documents/all') 
       .then((response) => {
@@ -65,6 +63,7 @@ const handleSearch = () => {
         value={input}
         onChange={(e) => handleChange(e.target.value)}
       />
+
     </div>
     </Container>
   );

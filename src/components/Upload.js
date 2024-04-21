@@ -1,10 +1,10 @@
-import Container from "react-bootstrap/Container";
-import FloatingLabel from 'react-bootstrap/FloatingLabel';
-import Form from 'react-bootstrap/Form';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Button } from "react-bootstrap";
+import { Container, FloatingLabel, Form, Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+
+
+
 
 const Upload = () => {
     const [title, setTitle] = useState('');
@@ -13,9 +13,61 @@ const Upload = () => {
     const [abstract, setAbstract] = useState('');
     const [file, setFile] = useState(null);
     const [category_id, setCategory] = useState('');
-    const [doctype_id, setDoctype] = useState('');
+    const [doctype_id, setDoctype] = useState(1);
     const [department_id, setDepartment] = useState('');
     const [course_id, setCourse] = useState('');
+    const [categories, setCategories] = useState([]);
+    const [departments, setDepartments] = useState([]);
+    const [courses, setCourses] = useState([]);
+
+
+
+    useEffect(() => {
+      // Fetch categories
+      axios.get('http://127.0.0.1:9000/categories')
+          .then(response => {
+              if (Array.isArray(response.data)) {
+                  setCategories(response.data);
+              } else {
+                  console.error('Categories data is not an array:', response.data);
+                  // Handle non-array response
+              }
+          })
+          .catch(error => {
+              console.error('Error fetching categories:', error);
+          });
+    
+      // Fetch departments
+      axios.get('http://127.0.0.1:9000/departments')
+          .then(response => {
+              if (Array.isArray(response.data)) {
+                  setDepartments(response.data);
+              } else {
+                  console.error('Departments data is not an array:', response.data);
+                  // Handle non-array response
+              }
+          })
+          .catch(error => {
+              console.error('Error fetching departments:', error);
+          });
+    
+      // Fetch courses
+      axios.get('http://127.0.0.1:9000/courses')
+          .then(response => {
+              if (Array.isArray(response.data)) {
+                  setCourses(response.data);
+              } else {
+                  console.error('Courses data is not an array:', response.data);
+                  // Handle non-array response
+              }
+          })
+          .catch(error => {
+              console.error('Error fetching courses:', error);
+          });
+    }, []);
+    
+
+
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -27,17 +79,16 @@ const Upload = () => {
             formData.append('abstract', abstract);
             formData.append('file', file);
             formData.append('category_id', category_id);
-            formData.append('doctype_id', doctype_id);
+            formData.append('doctype_id', 1);
             formData.append('department_id', department_id);
             formData.append('course_id', course_id);
-    
-            // Corrected URL with HTTP protocol
+   
             const paperResponse = await axios.post('http://127.0.0.1:9000/documents/create', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data'
                 }
             });
-    
+   
             if (paperResponse.data.status === 'Success') {
                 Swal.fire({
                     title: 'Success!',
@@ -63,16 +114,25 @@ const Upload = () => {
             console.error('Error:', error);
         }
     };
-    return (
 
-          <section id="upload" className="block categories-block">
+
+
+
+    return (
+      <section id="upload" className="block categories-block">
       <Container fluid className="upload-container">
         <div className="title-bar">
           <h1 className="title1">Upload</h1>
         </div>
       </Container >
 
+
+
+
       <Container className="up-container">
+
+
+
 
         <Form onSubmit={handleSubmit}>
           <FloatingLabel
@@ -87,9 +147,12 @@ const Upload = () => {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               required
-  
+ 
             />
           </FloatingLabel>
+
+
+
 
           <FloatingLabel
             controlId="floatingName"
@@ -108,6 +171,12 @@ const Upload = () => {
           </FloatingLabel>
 
 
+
+
+
+
+
+
           <FloatingLabel
             controlId="floatingDate"
             label="Published Date"
@@ -122,6 +191,12 @@ const Upload = () => {
               required
             />
           </FloatingLabel>
+
+
+
+
+
+
 
 
           <FloatingLabel
@@ -141,90 +216,60 @@ const Upload = () => {
           </FloatingLabel>
 
 
-          <FloatingLabel
-            controlId="floatingCitation"
-            label="Category"
-            className="mb-3"
-          >
-            <Form.Control
-           
-              type="text"
-              name="category_id"
-              placeholder="Category"
-              value={category_id}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            />
-          </FloatingLabel>
-             
+          {categories && categories.length > 0 ? (
+  <FloatingLabel controlId="categoryDropdown" label="Category" className="mb-3">
+    <Form.Select value={category_id} onChange={(e) => setCategory(e.target.value)} required>
+      <option key="" value="">Select Category</option>
+      {categories.map(category => (
+        <option key={category.category_id} value={category.category_id}>{category.category_name}</option>
+      ))}
+    </Form.Select>
+  </FloatingLabel>
+) : (
+  <p>Loading categories...</p>
+)}
 
 
-          <FloatingLabel
-            controlId="floatingCitation"
-            label="Doctype"
-            className="mb-3"
-          >
-            <Form.Control
-              
-              type="text"
-              name="doctype_id"
-              placeholder="Doctype"
-              value={doctype_id}
-              onChange={(e) => setDoctype(e.target.value)}
-              required
-         z
-            />
-          </FloatingLabel>
-         
+{departments && departments.length > 0 ? (
+  <FloatingLabel controlId="departmentDropdown" label="Department" className="mb-2">
+    <Form.Select value={department_id} onChange={(e) => setDepartment(e.target.value)} required>
+      <option key="" value="">Select Department</option>
+      {departments.map(department => (
+        <option key={department.department_id} value={department.department_id}>{department.department_name}</option>
+      ))}
+    </Form.Select>
+  </FloatingLabel>
+) : (
+  <p>Loading departments...</p>
+)}
 
 
-          <FloatingLabel
-            controlId="floatingCitation"
-            label="Department"
-            className="mb-2"
-          >
-            <Form.Control
-          
-              type="text"
-              name="department_id"
-              placeholder="department_id"
-              value={department_id}
-              onChange={(e) => setDepartment(e.target.value)}
-              required
-            />
-          </FloatingLabel>
+{courses && courses.length > 0 ? (
+  <FloatingLabel controlId="courseDropdown" label="Course" className="mb-2">
+    <Form.Select value={course_id} onChange={(e) => setCourse(e.target.value)} required>
+      <option key="" value="">Select Course</option>
+      {courses.map(course => (
+        <option key={course.course_id} value={course.course_id}>{course.course_name}</option>
+      ))}
+    </Form.Select>
+  </FloatingLabel>
+) : (
+  <p>Loading courses...</p>
+)}
 
 
-          <FloatingLabel
-            controlId="floatingCitation"
-            label="Course"
-            className="mb-2"
-          >
-            <Form.Control
-        
-              type="text"
-              name="course_id"
-              placeholder="course_id"
-              value={course_id}
-              onChange={(e) => setCourse(e.target.value)}
-              required
-            />
-          </FloatingLabel>
-
-          {/* Other form controls */}
-
-          <FloatingLabel controlId="file" label="File" className="mb-2">
-            <Form.Control
-              type="file"
-              name="file"
-              onChange={(e) => setFile(e.target.files[0])} // Corrected file han
-              required
-            />
-          </FloatingLabel>
-          <Button type="submit" className="btn btn-primary">Upload</Button>
-        </Form>
-      </Container>
-    </section>
-  );
+                    {/* File Upload */}
+                    <FloatingLabel controlId="file" label="Please select a PDF file." className="mb-2">
+                        <Form.Control type="file" name="file" accept=".pdf" onChange={(e) => setFile(e.target.files[0])} required />
+                    </FloatingLabel>
+                    <Button type="submit" className="btn btn-primary">Upload</Button>
+                </Form>
+            </Container>
+        </section>
+    );
 };
+
+
+
+
 export default Upload;

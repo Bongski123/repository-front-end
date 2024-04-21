@@ -4,10 +4,11 @@ import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { useState } from "react";
+import { useState, useEffect ,navigate} from "react";
 import Form from "react-bootstrap/Form";
 import Swal from "sweetalert2";
 import axios from "axios";
+
 function NavigationBar({ changeTab }) {
   const redirectToNCF = () => {
     window.open('https://www.ncf.edu.ph/');
@@ -27,7 +28,10 @@ function NavigationBar({ changeTab }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [validated, setValidated] = useState(false);
-  const [name, setName] = useState("");
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [role, setUserRole] = useState(null);
+
   const handleSubmit = async (event) => {
     const form = event.currentTarget;
     if (form.checkValidity() === false) {
@@ -39,34 +43,42 @@ function NavigationBar({ changeTab }) {
 
     if (form.checkValidity()) {
       try {
-        const response = await axios.post('http://localhost:9000/user/login', {
+        const response = await axios.post('http://localhost:9000/login', {
           email: email,
           password: password,
         });
 
         const { token, role } = response.data;
 
-        localStorage.setItem('token', JSON.stringify(response));
-
-        if (role === 1) {
-          // Navigate to admin dashboard
-          // You may need to handle this according to your routing setup
-        } else {
-          // Navigate to user dashboard
-          // You may need to handle this according to your routing setup
-        }
+       localStorage.setItem('token', JSON.stringify(token));
+        // Assuming role is needed for further logic
+        setUserRole(role);
 
         handleClose(); // Close the login modal after successful login
       } catch (error) {
-        console.error('login failed', error);
+        console.error('Login failed', error);
         // Display notification for wrong username or password
         Swal.fire({
           icon: 'error',
-          title: 'Oopssyy...',
+          title: 'Oops...',
           text: 'Incorrect username or password!',
         });
       }
     }
+  };
+
+  useEffect(() => {
+    // Fetch user role when component mounts
+    const token = localStorage.getItem('token');
+    if (token) {
+      const { role } = JSON.parse(token).data; // Assuming role is stored in token data
+      setUserRole(role);
+    }
+  }, []);
+
+  // Function to handle navigation to admin page
+  const navigateToAdmin = () => {
+    navigate('/admin');
   };
 
   const handleSubmitSignup = async (event) => {
@@ -80,11 +92,11 @@ function NavigationBar({ changeTab }) {
     if (form.checkValidity()) {
       try {
         const response = await axios.post("http://localhost:9000/user/register", {
-          firstName: "",
-          lastName: "", // Adjust according to your schema
-          email: "", // Assuming email is the same as student ID
-          password: "",
-          role_id: 2, // Assuming role_id for regular users
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          role_id: 2, // Assuming role_id is required
         });
 
         handleCloseSignup();
@@ -104,7 +116,6 @@ function NavigationBar({ changeTab }) {
     }
   };
 
-
   const handleEmailChange = (event) => {
     setEmail(event.target.value);
   };
@@ -113,8 +124,12 @@ function NavigationBar({ changeTab }) {
     setPassword(event.target.value);
   };
 
-  const handleSetName = (event) => {
-    setName(event.target.value);
+  const handleSetFirstName = (event) => {
+    setFirstName(event.target.value);
+  };
+
+  const handleSetLastName = (event) => {
+    setLastName(event.target.value);
   };
 
   return (
@@ -135,6 +150,7 @@ function NavigationBar({ changeTab }) {
               <Nav.Link onClick={() => changeTab('search')}>Search</Nav.Link>
               <Nav.Link onClick={() => changeTab('categories')}>Categories</Nav.Link>
               <Nav.Link onClick={() => changeTab('upload')}>Upload</Nav.Link>
+              <Nav.Link onClick={navigateToAdmin} style={{ display: role === 'admin' ? 'block' : 'none' }}>Admin</Nav.Link>
               {/* Add other Nav links */}
             </Nav>
             <Nav className="ms-auto">
@@ -168,11 +184,11 @@ function NavigationBar({ changeTab }) {
                 placeholder="Enter Email"
                 value={email}
                 onChange={handleEmailChange}
-  
+
                 required
               />
               <Form.Control.Feedback type="invalid">
-                Please enter a valid student ID in the format 00-0000.
+                Please enter a valid Email.
               </Form.Control.Feedback>
             </Form.Group>
 
@@ -212,13 +228,13 @@ function NavigationBar({ changeTab }) {
 
         <Modal.Body>
           <Form noValidate validated={validated} onSubmit={handleSubmitSignup}>
-            <Form.Group className="mb-3" controlId="name">
+            <Form.Group className="mb-3" controlId="firstName">
               <Form.Label>First Name</Form.Label>
               <Form.Control
                 type="text"
                 placeholder="Enter your First Name:"
-                value={name}
-                onChange={handleSetName}
+                value={firstName}
+                onChange={handleSetFirstName}
                 required
               />
               <Form.Control.Feedback type="invalid">
@@ -226,13 +242,13 @@ function NavigationBar({ changeTab }) {
               </Form.Control.Feedback>
             </Form.Group>
 
-            <Form.Group className="mb-3" controlId="name">
-              <Form.Label>Name</Form.Label>
+            <Form.Group className="mb-3" controlId="lastNames">
+              <Form.Label>Last Name</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter your Name:"
-                value={name}
-                onChange={handleSetName}
+                placeholder="Enter your Last Name:"
+                value={lastName}
+                onChange={handleSetLastName}
                 required
               />
               <Form.Control.Feedback type="invalid">
@@ -241,18 +257,17 @@ function NavigationBar({ changeTab }) {
             </Form.Group>
 
 
-            <Form.Group className="mb-3" controlId="studentId">
-              <Form.Label>Student ID</Form.Label>
+            <Form.Group className="mb-3" controlId="email">
+              <Form.Label>Email</Form.Label>
               <Form.Control
                 type="text"
-                placeholder="Enter student ID"
+                placeholder="Enter Email"
                 value={email}
                 onChange={handleEmailChange}
-                pattern="[0-9]{2}-[0-9]{5}"
                 required
               />
               <Form.Control.Feedback type="invalid">
-                Please enter a valid student ID in the format 00-0000.
+                Please enter a valid Email.
               </Form.Control.Feedback>
             </Form.Group>
 

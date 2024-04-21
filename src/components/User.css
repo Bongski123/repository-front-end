@@ -1,0 +1,140 @@
+.modal-dialog {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: rgb(0, 0, 0); /* Text color */
+    box-shadow: 10px;
+    border-radius: 10px; /* Border radius */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* Box shadow */
+    
+   
+}
+
+.modal-content {
+    background-color: rgb(165, 189, 160); /* Transparent background */
+    border:#269612; /* No border */
+    box-shadow: 0px 0px 20px 0px #0af3ff;
+    font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+    
+}
+
+.modal-header {
+    border-bottom: none; /* No border */
+    
+}
+
+.modal-body {
+    padding: 20px; /* Padding */
+    
+}
+
+.modal-footer {
+    border-top: none; /* No border */
+    padding: 20px; /* Padding */
+}
+
+.modal-title{
+  font-size: 40px;
+  font-weight: 300px;
+  font-weight: bold;
+}
+
+.form-label{
+  color: #050b11;
+  font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+  font-weight: 300px;
+  font-weight: bold;
+}
+.form-control{
+  border-radius: 10px;
+  
+}
+
+
+.container {
+  max-height: 380px; /* Set the maximum height of the container */
+  overflow: auto; /* Add overflow scroll */
+  
+  }
+  
+  
+  
+
+ 
+  
+  .Table th,
+  .Table td {
+    padding: 10px;
+    text-align: left;
+    border-bottom: 1px solid #ddd; /* Add bottom border to cells */
+  
+  }
+  
+  .Table th {
+    background-color: #f2f2f2; /* Header background color */
+  color: #333; /* Header text color */
+  position: sticky;
+  top: 0;
+  z-index: 1; /* Ensure the header is above the table body */
+  }
+  
+  .Table td {
+    border-bottom: 5px solid #051320;
+    
+  }
+  
+  .Table tr{
+    background-color: #dc3545;
+    
+  }
+  
+  .Table tbody tr:hover {
+    background-color: #0a243e;
+    
+  }
+
+  .Button {
+    padding: 6px 12px;
+    margin-right: 5px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .btn-success {
+    background-color:  rgb(27, 92, 11);
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    
+  }
+  
+  .btn-secondary {
+    background-color: #310b83;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    
+  }
+  
+  .btn-success:hover {
+    background-color: #218838;
+  }
+  
+  .btn-danger {
+    background-color: #b70012;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+  }
+  
+  .btn-danger:hover {
+    background-color: #c82333;
+  }
+  .custom-table {
+    background-color: rgb(246, 40, 40);
+  }
+  
+  .modal-90w {
+    max-width: 30vw; /* Set the maximum width */
+}
+

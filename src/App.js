@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Link,Navigate  } from 'react-router-dom';
 import Navbar from "./components/Navbar";
 import PageTitle from "./components/PageTitle";
 import Categories from "./components/Categories";
@@ -14,6 +14,8 @@ import CHS from "./departments/chs";
 import CAS from "./departments/cas";
 import CTED from "./departments/cted";
 import COE from "./departments/coe";
+import Admin from "./components/AdminDash";
+import UserFiles from "./components/UserFiles";
 function App() {
   const [searchResults, setSearchResults] = useState([]);
   const [activeTab, setActiveTab] = useState('search');
@@ -56,11 +58,17 @@ function App() {
               <Route path="/CAS" element={<CAS />} />
               <Route path="/CTED" element={<CTED />} />
               <Route path="/COE" element={<COE />} />
+              <Route path="/admin" element={<Admin />} />
+              <Route path="/Files" element={<UserFiles />} />
+             
+            
+              
               {/* Add more routes as needed */}
             </Routes>
           </Router>
         )}
         {activeTab === 'upload' && <Upload />}
+        {activeTab === 'admin' && <Admin />}
       </main>
       <Footer />
     </div>
