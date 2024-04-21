@@ -21,15 +21,15 @@ const Upload = () => {
     const [courses, setCourses] = useState([]);
 
 
-
     useEffect(() => {
       // Fetch categories
       axios.get('http://127.0.0.1:9000/categories')
           .then(response => {
-              if (Array.isArray(response.data)) {
-                  setCategories(response.data);
+              const data = response.data.users;
+              if (Array.isArray(data)) {
+                  setCategories(data);
               } else {
-                  console.error('Categories data is not an array:', response.data);
+                  console.error('Categories data is not an array:', data);
                   // Handle non-array response
               }
           })
@@ -40,10 +40,11 @@ const Upload = () => {
       // Fetch departments
       axios.get('http://127.0.0.1:9000/departments')
           .then(response => {
-              if (Array.isArray(response.data)) {
-                  setDepartments(response.data);
+              const data = response.data.users;
+              if (Array.isArray(data)) {
+                  setDepartments(data);
               } else {
-                  console.error('Departments data is not an array:', response.data);
+                  console.error('Departments data is not an array:', data);
                   // Handle non-array response
               }
           })
@@ -54,10 +55,11 @@ const Upload = () => {
       // Fetch courses
       axios.get('http://127.0.0.1:9000/courses')
           .then(response => {
-              if (Array.isArray(response.data)) {
-                  setCourses(response.data);
+              const data = response.data.users; // Access the array from the object
+              if (Array.isArray(data)) {
+                  setCourses(data);
               } else {
-                  console.error('Courses data is not an array:', response.data);
+                  console.error('Courses data is not an array:', data);
                   // Handle non-array response
               }
           })
@@ -65,8 +67,6 @@ const Upload = () => {
               console.error('Error fetching courses:', error);
           });
     }, []);
-    
-
 
 
     const handleSubmit = async (e) => {
