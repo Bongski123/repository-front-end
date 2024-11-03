@@ -1,304 +1,181 @@
+import React, { useState, useEffect } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import { useState, useEffect ,navigate} from "react";
-import Form from "react-bootstrap/Form";
-import Swal from "sweetalert2";
-import axios from "axios";
+import Dropdown from 'react-bootstrap/Dropdown';
+import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
+import { jwtDecode } from 'jwt-decode';
+import { SearchBar } from "./SearchBar";
+import { FaGlobe } from 'react-icons/fa'; // Import the globe icon
+import axios from 'axios';
+import './CSS/Navbar.css';
 
-function NavigationBar({ changeTab }) {
-  const redirectToNCF = () => {
-    window.open('https://www.ncf.edu.ph/');
-  };
+function NavigationBar({ activeTab }) {
+    const navigate = useNavigate();
+    const [notificationCount, setNotificationCount] = useState(0);
 
-  // Login Modal
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+    const redirectToNCF = () => {
+        window.open('https://www.ncf.edu.ph/');
+    };
 
-  // SignUp Modal
-  const [showSignup, setShowSignup] = useState(false);
-  const handleCloseSignup = () => setShowSignup(false);
-  const handleShowSignup = () => setShowSignup(true);
+    // Check if user is logged in
+    const isLoggedIn = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            return !!decodedToken; // Return true if token is decoded successfully
+        }
+        return false;
+    };
 
-  // Login Form State
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [validated, setValidated] = useState(false);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [role, setUserRole] = useState(null);
+    // Fetch notifications for the authenticated user
+    const fetchNotifications = async () => {
+        try {
+            const token = localStorage.getItem('token'); // Retrieve the token from local storage
+            const userId = localStorage.getItem('userId'); // Get user ID from local storage
+            
+            const response = await axios.get(`http://localhost:9000/notifications/${userId}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // Add token if necessary
+                },
+            });
 
-  const handleSubmit = async (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+            const notifications = response.data; // Adjust based on your API response
+            // Count unread notifications
+            const unreadCount = notifications.filter(notification => !notification.read).length;
+            setNotificationCount(unreadCount);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
+    };
 
-    setValidated(true);
+    // Fetch notifications when the component mounts
+    useEffect(() => {
+        if (isLoggedIn()) {
+            fetchNotifications();
+        }
+    }, []);
 
-    if (form.checkValidity()) {
-      try {
-        const response = await axios.post('http://localhost:9000/login', {
-          email: email,
-          password: password,
-        });
+    // Check if user is admin
+    const isAdmin = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            return decodedToken.roleId === '1' || decodedToken.roleId === 1; // Ensure both string and number comparison
+        }
+        return false;
+    };
 
-        const { token, role } = response.data;
+    // Handle redirect for "My Account"
+    const handleMyAccountClick = () => {
+        if (isAdmin()) {
+            navigate('/admin/dashboard'); // Redirect to admin dashboard
+        } else {
+            navigate('/user/dashboard'); // Redirect to user dashboard
+        }
+    };
 
-       localStorage.setItem('token', JSON.stringify(token));
-        // Assuming role is needed for further logic
-        setUserRole(role);
+    const handleLogout = () => {
+        try {
+            localStorage.clear(); // Clear all items from localStorage
+            navigate('/login');
+        } catch (error) {
+            console.error('Logout failed', error);
+        }
+    };
 
-        handleClose(); // Close the login modal after successful login
-      } catch (error) {
-        console.error('Login failed', error);
-        // Display notification for wrong username or password
-        Swal.fire({
-          icon: 'error',
-          title: 'Oops...',
-          text: 'Incorrect username or password!',
-        });
-      }
-    }
-  };
+    const getUserFirstName = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            return decodedToken.name;
+        }
+        return '';
+    };
 
-  useEffect(() => {
-    // Fetch user role when component mounts
-    const token = localStorage.getItem('token');
-    if (token) {
-      const { role } = JSON.parse(token).data; // Assuming role is stored in token data
-      setUserRole(role);
-    }
-  }, []);
+    // Handle notification click
+    const handleNotificationClick = async () => {
+        // If there are unread notifications, reset count
+        if (notificationCount > 0) {
+            // Here you might want to mark notifications as read
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('userId');
+            
+            // Optional: API call to mark notifications as read
+            await axios.post(`http://localhost:9000/notifications/opened`, { userId }, {
+                headers: {
+                    'Authorization': `Bearer ${token}`, // Add token if necessary
+                },
+            });
+            
+            // Reset notification count
+            setNotificationCount(0);
+        }
 
-  // Function to handle navigation to admin page
-  const navigateToAdmin = () => {
-    navigate('/admin');
-  };
+        // Fetch notifications to ensure latest data
+        await fetchNotifications();
+        navigate(`/notification/${localStorage.getItem('userId')}`); // Navigate to the notifications page
+    };
 
-  const handleSubmitSignup = async (event) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.stopPropagation();
-    }
-    setValidated(true);
+    return (
+        <Navbar expand="lg" className="bg-body-tertiary" sticky="top">
+            <Container>
+                <Navbar.Brand href="#home">
+                    <Image
+                        src={require('../assets/ncf-logo-green.png')}
+                        alt="NCF Logo"
+                        className="ncf-logo-navbar"
+                        onClick={redirectToNCF}
+                    />
+                </Navbar.Brand>
+                <Navbar.Toggle aria-controls="basic-navbar-nav" />
+                <Navbar.Collapse id="basic-navbar-nav">
+                    <Nav className="ms-3" variant="underline">
+                        <Nav.Link as={Link} to="/">Search</Nav.Link>
+                        <Nav.Link as={Link} to="/authors">Authors</Nav.Link>
+                        <Nav.Link as={Link} to="/categories">Categories</Nav.Link>
 
-    if (form.checkValidity()) {
-      try {
-        const response = await axios.post("http://localhost:9000/user/register", {
-          firstName: firstName,
-          lastName: lastName,
-          email: email,
-          password: password,
-          role_id: 2, // Assuming role_id is required
-        });
-
-        handleCloseSignup();
-        Swal.fire({
-          icon: "success",
-          title: "Success!",
-          text: "User registered successfully.",
-        });
-      } catch (error) {
-        console.error("Registration failed", error);
-        Swal.fire({
-          icon: "error",
-          title: "Oops...",
-          text: "Registration failed. Please try again.",
-        });
-      }
-    }
-  };
-
-  const handleEmailChange = (event) => {
-    setEmail(event.target.value);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
-  };
-
-  const handleSetFirstName = (event) => {
-    setFirstName(event.target.value);
-  };
-
-  const handleSetLastName = (event) => {
-    setLastName(event.target.value);
-  };
-
-  return (
-    <>
-      <Navbar expand="lg" className="bg-body-tertiary" sticky="top">
-        <Container>
-          <Navbar.Brand href="#home">
-            <Image
-              src={require('../assets/ncf-logo-green.png')}
-              alt="NCF Logo"
-              className="ncf-logo-navbar"
-              onClick={redirectToNCF}
-            />
-          </Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="ms-3" variant="underline">
-              <Nav.Link onClick={() => changeTab('search')}>Search</Nav.Link>
-              <Nav.Link onClick={() => changeTab('categories')}>Categories</Nav.Link>
-              <Nav.Link onClick={() => changeTab('upload')}>Upload</Nav.Link>
-              <Nav.Link onClick={navigateToAdmin} style={{ display: role === 'admin' ? 'block' : 'none' }}>Admin</Nav.Link>
-              {/* Add other Nav links */}
-            </Nav>
-            <Nav className="ms-auto">
-              <div className="ms-auto">
-                <Button variant="success" className="me-3 button-navbar" onClick={handleShow}>
-                  Login
-                </Button>
-                <Button variant="success" className="button-navbar" onClick={handleShowSignup}>
-                  Sign Up
-                </Button>
-              </div>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
-
-      {/* Login Modal */}
-      <Modal show={show} onHide={handleClose} backdrop="static" keyboard={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <h3>Login Account</h3>
-          </Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <Form noValidate validated={validated} onSubmit={handleSubmit}>
-            <Form.Group className="mb-3" controlId="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Email"
-                value={email}
-                onChange={handleEmailChange}
-
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid Email.
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={handlePasswordChange}
-                pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$"
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Password must contain at least 8 characters including at least
-                one uppercase letter, one lowercase letter, one digit, and one
-                special character.
-              </Form.Control.Feedback>
-            </Form.Group>
-            <Button variant="danger" onClick={handleClose} className="me-3">
-              Cancel
-            </Button>
-            <Button variant="success" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
-
-      {/* SignUp Modal */}
-      <Modal show={showSignup} onHide={handleCloseSignup} backdrop="static" keyboard={false}>
-        <Modal.Header closeButton>
-          <Modal.Title>
-            <h3>Sign Up Account</h3>
-          </Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body>
-          <Form noValidate validated={validated} onSubmit={handleSubmitSignup}>
-            <Form.Group className="mb-3" controlId="firstName">
-              <Form.Label>First Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your First Name:"
-                value={firstName}
-                onChange={handleSetFirstName}
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter your name.
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="lastNames">
-              <Form.Label>Last Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter your Last Name:"
-                value={lastName}
-                onChange={handleSetLastName}
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter your name.
-              </Form.Control.Feedback>
-            </Form.Group>
-
-
-            <Form.Group className="mb-3" controlId="email">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter Email"
-                value={email}
-                onChange={handleEmailChange}
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Please enter a valid Email.
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="password">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter password"
-                value={password}
-                onChange={handlePasswordChange}
-                pattern="^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$"
-                required
-              />
-              <Form.Control.Feedback type="invalid">
-                Password must contain at least 8 characters including at least
-                one uppercase letter, one lowercase letter, one digit, and one
-                special character.
-              </Form.Control.Feedback>
-            </Form.Group>
-
-            <Button variant="danger" onClick={handleCloseSignup} className="me-3">
-              Cancel
-            </Button>
-            <Button variant="success" type="submit">
-              Submit
-            </Button>
-          </Form>
-        </Modal.Body>
-      </Modal>
-    </>
-  );
+                        {isLoggedIn() && (
+                            <Nav.Link onClick={handleMyAccountClick}>Dashboard</Nav.Link>
+                        )}
+                    </Nav>
+                    <Nav className="ms-auto d-flex align-items-center">
+                        {/* Notification Icon with Badge only if user is not admin */}
+                        {isLoggedIn() && !isAdmin() && (
+                            <Link 
+                                to="#" // Prevent default navigation
+                                className="notification-link" 
+                                style={{ position: 'relative', marginRight: '17px' }} 
+                                onClick={handleNotificationClick} // Clear notifications on click
+                            >
+                                <FaGlobe size={24} color="black" />
+                                {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
+                            </Link>
+                        )}
+                        {isLoggedIn() ? (
+                            <Dropdown align="end">
+                                <Dropdown.Toggle variant="success" className="me-3 button-navbar">
+                                    {getUserFirstName()}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu>
+                                    <Dropdown.Item href="#/action-1">Settings</Dropdown.Item>
+                                    <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        ) : (
+                            <Button variant="success" className="me-3 button-navbar" as={Link} to="/login">
+                                Sign In
+                            </Button>
+                        )}
+                    </Nav>
+                </Navbar.Collapse>
+            </Container>
+            {activeTab === 'search' && <SearchBar />}
+        </Navbar>
+    );
 }
 
 export default NavigationBar;

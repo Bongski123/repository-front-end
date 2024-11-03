@@ -1,0 +1,125 @@
+/* Overall Container Styling */
+.details-container {
+  padding: 20px;
+  background-color: #f4f4f4;
+}
+
+/* Section Styling */
+.details-section, .pdf-section {
+  background-color: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+/* Heading Styling */
+.details-section h3 {
+  color: #333;
+  font-size: 24px;
+  margin-bottom: 15px;
+}
+
+/* Research Info */
+.research-info {
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.label {
+  font-weight: bold;
+  color: #555;
+}
+
+.label span {
+  font-weight: normal;
+  color: #777;
+}
+
+/* PDF Section */
+.pdf-container {
+  text-align: center;
+}
+
+.pdf-container .react-pdf__Page {
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  margin: 0 auto;
+}
+
+/* Button Styling */
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
+
+.request-full-document {
+  margin-top: 15px;
+}
+
+/* Modal Styling */
+.modal-content {
+  border-radius: 8px;
+}
+
+.modal-header {
+  background-color: #007bff;
+  color: #fff;
+  border-bottom: none;
+}
+
+.modal-header .close {
+  color: #fff;
+}
+
+.modal-body {
+  background-color: #f9f9f9;
+}
+
+/* Form Styling */
+.form-control {
+  border-radius: 4px;
+  border: 1px solid #ced4da;
+  box-shadow: none;
+}
+
+.form-control:focus {
+  border-color: #007bff;
+  box-shadow: none;
+}
+
+.request-full-document {
+  margin-top: 20px;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.request-full-document:hover {
+  background-color: #218838;
+  border-color: #1e7e34;
+}
+/* Container for PDF and button */
+.pdf-section {
+  position: relative;
+}
+
+.pdf-container {
+  position: relative;
+}
+
+.download-button {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10; /* Ensure it is on top of the PDF */
+}
+
+.pdf-page.last-page {
+  position: relative;
+}

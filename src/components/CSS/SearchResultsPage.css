@@ -1,0 +1,37 @@
+/* SearchResultsPage.css */
+.search-results-page {
+    display: flex;
+    flex-direction: column; /* Stack items vertically */
+    align-items: flex-start; /* Align items to the left */
+    padding: 20px; /* Add some padding to the container */
+  }
+  
+  .search-results-page p {
+    font-size: 14px;
+    color: #70757a;
+    margin-top: -10px;
+    margin-bottom: 20px;
+  }
+  .search-results-layout {
+    display: flex;
+    flex-direction: column; /* Stack search bar and results vertically */
+    width: 100%; /* Ensure it takes full width */
+  }
+  
+
+  .results-list {
+    width: 100%; /* Ensure results take the full width */
+  }
+  
+  /* Add specific styles to position results on the left */
+  .results-list {
+    margin-left: 0; /* Align to the left */
+  }
+  
+  .result-item {
+    /* Adjust styles for individual result items if needed */
+    padding: 10px; /* Add some padding to each item */
+    border: 1px solid #063d13; /* Add a border for better visibility */
+    margin-bottom: 10px; /* Space between items */
+  }
+  

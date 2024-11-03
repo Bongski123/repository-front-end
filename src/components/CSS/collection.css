@@ -1,0 +1,11 @@
+.container-fluid {
+    display: flex;
+}
+
+.table-responsive {
+    flex: 1; /* Allow the table to grow and shrink */
+}
+
+.sidebar {
+    flex-shrink: 0; /* Prevent sidebar from shrinking */
+}

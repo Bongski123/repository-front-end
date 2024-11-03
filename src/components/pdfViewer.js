@@ -7,7 +7,7 @@ function PDFViewer({ documentID }) {
   useEffect(() => {
     const fetchPDF = async () => {
       try {
-        const response = await axios.get(`/api/pdf/${documentID}`, {
+        const response = await axios.get(`/pdf/${documentID}`, {
           responseType: "arraybuffer",
         });
         const pdfBlob = new Blob([response.data], { type: "application/pdf" });

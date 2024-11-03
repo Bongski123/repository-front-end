@@ -8,9 +8,9 @@ import reportWebVitals from './reportWebVitals';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <ProSidebarProvider>
+     <ProSidebarProvider>
       <App />
-    </ProSidebarProvider>
+      </ProSidebarProvider>
   </React.StrictMode>
 );
 

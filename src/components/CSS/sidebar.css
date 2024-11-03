@@ -1,0 +1,68 @@
+/* Sidebar styles */
+.sidebar {
+  position: fixed;
+  left: -250px; /* Hide sidebar initially */
+  width: 250px;
+  height: 100%;
+  background-color: #fff;
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+  transition: left 0.3s ease;
+  padding-top: 20px;
+  z-index: 1000;
+}
+
+.sidebar.open {
+  left: 0; /* Sidebar slides in when open */
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 10px;
+  display: flex;
+  align-items: center;
+}
+
+.sidebar ul li a {
+  color: #000;
+  text-decoration: none;
+  font-size: 18px;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.sidebar ul li a span {
+  margin-left: 10px; /* Space between icon and label */
+}
+
+.sidebar ul li a:hover {
+  background-color: #f0f0f0;
+  border-radius: 4px;
+}
+
+/* Horizontal rule styling */
+.sidebar hr {
+  border: 1px solid #ccc;
+  margin: 10px 0;
+}
+
+/* Burger menu styles */
+.burger-menu {
+  font-size: 24px;
+  color: #333;
+  background: none;
+  border: none;
+  position: fixed;
+  top: 20px;
+  left: 20px;
+  cursor: pointer;
+  z-index: 1100;
+}
+
+.burger-menu:focus {
+  outline: none;
+}

@@ -1,0 +1,31 @@
+.related-searches {
+    margin-top: 20px;
+    padding-top: 10px;
+    border-top: 1px solid #ddd;
+  }
+  
+  .related-searches h4 {
+    font-size: 16px;
+    font-weight: normal;
+    color: #202124;
+    margin-bottom: 10px;
+  }
+  
+  .related-searches ul {
+    list-style: none;
+    padding: 0;
+  }
+  
+  .related-searches li {
+    margin: 5px 0;
+  }
+  
+  .related-searches a {
+    text-decoration: none;
+    color: #1a0dab;
+  }
+  
+  .related-searches a:hover {
+    text-decoration: underline;
+  }
+  

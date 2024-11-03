@@ -1,0 +1,106 @@
+/* DashboardContent.css */
+
+.dashboard-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 30px;
+  font-family: Arial, sans-serif;
+}
+
+.info-cards {
+  display: flex;
+  justify-content: center;
+  gap: 20px; /* Adjust the space between the cards */
+  margin-bottom: 20px;
+}
+
+.info-card {
+  background-color: #110b0b;
+  border-radius: 30px;
+  padding: 20px;
+  text-align: center;
+  width: 500px; /* Increase width to 500px or desired value */
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+}
+
+.info-card p {
+  margin: 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.info-card h3 {
+  margin: 10px 0 0;
+  font-size: 24px;
+  color: #333;
+}
+
+.info-card.blue {
+  background-color: #e0f7fa;
+  border: 5px solid #0853535f;
+}
+
+.info-card.green {
+  background-color: #e8f5e9;
+  border: 5px solid #4caf50;
+}
+
+.info-card.yellow {
+  background-color: #fffde7;
+  border: 5px solid #ffeb3b;
+}
+
+.doughnut-chart,
+.bar-chart {
+  background-color: #f0f0f0;
+  border-radius: 8px;
+  padding: 20px;
+  width: 500px; /* Increase width to match info card */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 18px;
+  color: #333;
+}
+
+.info-card {
+  /* Existing styles for info-card */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 50px;
+  position: relative;
+}
+
+.user-icon,
+.cite-icon,
+.download-icon {
+  font-size: 36px; /* Adjust size as needed */
+  margin-bottom: 10px; /* Space between icon and text */
+  color: black;
+}
+
+.info-text {
+  text-align: center;
+}
+
+.info-card.yellow {
+  background-color: #f5f5a0; /* Adjust color as needed */
+}
+
+.info-card.blue {
+  background-color: #a0d0f5; /* Adjust color as needed */
+}
+
+.info-card.green {
+  background-color: #a0f5a0; /* Adjust color as needed */
+}
+
+/* DashboardContent.css */
+.peak-downloads-chart {
+  width: 100%; /* Set to full width or specify a percentage */
+  height: 200px; /* Adjust the height as needed */
+  margin-bottom: 20px; /* Optional margin for spacing */
+}

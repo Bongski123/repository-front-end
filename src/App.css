@@ -6,7 +6,7 @@ html {
 
 .App {
   display: grid;
-  font: 16px/1.6 "Poppins", sans-serif;
+  font: 16px/1.7 "Poppins", sans-serif;
 }
 
 .h3 {
@@ -16,9 +16,24 @@ html {
 /* Start of Navbar */
 
 .navbar {
-  background-color: white;
+  background-color: rgb(149, 138, 138);
   font-faily: 'Outfit';
 }
+/* App.css */
+/* App.css */
+
+#header {
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensure the navbar is above other content */
+  background-color: white; /* Initial background color */
+  transition: background-color 0.3s ease; /* Smooth transition */
+}
+
+#header.scrolled {
+  background-color: transparent; /* Background color when scrolled */
+}
+
 
 .ncf-logo-navbar {
   width: 60%;
@@ -52,6 +67,7 @@ html {
   font-size: 6em;
   color: #094D1C;
   font-weight: 700;
+  font-family: 'Outfit';
 }
 .title1 {
   font-size: 4rem;
@@ -114,7 +130,7 @@ input:focus {
 }
 
 .search-result {
-  padding: 10px 20px;
+  padding: 1px 1px;
 }
 
 .search-result:hover {
@@ -123,25 +139,7 @@ input:focus {
 
 /* Search Result List */
 
-.search-results-container {
-  display: grid;
-  justify-content: center;
-  align-items: center;
-  padding: 0%;
-}
 
-.results-list {
-  width: 50rem;
-  background-color: white;
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  box-shadow: 0px 0px 8px #ddd;
-  border-radius: 10px;
-  margin-top: 1rem;
-  max-height: 270px;
-  overflow-y: auto;
-}
 
 /* Start of Footer */
 

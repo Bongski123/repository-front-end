@@ -22,37 +22,35 @@ const User = () => {
         role_id: '',
     });
 
-    const user = JSON.parse(localStorage.getItem('token'));
-    
+    useEffect(() => {
+        fetchUsers();
+        fetchRoles();
+    }, []);
+
+    const token = useMemo(() => localStorage.getItem('token'), []);
 
     const headers = useMemo(() => ({
         accept: 'application/json',
-        Authorization: user.data.token
-    }), [user.data.token]);
-    const fetchUsers = useCallback(async () => {  // Wrap the definition of fetchUsers in useCallback
+        Authorization: token ? JSON.parse(token).token : '' 
+    }), [token]);
+
+    const fetchUsers = async () => {
         try {
-            const response = await axios.get('http://localhost:9000/user/all', { headers });
+            const response = await axios.get('https://ccsrepo.onrender.com/users/all', { headers });
             setUsers(response.data);
         } catch (error) {
             console.error('Error fetching users:', error);
         }
-    }, [headers]); // Add headers as a dependency to useCallback
+    };
 
-    const fetchRoles = useCallback(async () => {  // Wrap the definition of fetchUsers in useCallback
+    const fetchRoles = async () => {
         try {
-            const response = await axios.get('http://localhost:9000/role/all', { headers });
+            const response = await axios.get('https://ccsrepo.onrender.com/roles/all', { headers });
             setRoles(response.data);
         } catch (error) {
-            console.error('Error fetching users:', error);
+            console.error('Error fetching roles:', error);
         }
-    }, [headers]); // Add headers as a dependency to useCallback
-
-
-   
-    useEffect(() => {
-        fetchUsers();
-        fetchRoles();
-    }, [fetchUsers]); // Use fetchUsers as a dependency in useEffect
+    };
 
     const handleClose = () => setShow(false);
 
@@ -86,7 +84,7 @@ const User = () => {
         e.preventDefault();
 
         try {
-            await axios.post('http://localhost:9000/api/register', formData, { headers });
+            await axios.post('https://ccsrepo.onrender.com/register', formData, { headers });
             Swal.fire({
                 icon: 'success',
                 text: 'User created successfully!',
@@ -226,6 +224,7 @@ const User = () => {
                     <th>user_number</th>
                     <th>Email</th>
                     <th>Role</th>
+                    <th>Institution</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -238,6 +237,7 @@ const User = () => {
                             <td>{user.user_number}</td>
                             <td>{user.email}</td>
                             <td>{user.role_name}</td>
+                            <td>{user.institution}</td>
                             <td>
                                 <Button className='btn btn-danger btn-md' onClick={() => deleteProduct(user.userID)}>
                                     <MdDelete />

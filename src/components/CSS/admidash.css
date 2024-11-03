@@ -1,0 +1,107 @@
+/* AdminDashboard.css */
+
+
+  .header h2 {
+    margin: 0;
+  }
+  
+  .nav-toggle {
+    background-color: transparent;
+    border: none;
+    color: #fff;
+    font-size: 1.2rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+  }
+  
+  .nav-toggle span.material-icons {
+    font-size: 1.5rem;
+  }
+  
+  .sidebar {
+    background-color: #f1f1f1;
+    width: 220px;
+    height: 100vh;
+    padding: 20px;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .sidebar.open {
+    transform: translateX(0); /* Move sidebar to the left when open */
+  }
+  
+  .sidebar ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+  
+  .sidebar li {
+    margin-bottom: 10px;
+  }
+  
+  
+  .sidebar a:hover {
+    background-color: #ddd;
+  }
+  
+  .content {
+    flex: 1;
+    padding: 20px;
+  }
+  .content {
+    margin-left: 220px;
+    padding: 20px;
+    width: 70%;
+  }
+  
+  .info-cards {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .info-card {
+    width: 30%;
+    padding: 25px;
+    border-radius: 20px;
+    color: rgb(37, 34, 34);
+  }
+  
+  .blue { background-color: #007bff; }
+  .green { background-color: #28a745; }
+  .yellow { background-color: #ffc107; }
+  .red { background-color: #dc3545; }
+  
+  .charts {
+    display: flex;
+    justify-content: space-between;
+  
+  }
+  
+  .doughnut-chart, .bar-chart {
+    width: 70%;
+    height: 300px;
+    background: #f1f1f1;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .content p {
+    text-align: center; /* Center text */
+    max-width: 600px; /* Limit width for readability */
+  }
+  
+  @media (max-width: 768px) {
+    /* Styles for smaller screens */
+    .header {
+      flex-direction: column; /* Stack header items on small screens */
+    }
+  
+    .content {
+      padding: 10px; /* Less padding on small screens */
+    }
+  }

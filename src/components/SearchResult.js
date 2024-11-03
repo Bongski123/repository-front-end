@@ -1,114 +1,95 @@
-import React, { useState, useEffect } from "react";
-import Modal from "react-bootstrap/Modal";
-import Button from "react-bootstrap/Button";
-import Dropdown from "react-bootstrap/Dropdown";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 import "./SearchResult.css";
 
 function SearchResult({ result }) {
-  const [showModal, setShowModal] = useState(false);
-  const [selectedFormat, setSelectedFormat] = useState("APA"); // Default selected format
+  const [selectedFormat, setSelectedFormat] = useState("APA");
   const [fileData, setFileData] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const documentID = result.document_id; // Extract documentID from result
+  const navigate = useNavigate();
 
-  const handleCloseModal = () => setShowModal(false);
-  const handleShowModal = () => setShowModal(true);
-
-  const generateCitation = () => {
-    let citation;
-    switch (selectedFormat) {
-      case "APA":
-        citation = `${result.author}. (${new Date().getFullYear()}). "${result.title}". ${result.department_name}.`;
-        break;
-      case "MLA":
-        citation = `${result.author}. "${result.title}." ${result.department_name}, ${new Date().getFullYear()}.`;
-        break;
-      case "Chicago":
-        citation = `${result.author}. "${result.title}." ${result.department_name}. ${new Date().getFullYear()}.`;
-        break;
-      default:
-        citation = "Unknown citation format";
-    }
-    return citation;
-  };
-
+  // Fetch PDF when the component mounts or result changes
   useEffect(() => {
+    if (!result?.research_id) return;
+
     const fetchPDF = async () => {
       setLoading(true);
       try {
-        const response = await axios.get(`http://127.0.0.1:9000/pdf/${documentID}`, {
-          responseType: "arraybuffer",
-        });
-        const pdfBlob = new Blob([response.data], { type: "application/pdf" });
-        const url = URL.createObjectURL(pdfBlob);
-        setFileData(url);
+        const response = await axios.get(
+          `http://localhost:9000/pdf/${result.research_id}`,
+          { responseType: "blob" }
+        );
+        const pdfBlob = response.data;
+        setFileData(URL.createObjectURL(pdfBlob));
         setError(null);
       } catch (error) {
         console.error("Error fetching PDF:", error);
-        setError("Error fetching PDF. Please try again later.");
+        setError("Unable to fetch PDF. Please try again later.");
       } finally {
         setLoading(false);
       }
     };
 
-    if (showModal) {
-      fetchPDF();
+    fetchPDF();
+  }, [result]);
+
+  // Handle citation generation based on the selected format
+  const generateCitation = () => {
+    const currentYear = new Date().getFullYear();
+    switch (selectedFormat) {
+      case "APA":
+        return `${result.authors}. (${currentYear}). "${result.title}".`;
+      case "MLA":
+        return `${result.authors}. "${result.title}." ${currentYear}.`;
+      case "Chicago":
+        return `${result.authors}. "${result.title}." ${currentYear}.`;
+      default:
+        return "Unknown citation format";
     }
-  }, [documentID, showModal, selectedFormat]);
+  };
+
+  // Handle navigation to the details page
+  const handleNavigate = () => {
+    navigate("/details", { state: { result } });
+  };
+
+  // Return null if there's no valid result
+  if (!result) return null;
 
   return (
-    <>
-      <div className="search-result" onClick={handleShowModal}>
-        <p style={{ fontSize: '20px', fontWeight: '1000' }}>{result.title}</p>
-        <p>Author: {result.author}</p>
-        <p>Department: {result.department_name}</p>
-      </div>
+    <div
+      className="search-result"
+      style={{ marginBottom: "5px", cursor: "pointer" }}
+      onClick={handleNavigate}
+    >
+      <h3 style={{ fontSize: "16px", fontWeight: "500", margin: "0" }}>
+        {result.title}
+      </h3>
+      <p style={{ fontSize: "12px", margin: "0" }}>Authors: {result.authors}</p>
+      
+      {/* PDF download link or loading/error message */}
+      {loading ? (
+        <p>Loading PDF...</p>
+      ) : error ? (
+        <p className="error-message">{error}</p>
+      ) : (
+        fileData && (
+          <a
+            href={fileData}
+            target="_blank"
+            rel="noopener noreferrer"
+            style={{ fontSize: "12px" }}
+          >
+            Download PDF
+          </a>
+        )
+      )}
 
-      <Modal show={showModal} onHide={handleCloseModal} size="lg">
-        <Modal.Header closeButton>
-          <Modal.Title>{result.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <p>Author: {result.author}</p>
-          <p>Department: {result.department_name}</p>
-          <p>Course: {result.course_name}</p>
-          <p>Abstract: {result.abstract}</p>
-          {/* Dropdown for selecting citation format */}
-          <Dropdown>
-            <Dropdown.Toggle variant="secondary">
-              {selectedFormat}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => setSelectedFormat("APA")}>APA</Dropdown.Item>
-              <Dropdown.Item onClick={() => setSelectedFormat("MLA")}>MLA</Dropdown.Item>
-              <Dropdown.Item onClick={() => setSelectedFormat("Chicago")}>Chicago</Dropdown.Item>
-              {/* Add more citation formats as needed */}
-            </Dropdown.Menu>
-          </Dropdown>
-          {/* Auto-generated citation */}
-          <p>Citation: {generateCitation()}</p>
-          {/* Display file content or loading/error message */}
-          {loading ? (
-            <p>Loading...</p>
-          ) : error ? (
-            <p>{error}</p>
-          ) : (
-            <iframe src={fileData} title="PDF Viewer" width="100%" height="600px" ></iframe>
-
-
-
-
-          )}
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+      {/* Citation Format Selection */}
+    
+    </div>
   );
 }
 

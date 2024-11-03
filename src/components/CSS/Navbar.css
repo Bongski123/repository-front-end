@@ -1,0 +1,74 @@
+/* Sticky navbar styles */
+.navbar {
+    position: sticky;
+    top: 0;
+    z-index: 1000; /* Ensures it's always above other elements */
+    background-color: #213d1d; /* Background to prevent transparency */
+    box-shadow: 0 2px 2px -2px rgb(22, 66, 26); /* Subtle shadow for depth */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition on scroll */
+  }
+  
+  /* Change background and shadow when scrolling */
+  .navbar.scrolled {
+    background-color: #007bff; /* Change background color on scroll */
+    box-shadow: 0 6px 4px -4px rgba(0, 0, 0, 0.2); /* Enhance shadow when scrolled */
+  }
+  
+  /* Style for the navbar brand (logo) */
+  .navbar-brand {
+    cursor: pointer; /* Indicate the logo is clickable */
+  }
+  
+  /* Styling for the toggle button in mobile view */
+  .navbar-toggler {
+    border-color: rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Adjust navbar link styles */
+  .navbar-nav .nav-link {
+    color: #333;
+    padding: 0.5rem 1rem;
+    font-size: 1rem;
+    transition: color 0.3s ease; /* Smooth transition for hover effect */
+  }
+  
+  /* Highlight the active navbar link */
+  .navbar-nav .nav-link.active {
+    color: #ffffff;
+    font-weight: bold;
+  }
+  
+  /* Dropdown styles */
+  .dropdown-toggle {
+    background-color: #084817; /* Match with button-navbar */
+    color: #ffffff;
+  }
+  
+  .dropdown-menu {
+    background-color: #f8f9fa;
+  }
+  
+  /* Mobile view adjustments */
+  @media (max-width: 768px) {
+    .navbar-nav {
+      text-align: center;
+      padding-top: 1rem;
+    }
+  }
+  .notification-link {
+    position: relative; /* Needed for absolute positioning of the badge */
+    color: white; /* Icon color */
+    text-decoration: none; /* No underline for the link */
+}
+
+.badge {
+    background-color: red; /* Background color of the badge */
+    color: white; /* Text color */
+    border-radius: 50%; /* Make it circular */
+    padding: 0.25em 0.5em; /* Padding for the badge */
+    position: absolute; /* Position it absolutely */
+    top: 0; /* Positioning from the top */
+    right: 0; /* Positioning from the right */
+    transform: translate(50%, -50%); /* Centering the badge */
+    font-size: 0.8em; /* Adjust font size as necessary */
+}

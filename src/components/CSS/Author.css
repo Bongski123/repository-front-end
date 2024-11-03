@@ -1,0 +1,103 @@
+/* Authors.css */
+.title-bar {
+    text-align: center;
+    margin-bottom: 20px;
+    
+  }
+  
+
+  .author-list-title {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+  
+  .authors-container {
+    padding: 20px;
+}
+
+.author-item {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    background-color: #f9f9f9;
+    border-radius: 5px;
+    padding: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    height: 100%;
+    text-align: center; /* Center text horizontally */
+}
+
+.author-item h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.alphabet-bar a {
+    text-decoration: none;
+    padding: 5px 10px;
+    color: #007bff;
+    transition: color 0.3s ease;
+}
+
+.alphabet-bar a:hover {
+    color: #0056b3;
+}
+
+h3 {
+    text-align: left; /* Left-align headings */
+    margin-top: 20px;
+}
+
+.g-2 > .col {
+    display: flex;
+    align-items: stretch;
+}
+
+p {
+    margin-bottom: 0;
+}
+
+.author-list {
+  list-style-type: none; /* Remove bullet points */
+  padding: 0; /* Remove padding */
+  margin: 0; /* Remove margin */
+}
+
+.author-list-item {
+  margin-bottom: 15px; /* Space between list items */
+}
+
+.author-item {
+  padding: 15px;
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+  text-align: left; /* Left-align text */
+}
+
+.author-item h3 {
+  font-size: 1.2em;
+  margin-bottom: 5px;
+}
+
+.author-item p {
+  margin: 0; /* Ensure no extra space below the text */
+}
+
+h3 {
+  margin-top: 20px;
+}
+
+.search-bar {
+  text-align: center;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 400px;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}

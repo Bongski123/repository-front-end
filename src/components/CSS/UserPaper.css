@@ -1,0 +1,48 @@
+/* Container */
+
+ 
+  /* Research List */
+  .research-list {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  /* Individual Research Item */
+  .research-item {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
+  }
+  
+  .research-item h2 {
+    font-size: 1.9rem;
+    color: #006400;
+    margin: 0;
+  }
+  
+  /* Research Details */
+  .research-details {
+    margin-top: 10px;
+    padding: 10px;
+    background-color: #85c58f;
+    border: 2px solid #ddd;
+  }
+  
+  .research-details p {
+    margin: 5px 0;
+  }
+  
+  .research-details strong {
+    color: #164717;
+  }
+  
+  /* Error Message */
+  .error {
+    color: red;
+  }
+  
+  /* Loading */
+  .loading {
+    font-style: italic;
+  }
+  

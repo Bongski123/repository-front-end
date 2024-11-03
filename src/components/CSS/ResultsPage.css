@@ -1,0 +1,33 @@
+.results-container {
+    padding: 20px;
+  }
+  
+  .results-container h1 {
+    margin-bottom: 20px;
+  }
+  
+  .results-container .card {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  }
+  
+  .results-container .card-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+  }
+  
+  .results-container .card-subtitle {
+    font-size: 1.2rem;
+    color: #6c757d;
+  }
+  
+  .results-container .btn {
+    display: flex;
+    align-items: center;
+  }
+  
+  .results-container .btn svg {
+    margin-right: 5px;
+  }
+  

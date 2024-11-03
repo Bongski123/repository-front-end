@@ -1,0 +1,86 @@
+/* Search Bar Container */
+.search-container {
+    position: relative;
+    max-width: 600px;
+    margin: 20px auto;
+  }
+  
+  .input-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 10px;
+    border-radius: 25px;
+  }
+  
+  input {
+    flex: 1;
+    border: none;
+    outline: none;
+    padding: 5px 10px;
+    font-size: 16px;
+  }
+  
+  #search-icon {
+    margin-right: 10px;
+    font-size: 18px;
+  }
+  
+  button {
+    background-color: #0e5415;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  /* Suggestions List */
+  .suggestions-list {
+    position: absolute;
+    top: 100%; /* Positions below the input */
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 5px 5px; /* Slight rounding */
+    z-index: 100; /* Ensure it's above other elements */
+    max-height: 200px; /* Limit the height */
+    overflow-y: auto; /* Enable scrolling if needed */
+  }
+  
+  /* Styling for each suggestion item */
+  .suggestion-item {
+    padding: 10px; /* Space around items */
+    cursor: pointer; /* Pointer cursor */
+    transition: background-color 0.3s;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #f1f1f1; /* Change on hover */
+  }
+  
+  .recent-searches {
+    position: absolute;
+    top: 100%; /* Positions below the input */
+    left: 0;
+    width: 100%;
+    background-color: white;
+    border: 1px solid #ccc;
+    border-top: none;
+    border-radius: 0 0 5px 5px; /* Slight rounding */
+    z-index: 100; /* Ensure it's above other elements */
+  }
+  
+  .recent-search-item {
+    padding: 10px;
+    cursor: pointer;
+  }
+  
+  .recent-search-item:hover {
+    background-color: #f9f9f9;
+  }
+  
