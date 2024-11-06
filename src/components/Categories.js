@@ -6,7 +6,7 @@ import { Link } from "react-router-dom";
 import Form from 'react-bootstrap/Form';
 import ListGroup from 'react-bootstrap/ListGroup'; // Import ListGroup for the list format
 import Pagination from 'react-bootstrap/Pagination'; // Import Pagination component
-
+import './CSS/Categories.css';
 export default function Categories() {
     const [categories, setCategories] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -60,7 +60,12 @@ export default function Categories() {
 
     const currentItems = filteredCategories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    if (loading) return <p>Loading categories...</p>;
+    if (loading) return (
+        <div className="spinner-container">
+            <div className="spinner"></div>
+        </div>
+    );
+    
     if (error) return <p>Error: {error}</p>;
 
     return (

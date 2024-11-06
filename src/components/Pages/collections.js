@@ -60,7 +60,7 @@ function Collections() {
 
     const handleRemove = async (researchId) => {
         try {
-            await axios.delete(`http://localhost:10121/collection/remove/${userId}/${researchId}`);
+            await axios.delete(`https://ccsrepo.onrender.comN/collection/remove/${userId}/${researchId}`);
             setResearches(researches.filter(research => research.research_id !== researchId));
         } catch (err) {
             console.error('Error removing collection item:', err);

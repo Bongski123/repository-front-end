@@ -22,7 +22,13 @@ export default function Authors() {
             });
     }, []);
 
-    if (loading) return <p>Loading...</p>;
+    if (loading) return (
+        <div className="spinner-container">
+            <div className="spinner"></div>
+        </div>
+    );
+    
+
     if (error) return <p>Error loading authors: {error.message}</p>;
     if (!authors.length) return <p>No authors found.</p>;
 

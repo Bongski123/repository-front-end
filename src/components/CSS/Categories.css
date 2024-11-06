@@ -1,0 +1,38 @@
+.dot-spinner {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    height: 100vh; /* Adjust as needed */
+}
+
+.dot-category {
+    width: 15px;
+    height: 15px;
+    background-color: #1a6629; /* Adjust color */
+    border-radius: 50%;
+    animation: pulse 0.6s infinite alternate;
+}
+
+.dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+.dot:nth-child(4) {
+    animation-delay: 0.6s;
+}
+
+@keyframes pulse {
+    0% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: scale(1.5);
+        opacity: 1;
+    }
+}
