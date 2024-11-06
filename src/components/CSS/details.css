@@ -2,6 +2,7 @@
 .details-container {
   padding: 20px;
   background-color: #f4f4f4;
+  
 }
 
 /* Section Styling */
@@ -11,29 +12,39 @@
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   margin-bottom: 20px;
+  text-align: justify; /* Justifying text */
 }
 
 /* Heading Styling */
 .details-section h3 {
-  color: #333;
+  color: #000000;
   font-size: 24px;
   margin-bottom: 15px;
+  
 }
 
 /* Research Info */
 .research-info {
-  font-size: 16px;
-  line-height: 1.6;
+  font-size: 6px;
+  line-height: 1.8;
+    text-align: justify; /* Add this line to justify text */
+    margin-bottom: 15px; /* Space between text and buttons */
+    
+    
 }
 
 .label {
-  font-weight: bold;
-  color: #555;
+  font-weight:lighter;
+  color: #000000;
+  margin: 5px 0; /* Add space between lines */
+
 }
 
 .label span {
   font-weight: normal;
-  color: #777;
+  color: #000000;
+  text-align: justify; /* Justifying text */
+  font-size: 15px;
 }
 
 /* PDF Section */
@@ -122,4 +133,14 @@
 
 .pdf-page.last-page {
   position: relative;
+}
+.citation-modal-content {
+    z-index: 1050; /* Bootstrap modal default z-index */
+    opacity: 1; /* Ensure full opacity */
+    background-color: white; /* Ensure background color */
+    border-radius: 5px; /* Optional styling */
+}
+.button-group {
+  display: flex; /* Flexbox for aligning buttons */
+  gap: 10px; /* Space between buttons */
 }

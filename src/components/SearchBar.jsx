@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Container from "react-bootstrap/Container";
-import { FaSearch } from "react-icons/fa";
+import { FaSearch, FaMicrophone } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import "./CSS/Searchbar.css"; // Add a CSS file for styling
+import { Modal, Button } from "react-bootstrap";
+import "./CSS/Searchbar.css";
 import Footer from "./Footer";
 
 function SearchBar({ suggestions = [], small = false }) {
@@ -11,44 +12,81 @@ function SearchBar({ suggestions = [], small = false }) {
   const [recentSearches, setRecentSearches] = useState([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [modalShow, setModalShow] = useState(false);
+  const [modalText, setModalText] = useState("Listening...");
   const navigate = useNavigate();
+  let debounceTimer;
+  let recognition;
+
+  useEffect(() => {
+    recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      setModalText(transcript);
+      setTimeout(() => setModalShow(false), 2000);
+      simulateTyping(transcript);
+    };
+
+    recognition.onerror = (event) => {
+      console.error("Speech recognition error:", event.error);
+      setModalShow(false);
+    };
+
+    return () => {
+      if (recognition) recognition.abort();
+      clearTimeout(debounceTimer);
+    };
+  }, []);
+
+  const simulateTyping = (text) => {
+    let index = 0;
+    const typeCharacter = () => {
+      if (index < text.length) {
+        setInput((prevInput) => prevInput + text[index]);
+        index++;
+        setTimeout(typeCharacter, 100);
+      } else {
+        performSearch(text);
+      }
+    };
+    typeCharacter();
+  };
 
   const handleInputChange = (value) => {
     setInput(value);
-    if (value.length > 0) {
-      const filtered = suggestions.filter((s) =>
-        s.toLowerCase().includes(value.toLowerCase())
-      );
-      setFilteredSuggestions(filtered);
-    } else {
-      setFilteredSuggestions([]);
-    }
+    if (debounceTimer) clearTimeout(debounceTimer);
+
+    debounceTimer = setTimeout(() => {
+      if (value.length > 0) {
+        const filtered = suggestions.filter((s) =>
+          s.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredSuggestions(filtered);
+      } else {
+        setFilteredSuggestions([]);
+      }
+    }, 300);
   };
 
   const handleInputFocus = () => {
-    setShowRecentSearches(true); // Show recent searches when input is focused
+    setShowRecentSearches(true);
   };
 
   const performSearch = (value) => {
-    const searchAlgorithm = "fuse";
     setLoading(true);
-
-    // Add the search term to recent searches if not already present
     if (value && !recentSearches.includes(value)) {
-      setRecentSearches((prevSearches) => [value, ...prevSearches].slice(0, 5)); // Keep only the last 5 searches
+      setRecentSearches((prevSearches) => [value, ...prevSearches].slice(0, 5));
     }
 
-    fetch(`http://localhost:9000/search/${searchAlgorithm}`, {
+    fetch(`http://localhost:10121/search/fuse`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: value }),
     })
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
-      })
+      .then((response) => response.json())
       .then((json) => {
         setLoading(false);
         if (Array.isArray(json.results)) {
@@ -56,7 +94,7 @@ function SearchBar({ suggestions = [], small = false }) {
             state: { results: json.results },
           });
         } else {
-          console.error("JSON data is not an array");
+          console.error("Invalid results format");
         }
       })
       .catch((error) => {
@@ -79,26 +117,49 @@ function SearchBar({ suggestions = [], small = false }) {
     setInput(search);
     setFilteredSuggestions([]);
     performSearch(search);
-    setShowRecentSearches(false); // Hide recent searches after selection
+    setShowRecentSearches(false);
+  };
+
+  const clearRecentSearches = () => {
+    setRecentSearches([]);
+    setShowRecentSearches(false);
+  };
+
+  const handleClearInput = () => {
+    setInput("");
+    setFilteredSuggestions([]);
+    setShowRecentSearches(false);
+  };
+
+  const handleVoiceSearch = () => {
+    setModalText("Listening...");
+    setModalShow(true);
+    recognition.start();
   };
 
   return (
-    <Container fluid className={`search-container ${small ? 'small' : ''}`}>
+    <Container fluid className={`search-container ${small ? "small" : ""}`}>
       <div className="input-wrapper">
         <FaSearch id="search-icon" />
         <input
           placeholder="Title, Author, Keyword, etc.."
           value={input}
           onChange={(e) => handleInputChange(e.target.value)}
-          onFocus={handleInputFocus} // Show recent searches on focus
+          onFocus={handleInputFocus}
           onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              handleSearchSubmit();
-            }
+            if (e.key === "Enter") handleSearchSubmit();
           }}
         />
+        {input && (
+          <button className="clear-button" onClick={handleClearInput}>
+            &times;
+          </button>
+        )}
         <button onClick={handleSearchSubmit} disabled={loading}>
           {loading ? "Loading..." : "Search"}
+        </button>
+        <button onClick={handleVoiceSearch} disabled={loading}>
+          <FaMicrophone />
         </button>
       </div>
 
@@ -113,22 +174,14 @@ function SearchBar({ suggestions = [], small = false }) {
         </ul>
       )}
 
-      {/* Recent Searches List */}
-      {showRecentSearches && recentSearches.length > 0 && (
-        <ul className="suggestions-list recent-searches">
-          {recentSearches.map((search, index) => (
-            <li
-              key={index}
-              className="suggestion-item"
-              onClick={() => handleRecentSearchClick(search)}
-            >
-              {search}
-            </li>
-          ))}
-        </ul>
-      )}
+      {/* Voice Recognition Modal */}
+      <Modal show={modalShow} onHide={() => setModalShow(false)} centered>
+        <div className="voice-recognition-modal">
+          <FaMicrophone className="microphone-icon" />
+          <div className="voice-recognition-text">{modalText}</div>
+        </div>
+      </Modal>
     </Container>
-   
   );
 }
 

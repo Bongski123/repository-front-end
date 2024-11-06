@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Document, Page, pdfjs } from "react-pdf";
 import "react-pdf/dist/esm/Page/AnnotationLayer.css";
 import { Button, Modal, Container, Row, Col } from "react-bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
-import "./CSS/details.css"; // Import the CSS file
+import "./CSS/details.css";
 import CitationGeneratorDropdown from './citationGenerator';
 import Swal from 'sweetalert2';
 
@@ -25,6 +25,9 @@ function Details() {
     const [downloadCount, setDownloadCount] = useState(0);
     const [citationCount, setCitationCount] = useState(0);
 
+    // Using useRef to track if view count has been incremented
+    const hasIncremented = useRef(false);
+
     useEffect(() => {
         const fetchPDF = async () => {
             setLoading(true);
@@ -32,7 +35,7 @@ function Details() {
                 if (!result?.research_id) {
                     throw new Error("Result or research ID is missing");
                 }
-                const response = await axios.get(`http://localhost:9000/pdf/${result.research_id}`, {
+                const response = await axios.get(`http://localhost:10121/pdf/${result.research_id}`, {
                     responseType: "blob",
                 });
                 const pdfBlob = response.data;
@@ -49,7 +52,7 @@ function Details() {
 
         const fetchResearchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:9000/research/${result.research_id}`);
+                const response = await axios.get(`http://localhost:10121/research/${result.research_id}`);
                 setDownloadCount(response.data.downloadCount);
                 setCitationCount(response.data.citeCount);
             } catch (error) {
@@ -64,7 +67,23 @@ function Details() {
     useEffect(() => {
         const token = localStorage.getItem('token');
         setIsLoggedIn(!!token);
-    }, []);
+
+        // Increment view count on page load if it hasn't been incremented in this session
+        const viewedKey = `viewed_${result?.research_id}`;
+        if (result?.research_id && !hasIncremented.current && !sessionStorage.getItem(viewedKey)) {
+            incrementViewCount(viewedKey);
+            hasIncremented.current = true;  // Mark as incremented to prevent re-increments
+        }
+    }, [result]);
+
+    const incrementViewCount = async (viewedKey) => {
+        try {
+            await axios.post(`http://localhost:10121/research/view/${result.research_id}`);
+            sessionStorage.setItem(viewedKey, "true");  // Store view status in session storage
+        } catch (error) {
+            console.error("Error incrementing view count:", error);
+        }
+    };
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
@@ -75,8 +94,8 @@ function Details() {
 
     const updateCount = async (type) => {
         const endpoint = type === 'download' 
-            ? `http://localhost:9000/research/download/${result.research_id}`
-            : `http://localhost:9000/research/cite/${result.research_id}`;
+            ? `http://localhost:10121/research/download/${result.research_id}`
+            : `http://localhost:10121/research/cite/${result.research_id}`;
 
         try {
             await axios.post(endpoint);
@@ -122,7 +141,7 @@ function Details() {
         const userId = token ? JSON.parse(atob(token.split('.')[1])).userId : null;
 
         try {
-            await axios.post(`http://localhost:9000/collection/add`, {
+            await axios.post(`http://localhost:10121/collection/add`, {
                 user_id: userId,
                 research_id: result.research_id,
             });
@@ -151,10 +170,20 @@ function Details() {
                     <div className="details-section">
                         <h3>{result.title}</h3>
                         <div className="research-info">
-                            <p className="label">Authors: <span>{result.authors}</span></p>
-                            <p className="label">Abstract: <span>{result.abstract}</span></p>
-                            <p className="label">Category: <span>{result.category}</span></p> {/* Displaying Category */}
-                            <p className="label">Keywords: <span>{result.keywords}</span></p>
+                            <p className="label">
+                                <strong>Authors:</strong> <span>{result.authors}</span>
+                            </p>
+                            <p className="label">
+                                <strong>Abstract:</strong> <span>{result.abstract}</span>
+                            </p>
+                            <p className="label">
+                                <strong>Category:</strong> <span>{result.category}</span>
+                            </p>
+                            <p className="label">
+                                <strong>Keywords:</strong> <span>{result.keywords}</span>
+                            </p>
+                        </div>
+                        <div className="button-group">
                             <Button variant="info" onClick={handleCite} className="cite-button">
                                 Cite
                             </Button>
@@ -166,37 +195,29 @@ function Details() {
                 </Col>
                 <Col md={6}>
                     <div className="pdf-section">
+                        <Button variant="primary" onClick={handleDownload} className="download-button mb-2">
+                            Download 
+                        </Button>
                         {loading ? (
                             <p>Loading...</p>
                         ) : error ? (
                             <p>{error}</p>
                         ) : (
-                            <div className="pdf-container">
+                            <div className="pdf-container" style={{ height: '500px', overflowY: 'auto' }}>
                                 <Document
                                     file={pdfBlobUrl}
                                     onLoadSuccess={onDocumentLoadSuccess}
                                     className="pdf-document"
                                 >
-                                    {Array.from({ length: Math.min(numPages, 3) }, (_, pageNumber) => (
+                                    {Array.from(new Array(numPages), (el, index) => (
                                         <Page
-                                            key={pageNumber + 1}
-                                            pageNumber={pageNumber + 1}
+                                            key={`page_${index + 1}`}
+                                            pageNumber={index + 1}
                                             renderTextLayer={false}
                                             width={500}
-                                            height={800}
-                                            className={`pdf-page ${pageNumber + 1 === numPages ? 'last-page' : ''}`}
                                         />
                                     ))}
                                 </Document>
-                                {numPages > 3 && (
-                                    <Button
-                                        variant="primary"
-                                        onClick={handleDownload}
-                                        className="download-button"
-                                    >
-                                        Download Full Document
-                                    </Button>
-                                )}
                             </div>
                         )}
                     </div>
@@ -209,7 +230,6 @@ function Details() {
                     <Modal.Title>Citation</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <p>Your citation has been recorded.</p>
                     <p>Use the following format for citing:</p>
                     <CitationGeneratorDropdown result={result} />
                 </Modal.Body>

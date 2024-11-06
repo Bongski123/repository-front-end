@@ -1,0 +1,6 @@
+.map {
+    position: relative; /* Ensure the map container is positioned */
+    height: 300px; /* Fixed height for the map */
+    width: 100%; /* Full width */
+  }
+  

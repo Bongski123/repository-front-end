@@ -5,6 +5,7 @@
   .research-list {
     list-style-type: none;
     padding: 0;
+    
   }
   
   /* Individual Research Item */
@@ -12,6 +13,12 @@
     padding: 10px;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s; /* Adds a hover effect */
+  }
+
+  .research-item :hover{
+    transform: scale(1.06); /* Slightly enlarges the card on hover */
   }
   
   .research-item h2 {
@@ -44,5 +51,30 @@
   /* Loading */
   .loading {
     font-style: italic;
+  }
+
+  .sidebar.open {
+    width: 250px;
+    transition: width 0.3s ease;
+  }
+  
+  .sidebar {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+  
+  .content.with-sidebar {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .content.full-width {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .toggle-sidebar-button {
+    margin-right: 10px;
   }
   

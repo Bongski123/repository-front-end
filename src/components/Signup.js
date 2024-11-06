@@ -17,7 +17,7 @@ const SignUp = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:9000/programs/all');
+        const response = await fetch('http://localhost:10121/programs/all');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -55,7 +55,7 @@ const SignUp = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:9000/register', {
+      const response = await fetch('http://localhost:10121/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

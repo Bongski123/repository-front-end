@@ -51,56 +51,18 @@
   border: 5px solid #ffeb3b;
 }
 
-.doughnut-chart,
-.bar-chart {
-  background-color: #f0f0f0;
-  border-radius: 8px;
-  padding: 20px;
-  width: 500px; /* Increase width to match info card */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 18px;
-  color: #333;
-}
-
-.info-card {
-  /* Existing styles for info-card */
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 50px;
-  position: relative;
-}
-
-.user-icon,
-.cite-icon,
-.download-icon {
-  font-size: 36px; /* Adjust size as needed */
-  margin-bottom: 10px; /* Space between icon and text */
-  color: black;
-}
-
-.info-text {
-  text-align: center;
-}
-
-.info-card.yellow {
-  background-color: #f5f5a0; /* Adjust color as needed */
-}
-
-.info-card.blue {
-  background-color: #a0d0f5; /* Adjust color as needed */
-}
-
-.info-card.green {
-  background-color: #a0f5a0; /* Adjust color as needed */
-}
 
 /* DashboardContent.css */
 .peak-downloads-chart {
   width: 100%; /* Set to full width or specify a percentage */
-  height: 200px; /* Adjust the height as needed */
+  height: 10px; /* Adjust the height as needed */
   margin-bottom: 20px; /* Optional margin for spacing */
+  
 }
+  
+  .charts {
+    margin: 20px 0; /* Space above and below each chart */
+    text-align: center;
+    box-shadow: 0 30px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s; /* Adds a hover effect */
+  }

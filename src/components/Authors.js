@@ -8,10 +8,10 @@ export default function Authors() {
     const [authors, setAuthors] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
-    const [searchQuery, setSearchQuery] = useState(''); // Add search query state
+    const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        axios.get('http://localhost:9000/authors')
+        axios.get('http://localhost:10121/authors')
             .then(response => {
                 setAuthors(response.data.authors || response.data); // Adjust based on response structure
                 setLoading(false);
@@ -24,16 +24,14 @@ export default function Authors() {
 
     if (loading) return <p>Loading...</p>;
     if (error) return <p>Error loading authors: {error.message}</p>;
-    if (!authors.length) return <p>No authors found.</p>; // Handle case where no authors are found
+    if (!authors.length) return <p>No authors found.</p>;
 
-    // Filter authors based on search query
     const filteredAuthors = authors.filter(author => 
-        (author.authors_name || 'Unknown Author').toLowerCase().includes(searchQuery.toLowerCase())
+        (author.authors_name || '').toLowerCase().includes(searchQuery.toLowerCase())
     );
 
-    // Group authors by first letter after filtering
     const groupedAuthors = filteredAuthors.reduce((groups, author) => {
-        const name = author.authors_name || ''; // Default to empty string if undefined
+        const name = author.authors_name || '';
         const firstLetter = name.charAt(0).toUpperCase();
         if (!groups[firstLetter]) {
             groups[firstLetter] = [];
@@ -45,7 +43,7 @@ export default function Authors() {
     return (
         <section id="authors" className="block authors-block">
             <Container fluid className="authors-container">
-                <div className="title-bar">
+                <div className="author-title-bar">
                     <h1 className="title">Authors</h1>
                 </div>
             </Container>
@@ -53,27 +51,24 @@ export default function Authors() {
             <Container>
                 <h2 className="author-list-title">Browse by Author</h2>
 
-                {/* Search Bar */}
                 <div className="search-bar" style={{ marginBottom: '20px' }}>
                     <input
                         type="text"
                         placeholder="Search authors..."
                         value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)} // Update search query on change
+                        onChange={(e) => setSearchQuery(e.target.value)}
                         className="search-input"
                     />
                 </div>
 
-                {/* Alphabetical links */}
                 <div className="alphabet-bar" style={{ marginBottom: '20px', textAlign: 'center' }}>
                     {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(letter => (
-                        <a href={`#letter-${letter}`} key={letter} style={{ margin: '0 10px', color: '#007bff' }}>
+                        <a href={`#letter-${letter}`} key={letter} style={{ margin: '0 10px', color: '#008000' }}>
                             {letter}
                         </a>
                     ))}
                 </div>
 
-                {/* Authors grouped by first letter */}
                 {Object.keys(groupedAuthors).sort().map(letter => (
                     <div key={letter} id={`letter-${letter}`} style={{ marginBottom: '20px' }}>
                         <h3>{letter}</h3>
@@ -82,7 +77,7 @@ export default function Authors() {
                                 <li key={author.author_id} className="author-list-item">
                                     <Link to={`/authors/${author.author_id}`} style={{ textDecoration: 'none', color: 'inherit' }}>
                                         <div className="author-item" style={{ padding: '10px', borderBottom: '1px solid #ddd' }}>
-                                            <h3 style={{ fontSize: '1.2em' }}>{author.authors_name || 'Unknown Author'}</h3>
+                                            <h3 style={{ fontSize: '1.2em' }}>{author.authors_name || 'N/A'}</h3>
                                             <p>Research Papers: {author.documentCount || 0}</p>
                                         </div>
                                     </Link>

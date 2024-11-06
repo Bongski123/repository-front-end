@@ -11,7 +11,7 @@ export default function AuthorDetail() {
     const [error, setError] = useState(null);
 
     useEffect(() => {
-        axios.get(`http://localhost:9000/authors/${authorId}/researches`)
+        axios.get(`http://localhost:10121/authors/${authorId}/researches`)
             .then(response => {
                 setAuthor(response.data.author);
                 setResearches(response.data.researches);

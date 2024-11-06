@@ -1,0 +1,128 @@
+/* Upload Form Container */
+.upload-container {
+    max-width: 600px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #ffffff;
+    border-radius: 8px;
+    
+
+}
+
+/* Form Title */
+.title-bar {
+    text-align: center;
+    margin-bottom: 1.5rem;
+}
+
+.title1 {
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: #333333;
+}
+
+/* Input Fields Styling */
+.floating-label {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    height: 45px;
+    border-radius: 6px;
+    font-size: 1rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cccccc;
+    
+}
+
+/* Authors Section */
+.authors-section {
+    display: flex;
+    align-items: center;
+}
+
+.add-author-button,
+.remove-author-button {
+    margin-left: 0.5rem;
+    font-size: 0.9rem;
+    padding: 0.25rem 0.75rem;
+}
+
+
+    
+/* Keywords Selector */
+.basic-multi-select {
+    margin-bottom: 1.5rem;
+}
+
+.select__control {
+    border: 1px solid #cccccc;
+    border-radius: 6px;
+    font-size: 1rem;
+}
+
+/* Upload Button */
+.upload-button {
+    display: block;
+    width: 100%;
+    padding: 0.75rem;
+    font-size: 1.1rem;
+    background-color: #11491e; /* Change to a green shade */
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease-in-out;
+}
+    
+
+
+.upload-button:hover {
+    background-color: #305b0f;
+}
+/* Make drop button square */
+.file-drop-button {
+    width: 1250px;      /* Increased width */
+    height: 200px;     /* Increased height */
+    border-radius: 16px;  /* Rounded corners */
+    border: 3px dashed #178c11;
+    background-color: #f0f7ff;
+    
+    display: flex;
+    flex-direction: column; /* Stack icon and text */
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: border-color 0.3s ease;
+    margin-left: 10px
+}
+
+.file-drop-button:hover,
+.file-drop-button.active {
+    border-color: #12821a;
+}
+
+/* Cloud Icon Styling */
+.cloud-icon {
+    font-size: 6.5rem;
+    color: #1b5c16;
+}
+
+/* Center text below the icon */
+.upload-text {
+    margin-top: 0.5rem;
+    font-size: 0.85rem;
+    color: #666666;
+    text-align: center;
+}
+.file-dropzone{
+  margin-left: 50px;
+}
+
+.upload-container.with-sidebar {
+    margin-left: 250px; /* Adjust based on sidebar width */
+}
+
+.upload-container.full-width {
+    margin-left: 0;
+}

@@ -17,7 +17,7 @@ export default function Categories() {
 
     const fetchCategories = async () => {
         try {
-            const response = await fetch('http://localhost:9000/categories/all'); // Update with your API endpoint
+            const response = await fetch('http://localhost:10121/categories/all'); // Update with your API endpoint
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }

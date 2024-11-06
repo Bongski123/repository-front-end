@@ -1,16 +1,10 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
-import './CSS/sidebar.css'; // Assuming you have a CSS file for styling
-import { FaHome, FaRegClock, FaBars, FaBook, FaBell, FaBookmark } from 'react-icons/fa'; // Using react-icons
+import './CSS/sidebar.css';
+import { FaHome, FaRegClock, FaBars, FaBook, FaBell, FaBookmark } from 'react-icons/fa';
 import { BsFillCloudUploadFill } from "react-icons/bs";
 
-const UserSidebar = () => {
-  const [isOpen, setIsOpen] = useState(false); // Sidebar toggle
-
-  const toggleSidebar = () => {
-    setIsOpen(!isOpen);
-  };
-
+const UserSidebar = ({ isOpen, toggleSidebar }) => {
   return (
     <>
       <button className="burger-menu" onClick={toggleSidebar}>
@@ -42,6 +36,7 @@ const UserSidebar = () => {
               <span>My Collections</span>
             </Link>
           </li>
+          
         </ul>
       </nav>
     </>

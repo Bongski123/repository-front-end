@@ -20,6 +20,11 @@ const Sidebar = ({ toggleSidebar }) => { // Receive toggleSidebar as a prop
     
         <li>
           <Link to="/upload">Upload</Link> {/* Use Link for routing */}
+          
+        </li>
+         
+        <li>
+          <Link to="/user/notification/:userId">Notification</Link> {/* Use Link for routing */}
         </li>
     
         <li>

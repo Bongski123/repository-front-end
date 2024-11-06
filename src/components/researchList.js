@@ -3,8 +3,11 @@ import axios from 'axios';
 import Sidebar from './Sidebar'; // Import the Sidebar component
 
 const containerStyle = {
+  display: 'row', // Use flexbox for layout
   padding: '20px',
   fontFamily: 'Arial, sans-serif',
+  padingLeft: '200px',
+  marginLeft: '250px'
 };
 
 const headerStyle = {
@@ -12,12 +15,14 @@ const headerStyle = {
   color: '#333',
   borderBottom: '2px solid #ddd',
   paddingBottom: '10px',
+  width: '100%', // Ensure header takes full width
 };
 
 const tableStyle = {
-  width: '100%',
+  width: '80%', // Adjust width to create space for the sidebar
   borderCollapse: 'collapse',
   margin: '20px 0',
+  marginLeft: '20px', // Add left margin to move the table to the right
 };
 
 const thStyle = {
@@ -80,7 +85,7 @@ function ResearchList() {
   useEffect(() => {
     const fetchResearches = async () => {
       try {
-        const response = await axios.get('http://localhost:9000/researches');
+        const response = await axios.get('http://localhost:10121/researches');
         setResearches(response.data);
       } catch (err) {
         setError(err.message);
@@ -112,95 +117,97 @@ function ResearchList() {
 
   return (
     <div style={containerStyle}>
-      <h1 style={headerStyle}>Research List</h1>
       <Sidebar toggleSidebar={toggleSidebar} />
+      <div style={{ flex: 1 }}> {/* Allow this div to take remaining space */}
+        <h1 style={headerStyle}>Research List</h1>
 
-      {/* Search Bar */}
-      <input
-        type="text"
-        placeholder="Search by title..."
-        value={searchTerm}
-        onChange={(e) => setSearchTerm(e.target.value)}
-        style={{
-          margin: '10px 0',
-          padding: '5px',
-          fontSize: '1rem',
-          border: '1px solid #ccc',
-          borderRadius: '4px',
-        }}
-      />
+        {/* Search Bar */}
+        <input
+          type="text"
+          placeholder="Search by title..."
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+          style={{
+            margin: '10px 0',
+            padding: '5px',
+            fontSize: '1rem',
+            border: '1px solid #ccc',
+            borderRadius: '4px',
+          }}
+        />
 
-      {/* Status Filter */}
-      <div style={{ margin: '10px 0' }}>
-        <label>
-          Filter by status:
-          <select
-            value={statusFilter}
-            onChange={(e) => setStatusFilter(e.target.value)}
-            style={{ marginLeft: '10px', padding: '5px', fontSize: '1rem' }}
-          >
-            <option value="">All</option>
-            <option value="approved">Approved</option>
-            <option value="pending">Pending</option>
-            <option value="rejected">Rejected</option>
-            <option value="archived">Archived</option>
-          </select>
-        </label>
-      </div>
+        {/* Status Filter */}
+        <div style={{ margin: '10px 0' }}>
+          <label>
+            Filter by status:
+            <select
+              value={statusFilter}
+              onChange={(e) => setStatusFilter(e.target.value)}
+              style={{ marginLeft: '10px', padding: '5px', fontSize: '1rem' }}
+            >
+              <option value="">All</option>
+              <option value="approved">Approved</option>
+              <option value="pending">Pending</option>
+              <option value="rejected">Rejected</option>
+              <option value="archived">Archived</option>
+            </select>
+          </label>
+        </div>
 
-      {/* Loading and Error Messages */}
-      {loading && <p>Loading...</p>}
-      {error && <p style={errorStyle}>Error: {error}</p>}
+        {/* Loading and Error Messages */}
+        {loading && <p>Loading...</p>}
+        {error && <p style={errorStyle}>Error: {error}</p>}
 
-      {/* Research Table */}
-      <table style={tableStyle}>
-        <thead>
-          <tr>
-            <th style={thStyle}>Title</th>
-            <th style={thStyle}>Status</th>
-            <th style={thStyle}>Authors</th>
-            <th style={thStyle}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentResearches.map((research) => (
-            <tr key={research.research_id}>
-              <td style={tdStyle}>{research.title}</td>
-              <td style={tdStyle}>
-                <span style={statusStyle[research.status] || {}}>{research.status}</span>
-              </td>
-              <td style={tdStyle}>
-                {research.authors || 'No authors available'}
-              </td>
-              <td style={tdStyle}>
-                <a href={`/research/${research.research_id}`} style={linkStyle}>
-                  View Details
-                </a>
-              </td>
+        {/* Research Table */}
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={thStyle}>Title</th>
+              <th style={thStyle}>Status</th>
+              <th style={thStyle}>Authors</th>
+              <th style={thStyle}>Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {currentResearches.map((research) => (
+              <tr key={research.research_id}>
+                <td style={tdStyle}>{research.title}</td>
+                <td style={tdStyle}>
+                  <span style={statusStyle[research.status] || {}}>{research.status}</span>
+                </td>
+                <td style={tdStyle}>
+                  {research.authors || 'No authors available'}
+                </td>
+                <td style={tdStyle}>
+                  <a href={`/research/${research.research_id}`} style={linkStyle}>
+                    View Details
+                  </a>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
 
-      {/* Pagination Controls */}
-      <div style={{ margin: '20px 0', textAlign: 'center' }}>
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => handleClick(index + 1)}
-            style={{
-              margin: '0 5px',
-              padding: '5px 10px',
-              cursor: 'pointer',
-              backgroundColor: currentPage === index + 1 ? '#007BFF' : '#f4f4f4',
-              color: currentPage === index + 1 ? '#fff' : '#000',
-              border: '1px solid #ddd',
-              borderRadius: '4px',
-            }}
-          >
-            {index + 1}
-          </button>
-        ))}
+        {/* Pagination Controls */}
+        <div style={{ margin: '20px 0', textAlign: 'center' }}>
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => handleClick(index + 1)}
+              style={{
+                margin: '0 5px',
+                padding: '5px 10px',
+                cursor: 'pointer',
+                backgroundColor: currentPage === index + 1 ? '#007BFF' : '#f4f4f4',
+                color: currentPage === index + 1 ? '#fff' : '#000',
+                border: '1px solid #ddd',
+                borderRadius: '4px',
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
       </div>
     </div>
   );

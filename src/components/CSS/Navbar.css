@@ -40,7 +40,7 @@
   
   /* Dropdown styles */
   .dropdown-toggle {
-    background-color: #084817; /* Match with button-navbar */
+    background-color: #094D1C; /* Match with button-navbar */
     color: #ffffff;
   }
   
@@ -72,3 +72,21 @@
     transform: translate(50%, -50%); /* Centering the badge */
     font-size: 0.8em; /* Adjust font size as necessary */
 }
+
+
+.notification-dropdown .dropdown-item {
+  font-size: 0.875rem; /* Adjust to desired size */
+  display: flex; /* Use flexbox */
+  justify-content: flex-start; /* Align items to the start (left) */
+  align-items: center; /* Center vertically */
+  padding: 8px 12px; /* Optional: adjust padding for better spacing */
+}
+
+/* If you want to add a hover effect */
+.notification-dropdown .dropdown-item:hover {
+  background-color: #f8f9fa; /* Change background color on hover */
+}
+.me-3.button-navbar{
+  background-color: #0d4417;
+}
+

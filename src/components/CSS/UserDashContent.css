@@ -1,0 +1,76 @@
+.user-dashboard-content {
+    padding: 20px;
+  }
+  
+  .info-cards {
+    display: flex;
+    justify-content:space-evenly;
+    flex-wrap: row; /* Allows cards to wrap in case of smaller screens */
+  }
+  
+  .info-card {
+    background-color: #f0f0f0; /* Default background color */
+    border-radius: 8px;
+    padding: 10px; /* Reduced padding for smaller cards */
+    width: 200px; /* Adjust width as needed */
+    height: 120px;
+    margin: 1px; /* Space between cards */
+    text-align: center;
+    box-shadow: 0 30px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s; /* Adds a hover effect */
+  }
+  
+  .info-card:hover {
+    transform: scale(1.15); /* Slightly enlarges the card on hover */
+  }
+  
+  .info-card.blue {
+    background-color: #ff6363; /* Specific background for downloads card */
+  }
+  
+  .info-card.green {
+    background-color: #89f06c; /* Specific background for citations card */
+  }
+  
+  .info-card.yellow {
+    background-color: #fed43a; /* Specific background for activity card */
+    text-decoration: none; /* Remove underline from link */
+    color: inherit; /* Inherit color from parent */
+  }
+  .info-card.purple{
+    background-color: #ff39f2; /* Specific background for activity card */
+    text-decoration: none; /* Remove underline from link */
+    color: inherit; /* Inherit color from parent */
+  }
+
+  .icon {
+    font-size: 24px; /* Adjust icon size if necessary */
+    margin-bottom: 5px; /* Space between icon and text */
+  }
+  
+  h3 {
+    margin: 0; /* Removes default margin for h3 */
+    font-size: 18px; /* Adjust font size for card titles */
+  }
+  
+  p {
+    margin: 5px 0; /* Space between paragraph and title */
+    font-size: 20px; /* Adjust font size for card descriptions */
+  }
+  
+  .charts {
+    margin-top: 20px; /* Space above charts */
+    justify-content:space-evenly;
+    
+  }
+  
+  .chart {
+    margin: 20px 0; /* Space above and below each chart */
+    text-align: center;
+    box-shadow: 0 30px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s; /* Adds a hover effect */
+  }
+  
+  .charts1 :hover {
+    transform: scale(1.05); /* Slightly enlarges the card on hover */
+  }

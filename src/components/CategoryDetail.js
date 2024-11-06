@@ -19,7 +19,7 @@ export default function CategoryDetail() {
     // Function to fetch research items
     const fetchResearchItems = async () => {
         try {
-            const response = await fetch(`http://localhost:9000/category/${categoryId}`);
+            const response = await fetch(`http://localhost:10121/category/${categoryId}`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }

@@ -6,6 +6,53 @@
     flex: 1; /* Allow the table to grow and shrink */
 }
 
+
+  
+  .content.with-sidebar {
+    margin-left: 250px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .content.full-width {
+    margin-left: 0;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .sidebar.open {
+    width: 250px;
+  }
+  
+  .sidebar {
+    width: 0;
+    overflow: hidden;
+    transition: width 0.3s ease;
+  }
+  .collections-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.content {
+    flex-grow: 1;
+    padding: 20px;
+    transition: margin-left 0.3s ease;
+}
+
+.content.with-sidebar {
+    margin-left: 250px; /* Width of your sidebar */
+}
+
+.content.full-width {
+    margin-left: 0;
+}
+
 .sidebar {
-    flex-shrink: 0; /* Prevent sidebar from shrinking */
+    width: 250px; /* Width of your sidebar */
+    transition: width 0.3s ease;
+}
+
+/* Optional: Hide sidebar when collapsed */
+.sidebar.closed {
+    width: 0;
+    overflow: hidden;
 }

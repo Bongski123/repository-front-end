@@ -20,7 +20,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:9000/login', {
+      const response = await fetch('http://localhost:10121/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -42,6 +42,7 @@ const Login = () => {
       // Store token and roleId in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('roleId', roleId);
+      localStorage.setItem('userId', userId);
 
       // Navigate based on roleId
       if (roleId === 1) {
@@ -59,7 +60,7 @@ const Login = () => {
 
   const handleGoogleLogin = async (response) => {
     try {
-      const res = await fetch('http://localhost:9000/google-login', {
+      const res = await fetch('http://localhost:10121/google-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_token: response.credential }) // Use id_token

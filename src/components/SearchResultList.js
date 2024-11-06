@@ -34,27 +34,25 @@ function SearchResultList({ results }) {
           <SearchResult result={result} key={result.research_id} />
         ))}
 
-         {/* Pagination Controls */}
-      <div className="pagination">
-        <Button
-          className={currentPage === 1 ? "disabled" : ""}
-          disabled={currentPage === 1}
-          onClick={() => handlePageChange(currentPage - 1)}
-        >
-          Previous
-        </Button>
-        <span> Page {currentPage} of {totalPages} </span>
-        <Button
-          className={currentPage === totalPages ? "disabled" : ""}
-          disabled={currentPage === totalPages}
-          onClick={() => handlePageChange(currentPage + 1)}
-        >
-          Next
-        </Button>
+        {/* Pagination Controls */}
+        <div className="pagination">
+          <Button
+            className={currentPage === 1 ? "disabled" : ""}
+            disabled={currentPage === 1}
+            onClick={() => handlePageChange(currentPage - 1)}
+          >
+            Previous
+          </Button>
+          <span> Page {currentPage} of {totalPages} </span>
+          <Button
+            className={currentPage === totalPages ? "disabled" : ""}
+            disabled={currentPage === totalPages}
+            onClick={() => handlePageChange(currentPage + 1)}
+          >
+            Next
+          </Button>
+        </div>
       </div>
-      </div>
-
-     
     </Container>
   );
 }

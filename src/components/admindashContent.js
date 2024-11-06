@@ -18,22 +18,22 @@ const DashboardContent = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const downloadsResponse = await fetch('http://localhost:9000/total/downloads');
+        const downloadsResponse = await fetch('http://localhost:10121/total/downloads');
         const downloadsData = await downloadsResponse.json();
         setDownloads(downloadsData.total_downloads);
 
-        const citationsResponse = await fetch('http://localhost:9000/total/citations');
+        const citationsResponse = await fetch('http://localhost:10121/total/citations');
         const citationsData = await citationsResponse.json();
         setCitations(citationsData.total_citations);
 
-        const usersResponse = await fetch('http://localhost:9000/all/users');
+        const usersResponse = await fetch('http://localhost:10121/all/users');
         const usersData = await usersResponse.json();
         setTotalUsers(usersData.total_users);
 
-        const dailyDownloadsResponse = await fetch('http://localhost:9000/daily/downloads');
+        const dailyDownloadsResponse = await fetch('http://localhost:10121/daily/downloads');
         const dailyDownloadsData = await dailyDownloadsResponse.json();
 
-        const dailyCitationsResponse = await fetch('http://localhost:9000/daily/citations'); // Fetch daily citations
+        const dailyCitationsResponse = await fetch('http://localhost:10121/daily/citations'); // Fetch daily citations
         const dailyCitationsData = await dailyCitationsResponse.json();
 
         // Aggregate downloads by day of the week
@@ -151,7 +151,7 @@ const DashboardContent = () => {
           </div>
         </div>
       </div>
-      <div className="charts">
+      <div className="charts1">
         <div className="peak-downloads-chart">
           <h3>Peak Downloads Daily</h3>
           <Line data={downloadsChartData} options={options} />

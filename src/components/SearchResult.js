@@ -18,7 +18,7 @@ function SearchResult({ result }) {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost:9000/pdf/${result.research_id}`,
+          `http://localhost:10121/pdf/${result.research_id}`,
           { responseType: "blob" }
         );
         const pdfBlob = response.data;

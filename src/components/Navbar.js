@@ -5,8 +5,7 @@ import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Dropdown from 'react-bootstrap/Dropdown';
-import { Link } from 'react-router-dom';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
 import { SearchBar } from "./SearchBar";
 import { FaGlobe } from 'react-icons/fa'; // Import the globe icon
@@ -16,12 +15,13 @@ import './CSS/Navbar.css';
 function NavigationBar({ activeTab }) {
     const navigate = useNavigate();
     const [notificationCount, setNotificationCount] = useState(0);
+    const [notifications, setNotifications] = useState([]);
+    const [loadingNotifications, setLoadingNotifications] = useState(false);
 
     const redirectToNCF = () => {
         window.open('https://www.ncf.edu.ph/');
     };
 
-    // Check if user is logged in
     const isLoggedIn = () => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -31,35 +31,40 @@ function NavigationBar({ activeTab }) {
         return false;
     };
 
-    // Fetch notifications for the authenticated user
     const fetchNotifications = async () => {
+        setLoadingNotifications(true); // Set loading state
         try {
-            const token = localStorage.getItem('token'); // Retrieve the token from local storage
-            const userId = localStorage.getItem('userId'); // Get user ID from local storage
-            
+            const token = localStorage.getItem('token');
+            const userId = localStorage.getItem('userId');
+
+            if (!userId || !token) {
+                console.error('User ID or token is missing');
+                return;
+            }
+
             const response = await axios.get(`http://localhost:9000/notifications/${userId}`, {
                 headers: {
-                    'Authorization': `Bearer ${token}`, // Add token if necessary
+                    'Authorization': `Bearer ${token}`,
                 },
             });
 
-            const notifications = response.data; // Adjust based on your API response
-            // Count unread notifications
-            const unreadCount = notifications.filter(notification => !notification.read).length;
+            const notificationsData = response.data; // Adjust based on your API response
+            const unreadCount = notificationsData.filter(notification => !notification.read).length;
+            setNotifications(notificationsData);
             setNotificationCount(unreadCount);
         } catch (error) {
             console.error('Error fetching notifications:', error);
+        } finally {
+            setLoadingNotifications(false); // Reset loading state
         }
     };
 
-    // Fetch notifications when the component mounts
     useEffect(() => {
         if (isLoggedIn()) {
             fetchNotifications();
         }
     }, []);
 
-    // Check if user is admin
     const isAdmin = () => {
         const token = localStorage.getItem('token');
         if (token) {
@@ -69,18 +74,17 @@ function NavigationBar({ activeTab }) {
         return false;
     };
 
-    // Handle redirect for "My Account"
     const handleMyAccountClick = () => {
         if (isAdmin()) {
-            navigate('/admin/dashboard'); // Redirect to admin dashboard
+            navigate('/admin/dashboard');
         } else {
-            navigate('/user/dashboard'); // Redirect to user dashboard
+            navigate('/user/dashboard');
         }
     };
 
     const handleLogout = () => {
         try {
-            localStorage.clear(); // Clear all items from localStorage
+            localStorage.clear();
             navigate('/login');
         } catch (error) {
             console.error('Logout failed', error);
@@ -96,28 +100,33 @@ function NavigationBar({ activeTab }) {
         return '';
     };
 
-    // Handle notification click
     const handleNotificationClick = async () => {
-        // If there are unread notifications, reset count
+        const token = localStorage.getItem('token');
+        const userId = localStorage.getItem('userId');
+
+        // Navigate to the notifications page
+        navigate(`/notification/${userId}`);
+
+        // Mark notifications as opened
         if (notificationCount > 0) {
-            // Here you might want to mark notifications as read
-            const token = localStorage.getItem('token');
-            const userId = localStorage.getItem('userId');
-            
-            // Optional: API call to mark notifications as read
-            await axios.post(`http://localhost:9000/notifications/opened`, { userId }, {
-                headers: {
-                    'Authorization': `Bearer ${token}`, // Add token if necessary
-                },
-            });
-            
-            // Reset notification count
+            try {
+                await axios.post(`http://localhost:10121/notifications/opened`, { userId }, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+                setNotificationCount(0); // Reset notification count after marking as read
+            } catch (error) {
+                console.error('Error marking notifications as read:', error);
+            }
+        }
+    };
+
+    const handleDropdownToggle = () => {
+        // Reset notification count when dropdown is opened
+        if (notificationCount > 0) {
             setNotificationCount(0);
         }
-
-        // Fetch notifications to ensure latest data
-        await fetchNotifications();
-        navigate(`/notification/${localStorage.getItem('userId')}`); // Navigate to the notifications page
     };
 
     return (
@@ -143,17 +152,29 @@ function NavigationBar({ activeTab }) {
                         )}
                     </Nav>
                     <Nav className="ms-auto d-flex align-items-center">
-                        {/* Notification Icon with Badge only if user is not admin */}
                         {isLoggedIn() && !isAdmin() && (
-                            <Link 
-                                to="#" // Prevent default navigation
-                                className="notification-link" 
-                                style={{ position: 'relative', marginRight: '17px' }} 
-                                onClick={handleNotificationClick} // Clear notifications on click
-                            >
-                                <FaGlobe size={24} color="black" />
-                                {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
-                            </Link>
+                            <Dropdown align="end" className="notification-dropdown" onToggle={handleDropdownToggle}>
+                                <Dropdown.Toggle variant="success" className="me-3 button-navbar">
+                                    <FaGlobe size={24} color="black" />
+                                    {/* Hide notification count when clicked */}
+                                    {notificationCount > 0 && <span className="badge" style={{ display: 'none' }}>{notificationCount}</span>}
+                                </Dropdown.Toggle>
+                                <Dropdown.Menu className="notification-dropdown" style={{ minWidth: '200px' }}>
+                                    {loadingNotifications ? (
+                                        <Dropdown.Item disabled>Loading notifications...</Dropdown.Item>
+                                    ) : (
+                                        notifications.length > 0 ? (
+                                            notifications.map((notification, index) => (
+                                                <Dropdown.Item key={index} onClick={handleNotificationClick} style={{ textAlign: 'left', fontSize: '14px' }}>
+                                                    {notification.message} {/* Adjust based on your notification structure */}
+                                                </Dropdown.Item>
+                                            ))
+                                        ) : (
+                                            <Dropdown.Item disabled>No new notifications</Dropdown.Item>
+                                        )
+                                    )}
+                                </Dropdown.Menu>
+                            </Dropdown>
                         )}
                         {isLoggedIn() ? (
                             <Dropdown align="end">
@@ -161,7 +182,7 @@ function NavigationBar({ activeTab }) {
                                     {getUserFirstName()}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item href="#/action-1">Settings</Dropdown.Item>
+                                    <Dropdown.Item href="/forgot-password">Reset Password</Dropdown.Item>
                                     <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>

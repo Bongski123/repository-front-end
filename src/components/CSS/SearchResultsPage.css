@@ -34,4 +34,57 @@
     border: 1px solid #063d13; /* Add a border for better visibility */
     margin-bottom: 10px; /* Space between items */
   }
+  .suggestions-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background-color: #333;
+    color: #fff;
+    padding: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+    display: flex;
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+  }
+  
+  .suggestions-section {
+    flex: 1;
+    margin-right: 20px;
+  }
+  
+  .suggestions-section h5 {
+    font-size: 0.85rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    color: #bbb;
+  }
+  
+  .suggestion-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+  }
+  
+  .suggestion-item:hover {
+    background-color: #444;
+  }
+  
+  .search-icon,
+  .trending-icon {
+    margin-right: 10px;
+    color: #aaa;
+  }
+  
+  .search-icon {
+    font-size: 1rem;
+  }
+  
+  .trending-icon {
+    font-size: 1.1rem;
+  }
   

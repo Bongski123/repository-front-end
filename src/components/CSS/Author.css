@@ -1,6 +1,7 @@
 /* Authors.css */
-.title-bar {
+.author-title-bar {
     text-align: center;
+  padding-left: 550px;
     margin-bottom: 20px;
     
   }
@@ -27,6 +28,10 @@
     text-align: center; /* Center text horizontally */
 }
 
+.author-item:hover{
+  transform: scale(1.05);
+}
+
 .author-item h3 {
     font-size: 1.2em;
     margin-bottom: 10px;
@@ -35,12 +40,12 @@
 .alphabet-bar a {
     text-decoration: none;
     padding: 5px 10px;
-    color: #007bff;
+    color: #146216;
     transition: color 0.3s ease;
 }
 
 .alphabet-bar a:hover {
-    color: #0056b3;
+    color: #2c6f20;
 }
 
 h3 {

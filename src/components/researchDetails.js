@@ -4,24 +4,67 @@ import { useParams } from 'react-router-dom';
 import { Document, Page } from 'react-pdf';
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css';
 import Modal from 'react-modal';
+import Swal from 'sweetalert2';
+import Sidebar from './Sidebar';
 
-Modal.setAppElement('#root'); // Set the root element for accessibility
+Modal.setAppElement('#root');
 
 const styles = {
-  // ... your existing styles
+  container: {
+    marginLeft: '250px',
+    padding: '20px',
+  },
+  header: {
+    fontSize: '24px',
+    marginBottom: '20px',
+  },
+  section: {
+    marginBottom: '20px',
+  },
+  table: {
+    width: '100%',
+    borderCollapse: 'collapse',
+  },
+  th: {
+    borderBottom: '2px solid #000',
+    padding: '10px',
+    textAlign: 'left',
+  },
+  td: {
+    padding: '10px',
+  },
+  buttonContainer: {
+    marginTop: '20px',
+  },
+  button: {
+    padding: '10px 20px',
+    marginRight: '10px',
+    cursor: 'pointer',
+  },
+  approveButton: {
+    backgroundColor: 'green',
+    color: 'white',
+  },
+  rejectButton: {
+    backgroundColor: 'red',
+    color: 'white',
+  },
+  modalContent: {
+    padding: '20px',
+    width: '100%',
+    maxWidth: '900px',
+  },
+  loading: {
+    textAlign: 'center',
+    fontSize: '18px',
+  },
+  error: {
+    color: 'red',
+  },
 };
 
 const rejectionReasons = [
-  "Insufficient Originality: The paper may lack original contributions or ideas, failing to present new findings or insights.",
-  "Poor Quality of Research: The methodology may be flawed, the data insufficient, or the analysis inadequate, leading to questionable results.",
-  "Lack of Relevance: The topic might not align with the focus areas or scope of the repository, making it less suitable for their audience.",
-  "Inadequate Literature Review: The paper may not sufficiently review or reference existing literature, which is crucial for establishing context and significance.",
-  "Formatting Issues: Non-compliance with the repository's formatting guidelines or submission requirements can lead to rejection.",
-  "Ethical Concerns: If the research does not adhere to ethical standards, such as issues related to consent, data privacy, or conflicts of interest, it may be rejected.",
-  "Language and Clarity: Poorly written papers that are difficult to read or understand may be rejected due to language barriers or lack of clarity in presenting ideas.",
-  "Incomplete Data or Findings: Submitting preliminary data without robust findings can result in rejection, especially if the repository seeks comprehensive studies.",
-  "Duplicate Submission: If the research paper is submitted to multiple repositories or journals simultaneously, it can be rejected based on policies against duplicate submissions.",
-  "Insufficient Contribution to Field: The paper may not demonstrate a significant enough contribution to the academic field or practical application."
+  // ... your rejection reasons array
 ];
 
 function ResearchDetail() {
@@ -34,36 +77,16 @@ function ResearchDetail() {
   const [rejectionModalVisible, setRejectionModalVisible] = useState(false);
   const [rejectionReason, setRejectionReason] = useState('');
   const [numPages, setNumPages] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const researchResponse = await axios.get(`http://localhost:9000/research/${research_id}`);
         setResearch(researchResponse.data.research || {});
-        await fetchPDF(researchResponse.data.research.research_id);
       } catch (err) {
         setError(err.message);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    const fetchPDF = async (id) => {
-      setLoading(true);
-      try {
-        if (!id) {
-          throw new Error("Research ID is missing");
-        }
-        const response = await axios.get(`http://localhost:9000/pdf/${id}`, {
-          responseType: "blob",
-        });
-        const pdfBlob = response.data;
-        const url = URL.createObjectURL(pdfBlob);
-        setPdfBlobUrl(url);
-        setError(null);
-      } catch (error) {
-        console.error("Error fetching PDF:", error);
-        setError("Error fetching PDF. Please try again later.");
       } finally {
         setLoading(false);
       }
@@ -72,16 +95,45 @@ function ResearchDetail() {
     fetchData();
   }, [research_id]);
 
+  const fetchPDF = async (id) => {
+    setLoading(true);
+    try {
+      if (!id) throw new Error("Research ID is missing");
+      const response = await axios.get(`http://localhost:9000/pdf/${id}`, {
+        responseType: "blob",
+      });
+      const pdfBlob = response.data;
+      setPdfBlobUrl(URL.createObjectURL(pdfBlob));
+      setError(null);
+    } catch (error) {
+      console.error("Error fetching PDF:", error);
+      setError("Error fetching PDF. Please try again later.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleDocumentLoadSuccess = ({ numPages }) => {
     setNumPages(numPages);
+    setCurrentPage(1); // Reset to first page when document loads
   };
 
   const handleApprove = async () => {
     try {
-      await axios.patch(`http://localhost:9000/research/approve/${research_id}`);
-      alert('Research approved successfully');
+      await axios.patch(`http://localhost:10121/research/approve/${research_id}`);
+      Swal.fire({
+        title: 'Approved!',
+        text: 'Research approved successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
     } catch (err) {
-      alert(`Error: ${err.message}`);
+      Swal.fire({
+        title: 'Error!',
+        text: `Error: ${err.message}`,
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
   };
 
@@ -92,11 +144,21 @@ function ResearchDetail() {
   const handleReject = async () => {
     try {
       await axios.patch(`http://localhost:9000/research/reject/${research_id}`, { reason: rejectionReason });
-      alert('Research rejected successfully');
+      Swal.fire({
+        title: 'Rejected!',
+        text: 'Research rejected successfully.',
+        icon: 'success',
+        confirmButtonText: 'OK',
+      });
       setRejectionModalVisible(false);
       setRejectionReason('');
     } catch (err) {
-      alert(`Error: ${err.message}`);
+      Swal.fire({
+        title: 'Error!',
+        text: `Error: ${err.message}`,
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
     }
   };
 
@@ -107,6 +169,30 @@ function ResearchDetail() {
 
   const handlePdfModalClose = () => {
     setPdfModalVisible(false);
+    setCurrentPage(1); // Reset page when modal closes
+    setIsSidebarVisible(true); // Show sidebar when PDF modal is closed
+    if (pdfBlobUrl) {
+      URL.revokeObjectURL(pdfBlobUrl); // Release object URL to avoid memory leak
+      setPdfBlobUrl(null);
+    }
+  };
+
+  const openPdfModal = () => {
+    if (!pdfBlobUrl) fetchPDF(research.research_id); // Fetch PDF only if not already loaded
+    setPdfModalVisible(true);
+    setIsSidebarVisible(false); // Hide sidebar when PDF modal is opened
+  };
+
+  const goToNextPage = () => {
+    if (currentPage < numPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
   };
 
   if (loading) {
@@ -114,12 +200,18 @@ function ResearchDetail() {
   }
 
   if (error) {
-    return <p style={styles.error}>Error: {error}</p>;
+    return (
+      <div style={styles.error}>
+        <p>Error: {error}</p>
+        <button onClick={() => fetchPDF(research.research_id)}>Retry</button>
+      </div>
+    );
   }
 
   return (
     <div style={styles.container}>
       <h1 style={styles.header}>Research Detail</h1>
+      {isSidebarVisible && <Sidebar />}
 
       {research ? (
         <div>
@@ -142,7 +234,7 @@ function ResearchDetail() {
                 </tr>
                 <tr>
                   <td style={styles.td}><strong>Abstract:</strong></td>
-                  <td style={{ ...styles.td, width: '100%', maxWidth: '800px', whiteSpace: 'normal' }}>
+                  <td style={{ ...styles.td, maxWidth: '800px', whiteSpace: 'normal' }}>
                     {research.abstract || 'No abstract available'}
                   </td>
                 </tr>
@@ -173,80 +265,42 @@ function ResearchDetail() {
             <button style={{ ...styles.button, ...styles.rejectButton }} onClick={handleRejectOpen}>
               Reject
             </button>
-            <button style={{ ...styles.button }} onClick={() => setPdfModalVisible(true)}>
-              Preview Document
+            <button style={styles.button} onClick={openPdfModal}>
+              View PDF
             </button>
           </div>
 
-          {/* PDF Preview Modal */}
-          <Modal
-            isOpen={pdfModalVisible}
-            onRequestClose={handlePdfModalClose}
-            style={{
-              overlay: {
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              },
-              content: { ...styles.modalContent, maxWidth: '100%', width: 'auto' },
-            }}
-          >
-            <h3>PDF Preview</h3>
-            {pdfBlobUrl && (
-              <div className="pdf-container" style={{ width: '100%', height: '600px', overflow: 'auto' }}>
-                <Document
-                  file={pdfBlobUrl}
-                  onLoadSuccess={handleDocumentLoadSuccess}
-                  className="pdf-document"
-                  style={{ width: '100%' }}
-                >
-                  {Array.from({ length: numPages }, (_, pageNumber) => (
-                    <Page
-                      key={pageNumber + 1}
-                      pageNumber={pageNumber + 1}
-                      renderTextLayer={false}
-                      width={1000}
-                      height={500}
-                      className={`pdf-page ${pageNumber + 1 === numPages ? 'last-page' : ''}`}
-                      style={{ display: 'block', margin: '0 auto' }} 
-                    />
-                  ))}
-                </Document>
+          <Modal isOpen={pdfModalVisible} onRequestClose={handlePdfModalClose}>
+            <div style={styles.modalContent}>
+              <h2>PDF Preview</h2>
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
+                <button onClick={goToPreviousPage} disabled={currentPage <= 1}>Previous</button>
+                <span>Page {currentPage} of {numPages}</span>
+                <button onClick={goToNextPage} disabled={currentPage >= numPages}>Next</button>
               </div>
-            )}
-            <button style={styles.rejectButton} onClick={handlePdfModalClose}>Close</button>
+              {pdfBlobUrl && (
+                <Document file={pdfBlobUrl} onLoadSuccess={handleDocumentLoadSuccess}>
+                  <Page pageNumber={currentPage} />
+                </Document>
+              )}
+              <button onClick={handlePdfModalClose}>Close</button>
+            </div>
           </Modal>
 
-          {/* Rejection Reason Modal */}
-          <Modal
-            isOpen={rejectionModalVisible}
-            onRequestClose={handleModalClose}
-            style={{
-              overlay: {
-                backgroundColor: 'rgba(0, 0, 0, 0.5)',
-              },
-              content: styles.modalContent,
-            }}
-          >
-            <h3>Reason for Rejection</h3>
-            <select
-              style={{ width: '100%', padding: '10px', marginBottom: '10px' }}
-              value={rejectionReason}
-              onChange={(e) => setRejectionReason(e.target.value)}
-            >
-              <option value="">Select a reason...</option>
+          <Modal isOpen={rejectionModalVisible} onRequestClose={handleModalClose}>
+            <h2>Select a reason for rejection</h2>
+            <select value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)}>
+              <option value="">Select a reason</option>
               {rejectionReasons.map((reason, index) => (
-                <option key={index} value={reason}>
-                  {reason}
-                </option>
+                <option key={index} value={reason}>{reason}</option>
               ))}
             </select>
-            <div style={styles.modalButtons}>
-              <button style={styles.approveButton} onClick={handleReject}>Submit</button>
-              <button style={styles.rejectButton} onClick={handleModalClose}>Cancel</button>
-            </div>
+            <button onClick={handleReject} disabled={!rejectionReason}>Reject</button>
+            <button onClick={handleModalClose}>Cancel</button>
           </Modal>
         </div>
       ) : (
-        <p>No research details available</p>
+        <p>No research found</p>
       )}
     </div>
   );

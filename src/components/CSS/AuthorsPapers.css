@@ -1,0 +1,104 @@
+/* AuthorPapers.css */
+
+.author-info{
+    margin-top: 50px;
+}
+
+.paper-item {
+    padding: 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    background-color: #f9f9f9;
+    transition: transform 0.2s ease;
+   
+  
+  }
+  
+  .paper-item:hover {
+    transform: scale(1.05);
+  }
+  
+  .paper-title {
+    font-size: 1.25em;
+    color: #333;
+    font-weight: bold;
+    margin: 0;
+    text-decoration: none;
+    
+  }
+  
+  .paper-title:hover {
+    color: #007bff;
+  }
+  .paper-item {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-start;
+      padding: 15px;
+      border: 1px solid #e1e1e1;
+      border-radius: 5px;
+      margin-bottom: 10px;
+      background-color: #f9f9f9;
+      transition: background-color 0.3s;
+    }
+    
+    .paper-item:hover {
+      background-color: #e9ecef; /* Light gray on hover */
+    }
+    
+    .paper-link {
+      font-size: 1.2em;
+      font-weight: bold;
+      color: #007bff; /* Bootstrap primary color */
+      text-decoration: none;
+    }
+    
+    .paper-link:hover {
+      text-decoration: underline;
+    }
+    
+    .download-count {
+      font-size: 0.9em;
+      color: #6c757d; /* Bootstrap secondary color */
+      margin-top: 5px;
+    }
+    .author-info {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px; /* Space between author info and papers list */
+    }
+    
+    .author-photo {
+      margin-right: 15px; /* Space between photo and details */
+      width: 80px; /* Set a fixed width */
+      height: 80px; /* Set a fixed height */
+    }
+    
+    .author-photo img {
+      width: 80px; /* Set a fixed width */
+      height: 80px; /* Set a fixed height */
+      border-radius: 50%; /* Make it circular */
+      object-fit: cover; /* Ensure the image covers the area */
+    }
+    
+    .author-details h1 {
+      margin: 0; /* Remove default margin */
+      font-size: 1.5rem; /* Adjust font size */
+    }
+    
+    .author-details p {
+      margin: 5px 0 0; /* Add margin for spacing */
+      font-size: 1rem; /* Adjust font size */
+    }
+    
+    
+    
+    .author-credentials {
+      font-style: italic;
+      color: gray;
+    }
+  
+   
