@@ -54,6 +54,27 @@ const styles = {
     width: '100%',
     maxWidth: '900px',
   },
+
+  rejectionModalContent: {
+    content: {
+      top: '30%',
+      left: '50%',
+      right: 'auto',
+      bottom: 'auto',
+      marginRight: '-50%',
+      transform: 'translate(-50%, -50%)',
+      padding: '20px',
+      width: '800px',
+      maxWidth: '90%',
+    },
+  },
+  rejectionSelect: {
+    width: '100%',
+    padding: '10px',
+    fontSize: '16px',
+    marginBottom: '20px',
+  },
+
   loading: {
     textAlign: 'center',
     fontSize: '18px',
@@ -64,7 +85,21 @@ const styles = {
 };
 
 const rejectionReasons = [
-  // ... your rejection reasons array
+  "Lack of Originality: No new insights or contributions.",
+  "Poor Writing Quality: Unclear language or structure.",
+  "Methodological Issues: Flawed or weak methodology.",
+  "Incomplete Data: Missing or unclear supporting data.",
+  "Ethical Compliance: Lacks necessary ethical approval.",
+  "Insufficient Literature Review: Lacks context of prior work.",
+  "Unsupported Conclusions: Claims not backed by data.",
+  "Redundant Publication: Overlaps with existing work.",
+  "Unclear Focus: Lacks a clear objective or question.",
+  "Off-Topic: Irrelevant to repository's scope.",
+  "Conflict of Interest: Undisclosed bias present.",
+  "Plagiarism or Copyright Violation.",
+  "Speculative Claims: Unsupported assertions.",
+  "Improper Formatting: Doesn’t follow guidelines.",
+  "Negative Peer Review: Significant concerns raised."
 ];
 
 function ResearchDetail() {
@@ -142,8 +177,21 @@ function ResearchDetail() {
   };
 
   const handleReject = async () => {
+    if (!rejectionReason) {
+      Swal.fire({
+        title: 'Error!',
+        text: 'Please select a reason for rejection.',
+        icon: 'error',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+  
     try {
-      await axios.patch(`https://ccsrepo.onrender.com/research/reject/${research_id}`, { reason: rejectionReason });
+      console.log("Sending rejection reason:", rejectionReason); // Debugging log
+      const response = await axios.patch(`https://ccsrepo.onrender.com/research/reject/${research_id}`, { reason: rejectionReason });
+      console.log("Server response:", response); // Debugging log
+  
       Swal.fire({
         title: 'Rejected!',
         text: 'Research rejected successfully.',
@@ -153,6 +201,7 @@ function ResearchDetail() {
       setRejectionModalVisible(false);
       setRejectionReason('');
     } catch (err) {
+      console.error("Error during rejection:", err); // Debugging log
       Swal.fire({
         title: 'Error!',
         text: `Error: ${err.message}`,
@@ -286,18 +335,31 @@ function ResearchDetail() {
               <button onClick={handlePdfModalClose}>Close</button>
             </div>
           </Modal>
+ {/* Rejection Modal */}
+ <Modal
+        isOpen={rejectionModalVisible}
+        onRequestClose={handleModalClose}
+        style={styles.rejectionModalContent}
+      >
+        <h2>Reason for Rejection</h2>
+        <select
+          value={rejectionReason}
+          onChange={(e) => setRejectionReason(e.target.value)}
+          style={styles.rejectionSelect}
+        >
+          <option value="">Select a reason</option>
+          {rejectionReasons.map((reason, index) => (
+            <option key={index} value={reason}>
+              {reason}
+            </option>
+          ))}
+        </select>
+        <button onClick={handleReject} disabled={!rejectionReason}>
+          Submit Rejection
+        </button>
+        <button onClick={handleModalClose}>Cancel</button>
+      </Modal>
 
-          <Modal isOpen={rejectionModalVisible} onRequestClose={handleModalClose}>
-            <h2>Select a reason for rejection</h2>
-            <select value={rejectionReason} onChange={(e) => setRejectionReason(e.target.value)}>
-              <option value="">Select a reason</option>
-              {rejectionReasons.map((reason, index) => (
-                <option key={index} value={reason}>{reason}</option>
-              ))}
-            </select>
-            <button onClick={handleReject} disabled={!rejectionReason}>Reject</button>
-            <button onClick={handleModalClose}>Cancel</button>
-          </Modal>
         </div>
       ) : (
         <p>No research found</p>

@@ -110,7 +110,7 @@ function NavigationBar({ activeTab }) {
         // Mark notifications as opened
         if (notificationCount > 0) {
             try {
-                await axios.post(`http://localhost:10121/notifications/opened`, { userId }, {
+                await axios.post(`https://ccsrepo.onrender.com/notifications/opened`, { userId }, {
                     headers: {
                         'Authorization': `Bearer ${token}`,
                     },
