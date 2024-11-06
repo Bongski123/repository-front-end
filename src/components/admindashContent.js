@@ -18,22 +18,22 @@ const DashboardContent = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        const downloadsResponse = await fetch('http://localhost:10121/total/downloads');
+        const downloadsResponse = await fetch('https://ccsrepo.onrender.com/total/downloads');
         const downloadsData = await downloadsResponse.json();
         setDownloads(downloadsData.total_downloads);
 
-        const citationsResponse = await fetch('http://localhost:10121/total/citations');
+        const citationsResponse = await fetch('https://ccsrepo.onrender.com/total/citations');
         const citationsData = await citationsResponse.json();
         setCitations(citationsData.total_citations);
 
-        const usersResponse = await fetch('http://localhost:10121/all/users');
+        const usersResponse = await fetch('https://ccsrepo.onrender.com/all/users');
         const usersData = await usersResponse.json();
         setTotalUsers(usersData.total_users);
 
-        const dailyDownloadsResponse = await fetch('http://localhost:10121/daily/downloads');
+        const dailyDownloadsResponse = await fetch('https://ccsrepo.onrender.com/daily/downloads');
         const dailyDownloadsData = await dailyDownloadsResponse.json();
 
-        const dailyCitationsResponse = await fetch('http://localhost:10121/daily/citations'); // Fetch daily citations
+        const dailyCitationsResponse = await fetch('https://ccsrepo.onrender.com/daily/citations'); // Fetch daily citations
         const dailyCitationsData = await dailyCitationsResponse.json();
 
         // Aggregate downloads by day of the week

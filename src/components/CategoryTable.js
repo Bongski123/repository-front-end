@@ -17,7 +17,7 @@ const CategoryTable = () => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const response = await axios.get('http://localhost:10121/categories/all');
+        const response = await axios.get('https://ccsrepo.onrender.com/categories/all');
         const sortedCategories = response.data.category || [];
         sortedCategories.sort((a, b) => a.category_name.localeCompare(b.category_name)); // Sort alphabetically
         setCategories(sortedCategories);
@@ -48,7 +48,7 @@ const CategoryTable = () => {
   const addCategory = async () => {
     if (!currentCategory.name) return;
     try {
-      const response = await axios.post('http://localhost:10121/categories/add', {
+      const response = await axios.post('https://ccsrepo.onrender.com/categories/add', {
         category_name: currentCategory.name,
       });
       setCategories((prev) => [...prev, response.data]);
@@ -69,7 +69,7 @@ const CategoryTable = () => {
 
   const updateCategory = async () => {
     try {
-      const response = await axios.put(`http://localhost:10121/categories/${currentCategory.id}`, {
+      const response = await axios.put(`https://ccsrepo.onrender.com/categories/${currentCategory.id}`, {
         category_name: currentCategory.name,
       });
       setCategories((prev) =>
@@ -85,7 +85,7 @@ const CategoryTable = () => {
 
   const deleteCategory = async (id) => {
     try {
-      await axios.delete(`http://localhost:10121/categories/${id}`);
+      await axios.delete(`https://ccsrepo.onrender.com/categories/${id}`);
       setCategories((prev) => prev.filter((category) => category.category_id !== id));
       Swal.fire({ title: 'Deleted!', text: 'Category has been deleted.', icon: 'success', confirmButtonText: 'OK' });
     } catch (error) {

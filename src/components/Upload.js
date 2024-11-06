@@ -20,11 +20,11 @@ const Upload = () => {
     const [keywordOptions, setKeywordOptions] = useState([]);
 
     useEffect(() => {
-        axios.get('http://localhost:10121/categories/all')
+        axios.get('https://ccsrepo.onrender.com/categories/all')
             .then(response => setCategories(response.data.category || []))
             .catch(error => console.error('Error fetching categories:', error));
 
-        axios.get('http://localhost:10121/keywords')
+        axios.get('https://ccsrepo.onrender.com/keywords')
             .then(response => {
                 const keywordsData = response.data.keywords || [];
                 setKeywordOptions(keywordsData.map(kw => ({ value: kw.keyword_name, label: kw.keyword_name })));
@@ -78,7 +78,7 @@ const Upload = () => {
             formData.append('abstract', abstract);
             formData.append('uploader_id', uploaderId);
 
-            const response = await axios.post('http://localhost:9000/upload', formData, {
+            const response = await axios.post('https://ccsrepo.onrender.com/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`

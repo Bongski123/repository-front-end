@@ -30,7 +30,7 @@ const UserDashContent = () => {
       const fetchUserDashboardData = async () => {
         try {
           // Fetch user dashboard data
-          const dashboardResponse = await fetch(`http://localhost:10121/user/dashboard?user_id=${userId}`);
+          const dashboardResponse = await fetch(`https://ccsrepo.onrender.com/user/dashboard?user_id=${userId}`);
           if (!dashboardResponse.ok) {
             throw new Error(`HTTP error! status: ${dashboardResponse.status}`);
           }
@@ -42,10 +42,10 @@ const UserDashContent = () => {
           setUserViews(dashboardData.total_views); // Set total views
 
           // Fetch daily downloads and citations for the individual uploader
-          const dailyDownloadsResponse = await fetch(`http://localhost:10121/user/daily/downloads?userId=${userId}`);
+          const dailyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/user/daily/downloads?userId=${userId}`);
           const dailyDownloadsData = await dailyDownloadsResponse.json();
 
-          const dailyCitationsResponse = await fetch(`http://localhost:10121/user/daily/citations?userId=${userId}`);
+          const dailyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/user/daily/citations?userId=${userId}`);
           const dailyCitationsData = await dailyCitationsResponse.json();
 
           const downloadsByDay = Array(7).fill(0);

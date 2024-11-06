@@ -17,7 +17,7 @@ const KeywordTable = () => {
   useEffect(() => {
     const fetchKeywords = async () => {
       try {
-        const response = await axios.get('http://localhost:10121/keywords');
+        const response = await axios.get('https://ccsrepo.onrender.com/keywords');
         // Sort keywords alphabetically
         const sortedKeywords = response.data.keywords || [];
         sortedKeywords.sort((a, b) => a.keyword_name.localeCompare(b.keyword_name));
@@ -49,7 +49,7 @@ const KeywordTable = () => {
   const addKeyword = async () => {
     if (!currentKeyword.name) return;
     try {
-      const response = await axios.post('http://localhost:10121/keywords/add', {
+      const response = await axios.post('https://ccsrepo.onrender.com/keywords/add', {
         keyword_name: currentKeyword.name,
       });
       const newKeywords = [...keywords, response.data];
@@ -72,7 +72,7 @@ const KeywordTable = () => {
 
   const updateKeyword = async () => {
     try {
-      const response = await axios.put(`http://localhost:10121/keywords/${currentKeyword.id}`, {
+      const response = await axios.put(`https://ccsrepo.onrender.com/keywords/${currentKeyword.id}`, {
         keyword_name: currentKeyword.name,
       });
       const updatedKeywords = keywords.map((keyword) => (keyword.keyword_id === response.data.keyword_id ? response.data : keyword));
@@ -88,7 +88,7 @@ const KeywordTable = () => {
 
   const deleteKeyword = async (id) => {
     try {
-      await axios.delete(`http://localhost:10121/keywords/${id}`);
+      await axios.delete(`https://ccsrepo.onrender.com/keywords/${id}`);
       const remainingKeywords = keywords.filter((keyword) => keyword.keyword_id !== id);
       remainingKeywords.sort((a, b) => a.keyword_name.localeCompare(b.keyword_name)); // Sort after deleting
       setKeywords(remainingKeywords);

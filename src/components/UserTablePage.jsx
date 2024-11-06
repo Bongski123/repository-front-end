@@ -36,7 +36,7 @@ const UserTablePage = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await fetch('http://localhost:9000/users/all');
+      const response = await fetch('https://ccsrepo.onrender.com/users/all');
       if (!response.ok) {
         throw new Error('Failed to fetch users');
       }
@@ -49,7 +49,7 @@ const UserTablePage = () => {
 
   const fetchPrograms = async () => {
     try {
-      const response = await fetch('http://localhost:9000/programs/all');
+      const response = await fetch('https://ccsrepo.onrender.com/programs/all');
       if (!response.ok) {
         throw new Error('Failed to fetch programs');
       }
@@ -63,7 +63,7 @@ const UserTablePage = () => {
 
   const fetchRoles = async () => {
     try {
-      const response = await fetch('http://localhost:9000/roles/all');
+      const response = await fetch('https://ccsrepo.onrender.com/roles/all');
       if (!response.ok) {
         throw new Error('Failed to fetch roles');
       }
@@ -83,7 +83,7 @@ const UserTablePage = () => {
     const confirmDelete = window.confirm('Are you sure you want to delete this user?');
     if (confirmDelete) {
       try {
-        const response = await fetch(`http://localhost:9000/users/delete/${userId}`, {
+        const response = await fetch(`https://ccsrepo.onrender.com/users/delete/${userId}`, {
           method: 'DELETE',
         });
         if (!response.ok) {
@@ -127,7 +127,7 @@ const UserTablePage = () => {
     }
 
     try {
-      const response = await fetch('http://localhost:9000/register', {
+      const response = await fetch('https://ccsrepo.onrender.com/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

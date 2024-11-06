@@ -24,8 +24,8 @@ export default function AuthorPapers() {
       setLoading(true);
       setError(null);
       try {
-        const papersResponse = await axios.get(`http://localhost:10121/authors/${authorId}/papers`);
-        const authorResponse = await axios.get(`http://localhost:10121/authors/${authorId}`);
+        const papersResponse = await axios.get(`https://ccsrepo.onrender.com/authors/${authorId}/papers`);
+        const authorResponse = await axios.get(`https://ccsrepo.onrender.com/authors/${authorId}`);
 
         // Set the author's photo or default icon if not available
         setAuthorPhoto(authorResponse.data.author.photo || personIcon);

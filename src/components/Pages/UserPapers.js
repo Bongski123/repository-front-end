@@ -25,7 +25,7 @@ const UserPaper = () => {
       }
 
       try {
-        const response = await axios.get(`http://localhost:9000/user/researches/${userId}`);
+        const response = await axios.get(`https://ccsrepo.onrender.com/user/researches/${userId}`);
         setResearches(response.data.data);
       } catch (err) {
         setError(`Error fetching research papers: ${err.message}`);

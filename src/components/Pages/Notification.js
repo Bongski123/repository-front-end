@@ -15,7 +15,7 @@ const NotificationsPage = () => {
             }
 
             // Fetch notifications for the specific userId
-            const response = await axios.get(`http://localhost:10121/notifications/${userId}`, {
+            const response = await axios.get(`https://ccsrepo.onrender.com/notifications/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`, // Use token for authentication if needed
                 },

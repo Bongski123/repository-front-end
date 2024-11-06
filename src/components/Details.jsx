@@ -35,7 +35,7 @@ function Details() {
                 if (!result?.research_id) {
                     throw new Error("Result or research ID is missing");
                 }
-                const response = await axios.get(`http://localhost:10121/pdf/${result.research_id}`, {
+                const response = await axios.get(`https://ccsrepo.onrender.com/pdf/${result.research_id}`, {
                     responseType: "blob",
                 });
                 const pdfBlob = response.data;
@@ -52,7 +52,7 @@ function Details() {
 
         const fetchResearchData = async () => {
             try {
-                const response = await axios.get(`http://localhost:10121/research/${result.research_id}`);
+                const response = await axios.get(`https://ccsrepo.onrender.com/research/${result.research_id}`);
                 setDownloadCount(response.data.downloadCount);
                 setCitationCount(response.data.citeCount);
             } catch (error) {
@@ -78,7 +78,7 @@ function Details() {
 
     const incrementViewCount = async (viewedKey) => {
         try {
-            await axios.post(`http://localhost:10121/research/view/${result.research_id}`);
+            await axios.post(`https://ccsrepo.onrender.com/research/view/${result.research_id}`);
             sessionStorage.setItem(viewedKey, "true");  // Store view status in session storage
         } catch (error) {
             console.error("Error incrementing view count:", error);
@@ -94,8 +94,8 @@ function Details() {
 
     const updateCount = async (type) => {
         const endpoint = type === 'download' 
-            ? `http://localhost:10121/research/download/${result.research_id}`
-            : `http://localhost:10121/research/cite/${result.research_id}`;
+            ? `https://ccsrepo.onrender.com/research/download/${result.research_id}`
+            : `https://ccsrepo.onrender.com/research/cite/${result.research_id}`;
 
         try {
             await axios.post(endpoint);
@@ -141,7 +141,7 @@ function Details() {
         const userId = token ? JSON.parse(atob(token.split('.')[1])).userId : null;
 
         try {
-            await axios.post(`http://localhost:10121/collection/add`, {
+            await axios.post(`https://ccsrepo.onrender.com/collection/add`, {
                 user_id: userId,
                 research_id: result.research_id,
             });

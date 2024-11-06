@@ -11,7 +11,7 @@ export default function Authors() {
     const [searchQuery, setSearchQuery] = useState('');
 
     useEffect(() => {
-        axios.get('http://localhost:10121/authors')
+        axios.get('https://ccsrepo.onrender.com/authors')
             .then(response => {
                 setAuthors(response.data.authors || response.data); // Adjust based on response structure
                 setLoading(false);

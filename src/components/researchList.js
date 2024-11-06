@@ -85,7 +85,7 @@ function ResearchList() {
   useEffect(() => {
     const fetchResearches = async () => {
       try {
-        const response = await axios.get('http://localhost:10121/researches');
+        const response = await axios.get('https://ccsrepo.onrender.com/researches');
         setResearches(response.data);
       } catch (err) {
         setError(err.message);

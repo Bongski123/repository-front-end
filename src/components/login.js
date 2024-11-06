@@ -20,7 +20,7 @@ const Login = () => {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:10121/login', {
+      const response = await fetch('https://ccsrepo.onrender.com/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -60,7 +60,7 @@ const Login = () => {
 
   const handleGoogleLogin = async (response) => {
     try {
-      const res = await fetch('http://localhost:10121/google-login', {
+      const res = await fetch('https://ccsrepo.onrender.com/google-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_token: response.credential }) // Use id_token

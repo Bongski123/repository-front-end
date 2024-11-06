@@ -19,7 +19,7 @@ function SearchResultsPage() {
       const searchAlgorithm = "fuse";
 
       try {
-        const response = await fetch(`http://localhost:10121/search/${searchAlgorithm}`, {
+        const response = await fetch(`https://ccsrepo.onrender.com/search/${searchAlgorithm}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query }),

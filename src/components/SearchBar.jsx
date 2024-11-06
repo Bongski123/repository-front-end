@@ -81,7 +81,7 @@ function SearchBar({ suggestions = [], small = false }) {
       setRecentSearches((prevSearches) => [value, ...prevSearches].slice(0, 5));
     }
 
-    fetch(`http://localhost:10121/search/fuse`, {
+    fetch(`https://ccsrepo.onrender.com/search/fuse`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ query: value }),

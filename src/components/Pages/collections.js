@@ -34,7 +34,7 @@ function Collections() {
         if (userId) {
             const fetchCollections = async () => {
                 try {
-                    const response = await axios.get(`http://localhost:10121/collections/${userId}`);
+                    const response = await axios.get(`https://ccsrepo.onrender.com/collections/${userId}`);
                     const collectionsData = Array.isArray(response.data) && Array.isArray(response.data[0]) 
                         ? response.data[0] 
                         : response.data;

@@ -120,7 +120,7 @@ function ResearchDetail() {
 
   const handleApprove = async () => {
     try {
-      await axios.patch(`http://localhost:10121/research/approve/${research_id}`);
+      await axios.patch(`https://ccsrepo.onrender.com/research/approve/${research_id}`);
       Swal.fire({
         title: 'Approved!',
         text: 'Research approved successfully.',
@@ -143,7 +143,7 @@ function ResearchDetail() {
 
   const handleReject = async () => {
     try {
-      await axios.patch(`http://localhost:9000/research/reject/${research_id}`, { reason: rejectionReason });
+      await axios.patch(`https://ccsrepo.onrender.com/research/reject/${research_id}`, { reason: rejectionReason });
       Swal.fire({
         title: 'Rejected!',
         text: 'Research rejected successfully.',

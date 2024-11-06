@@ -187,7 +187,7 @@ const User = () => {
       e.preventDefault();
   
       try {
-        await axios.post('http://localhost:9000/api/papers', paperFormData, { headers });
+        await axios.post('https://ccsrepo.onrender.com/api/papers', paperFormData, { headers });
         Swal.fire({
           icon: 'success',
           text: 'Paper registered successfully!',
