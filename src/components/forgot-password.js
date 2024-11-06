@@ -14,7 +14,7 @@ const ForgotPassword = () => {
   const handleSendCode = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:9000/request-password-reset', {
+      const response = await fetch('https://ccsrepo.onrender.com/request-password-reset', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email }),
@@ -36,7 +36,7 @@ const ForgotPassword = () => {
   const handleVerifyCode = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:9000/verify-code', {
+      const response = await fetch('https://ccsrepo.onrender.com/verify-code', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ code }),
