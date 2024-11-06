@@ -83,7 +83,7 @@ function ResearchDetail() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const researchResponse = await axios.get(`http://localhost:9000/research/${research_id}`);
+        const researchResponse = await axios.get(`https://ccsrepo.onrender.com/research/${research_id}`);
         setResearch(researchResponse.data.research || {});
       } catch (err) {
         setError(err.message);
@@ -99,7 +99,7 @@ function ResearchDetail() {
     setLoading(true);
     try {
       if (!id) throw new Error("Research ID is missing");
-      const response = await axios.get(`http://localhost:9000/pdf/${id}`, {
+      const response = await axios.get(`https://ccsrepo.onrender.com/pdf/${id}`, {
         responseType: "blob",
       });
       const pdfBlob = response.data;
