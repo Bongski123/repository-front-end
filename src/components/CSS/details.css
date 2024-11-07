@@ -144,3 +144,7 @@
   display: flex; /* Flexbox for aligning buttons */
   gap: 10px; /* Space between buttons */
 }
+.smaller-date {
+  font-size: 0.70rem; /* Makes the text even smaller */
+  font-family:Verdana, Geneva, Tahoma, sans-serif;
+}

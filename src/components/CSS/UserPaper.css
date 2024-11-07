@@ -13,17 +13,16 @@
     padding: 10px;
     border-bottom: 1px solid #ddd;
     cursor: pointer;
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s; /* Adds a hover effect */
+ 
   }
 
-  .research-item :hover{
-    transform: scale(1.06); /* Slightly enlarges the card on hover */
+  .research-list :hover{
+    color: #000000;
   }
   
   .research-item h2 {
     font-size: 1.9rem;
-    color: #006400;
+    color: #062606;
     margin: 0;
   }
   

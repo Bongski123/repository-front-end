@@ -163,12 +163,26 @@ function Details() {
         }
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString();  // Change format as needed
+    };
+
     return (
         <Container className="details-container">
             <Row>
                 <Col md={6}>
                     <div className="details-section">
-                        <h3>{result.title}</h3>
+                        <h3>
+                        <div>
+    <h3>{result.title}</h3>
+    {result.publish_date && (
+        <p className="text-muted ml-1 smaller-date">
+            <strong>Published on:</strong> {formatDate(result.publish_date)}
+        </p>
+    )}
+                           </div> 
+                        </h3>
                         <div className="research-info">
                             <p className="label">
                                 <strong>Authors:</strong> <span>{result.authors}</span>

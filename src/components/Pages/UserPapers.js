@@ -50,7 +50,6 @@ const UserPaper = () => {
       <UserSidebar isOpen={isSidebarVisible} toggleSidebar={toggleSidebar} />
       <main className={`content ${isSidebarVisible ? 'with-sidebar' : 'full-width'}`}>
         <header className="header">
-        
           <h1>My Research Papers</h1>
         </header>
         {loading ? (
@@ -77,7 +76,7 @@ const UserPaper = () => {
             ))}
           </ul>
         ) : (
-          <p>No research papers available.</p>
+          <p>No Researches Found</p> 
         )}
       </main>
     </div>

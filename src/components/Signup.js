@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
+import { FaEye, FaEyeSlash } from 'react-icons/fa';  // Import eye icons
 import './CSS/signup.css'; // Import custom CSS file
 
 const SignUp = () => {
@@ -13,6 +14,8 @@ const SignUp = () => {
   const [programId, setProgramId] = useState('');
   const [institution, setInstitution] = useState('');
   const [programs, setPrograms] = useState([]);
+  const [passwordVisible, setPasswordVisible] = useState(false);  // For showing/hiding password
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);  // For confirm password
 
   useEffect(() => {
     const fetchData = async () => {
@@ -21,14 +24,13 @@ const SignUp = () => {
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-        
+
         const contentType = response.headers.get('Content-Type');
         if (!contentType || !contentType.includes('application/json')) {
           throw new Error('Received non-JSON response');
         }
-        
+
         const data = await response.json();
-        // Check if the response data is an array
         if (Array.isArray(data.programs)) {
           setPrograms(data.programs);
         } else {
@@ -71,7 +73,7 @@ const SignUp = () => {
       });
 
       const data = await response.json();
-      
+
       if (response.ok) {
         Swal.fire({
           icon: 'success',
@@ -130,24 +132,40 @@ const SignUp = () => {
 
         <Form.Group controlId="password">
           <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
+          <div className="password-input-container">
+            <Form.Control
+              type={passwordVisible ? 'text' : 'password'}
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+            <div
+              className="password-toggle-icon"
+              onClick={() => setPasswordVisible(!passwordVisible)}
+            >
+              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
+            </div>
+          </div>
         </Form.Group>
 
         <Form.Group controlId="confirmPassword">
           <Form.Label>Confirm Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Confirm Password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
-            required
-          />
+          <div className="password-input-container">
+            <Form.Control
+              type={confirmPasswordVisible ? 'text' : 'password'}
+              placeholder="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              required
+            />
+            <div
+              className="password-toggle-icon"
+              onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
+            >
+              {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
+            </div>
+          </div>
         </Form.Group>
 
         <Form.Group controlId="programId">
@@ -166,11 +184,12 @@ const SignUp = () => {
             ))}
           </Form.Control>
         </Form.Group>
+
         <Form.Group controlId="institution">
           <Form.Label>Institution</Form.Label>
           <Form.Control
             type="institution"
-            placeholder="Enter Ensitution"
+            placeholder="Enter Institution"
             value={institution}
             onChange={(e) => setInstitution(e.target.value)}
             required
