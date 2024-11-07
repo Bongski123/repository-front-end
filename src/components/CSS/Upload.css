@@ -82,21 +82,20 @@
 }
 /* Make drop button square */
 .file-drop-button {
-    width: 1250px;      /* Increased width */
-    height: 200px;     /* Increased height */
-    border-radius: 16px;  /* Rounded corners */
+    width: 1250px; /* Default width for larger screens */
+    height: 200px; /* Default height for larger screens */
+    border-radius: 16px;
     border: 3px dashed #178c11;
     background-color: #f0f7ff;
-    
+
     display: flex;
-    flex-direction: column; /* Stack icon and text */
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: border-color 0.3s ease;
-    margin-left: 10px
+    margin-left: 10px;
 }
-
 .file-drop-button:hover,
 .file-drop-button.active {
     border-color: #12821a;
@@ -115,14 +114,60 @@
     color: #666666;
     text-align: center;
 }
-.file-dropzone{
-  margin-left: 50px;
+.file-dropzone {
+    margin-left: 50px;
+    /* Set initial dimensions */
+    width: 300px;
+    height: 200px;
 }
-
 .upload-container.with-sidebar {
     margin-left: 250px; /* Adjust based on sidebar width */
 }
 
 .upload-container.full-width {
     margin-left: 0;
+}
+
+@media (max-width: 768px) {
+    .file-dropzone {
+        margin-left: 0; /* Remove left margin on smaller screens */
+        width: 100%; /* Make the dropzone full-width */
+    }
+    .upload-text {
+        font-size: 0.75rem; /* Adjust font size */
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .file-dropzone {
+        margin-left: 0;
+        width: 100%;
+    }
+    .upload-text {
+        font-size: 0.7rem; /* Further adjust font size */
+    }
+}
+
+/* Small screens */
+@media (max-width: 768px) {
+    .file-drop-button {
+        width: 80%; /* Adjust width to fit smaller screens */
+        height: 150px; /* Reduced height for better fit */
+    }
+    .cloud-icon {
+        font-size: 5rem; /* Scale down icon size */
+    }
+}
+
+/* Extra small screens */
+@media (max-width: 480px) {
+    .file-drop-button {
+        width: 120px; /* Fixed width for very small screens */
+        height: 120px; /* Fixed height to make it square */
+        border-radius: 10px; /* Slightly adjust corner radius */
+    }
+    .cloud-icon {
+        font-size: 3.5rem; /* Further reduce icon size */
+    }
 }

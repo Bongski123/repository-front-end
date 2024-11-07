@@ -6,9 +6,9 @@ import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Link, useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import { SearchBar } from "./SearchBar";
-import { FaGlobe } from 'react-icons/fa'; // Import the globe icon
+import { FaGlobe } from 'react-icons/fa';
 import axios from 'axios';
 import './CSS/Navbar.css';
 
@@ -26,13 +26,13 @@ function NavigationBar({ activeTab }) {
         const token = localStorage.getItem('token');
         if (token) {
             const decodedToken = jwtDecode(token);
-            return !!decodedToken; // Return true if token is decoded successfully
+            return !!decodedToken;
         }
         return false;
     };
 
     const fetchNotifications = async () => {
-        setLoadingNotifications(true); // Set loading state
+        setLoadingNotifications(true);
         try {
             const token = localStorage.getItem('token');
             const userId = localStorage.getItem('userId');
@@ -48,14 +48,14 @@ function NavigationBar({ activeTab }) {
                 },
             });
 
-            const notificationsData = response.data; // Adjust based on your API response
+            const notificationsData = response.data;
             const unreadCount = notificationsData.filter(notification => !notification.read).length;
             setNotifications(notificationsData);
             setNotificationCount(unreadCount);
         } catch (error) {
             console.error('Error fetching notifications:', error);
         } finally {
-            setLoadingNotifications(false); // Reset loading state
+            setLoadingNotifications(false);
         }
     };
 
@@ -69,7 +69,7 @@ function NavigationBar({ activeTab }) {
         const token = localStorage.getItem('token');
         if (token) {
             const decodedToken = jwtDecode(token);
-            return decodedToken.roleId === '1' || decodedToken.roleId === 1; // Ensure both string and number comparison
+            return decodedToken.roleId === '1' || decodedToken.roleId === 1;
         }
         return false;
     };
@@ -104,10 +104,8 @@ function NavigationBar({ activeTab }) {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
 
-        // Navigate to the notifications page
         navigate(`/notification/${userId}`);
 
-        // Mark notifications as opened
         if (notificationCount > 0) {
             try {
                 await axios.post(`https://ccsrepo.onrender.com/notifications/opened`, { userId }, {
@@ -115,7 +113,7 @@ function NavigationBar({ activeTab }) {
                         'Authorization': `Bearer ${token}`,
                     },
                 });
-                setNotificationCount(0); // Reset notification count after marking as read
+                setNotificationCount(0);
             } catch (error) {
                 console.error('Error marking notifications as read:', error);
             }
@@ -123,7 +121,6 @@ function NavigationBar({ activeTab }) {
     };
 
     const handleDropdownToggle = () => {
-        // Reset notification count when dropdown is opened
         if (notificationCount > 0) {
             setNotificationCount(0);
         }
@@ -132,12 +129,11 @@ function NavigationBar({ activeTab }) {
     return (
         <Navbar expand="lg" className="bg-body-tertiary" sticky="top">
             <Container>
-                <Navbar.Brand href="#home">
+                <Navbar.Brand href="#home" onClick={redirectToNCF}>
                     <Image
                         src={require('../assets/ncf-logo-green.png')}
                         alt="NCF Logo"
                         className="ncf-logo-navbar"
-                        onClick={redirectToNCF}
                     />
                 </Navbar.Brand>
                 <Navbar.Toggle aria-controls="basic-navbar-nav" />
@@ -146,27 +142,25 @@ function NavigationBar({ activeTab }) {
                         <Nav.Link as={Link} to="/">Search</Nav.Link>
                         <Nav.Link as={Link} to="/authors">Authors</Nav.Link>
                         <Nav.Link as={Link} to="/categories">Categories</Nav.Link>
-
                         {isLoggedIn() && (
                             <Nav.Link onClick={handleMyAccountClick}>Dashboard</Nav.Link>
                         )}
                     </Nav>
                     <Nav className="ms-auto d-flex align-items-center">
                         {isLoggedIn() && !isAdmin() && (
-                            <Dropdown align="end" className="notification-dropdown" onToggle={handleDropdownToggle}>
+                            <Dropdown align="end" onToggle={handleDropdownToggle}>
                                 <Dropdown.Toggle variant="success" className="me-3 button-navbar">
                                     <FaGlobe size={24} color="black" />
-                                    {/* Hide notification count when clicked */}
-                                    {notificationCount > 0 && <span className="badge" style={{ display: 'none' }}>{notificationCount}</span>}
+                                    {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
                                 </Dropdown.Toggle>
-                                <Dropdown.Menu className="notification-dropdown" style={{ minWidth: '200px' }}>
+                                <Dropdown.Menu style={{ minWidth: '200px' }}>
                                     {loadingNotifications ? (
                                         <Dropdown.Item disabled>Loading notifications...</Dropdown.Item>
                                     ) : (
                                         notifications.length > 0 ? (
                                             notifications.map((notification, index) => (
-                                                <Dropdown.Item key={index} onClick={handleNotificationClick} style={{ textAlign: 'left', fontSize: '14px' }}>
-                                                    {notification.message} {/* Adjust based on your notification structure */}
+                                                <Dropdown.Item key={index} onClick={handleNotificationClick}>
+                                                    {notification.message}
                                                 </Dropdown.Item>
                                             ))
                                         ) : (

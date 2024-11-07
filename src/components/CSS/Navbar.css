@@ -90,3 +90,25 @@
   background-color: #0d4417;
 }
 
+/* Ensure navbar items stack vertically in burger menu */
+@media (max-width: 768px) {
+  .navbar-nav .nav-link {
+      width: 100%;
+      text-align: center;
+      margin: 5px 0;
+      
+  }
+  .button-navbar {
+      width: 100%;
+      margin: 5px 0;
+      text-align: center;
+  }
+  .ncf-logo-navbar {
+      width: 150px;
+      height: auto;
+      margin-bottom: 10px;
+  }
+  .notification-dropdown {
+      width: 100%;
+  }
+}
