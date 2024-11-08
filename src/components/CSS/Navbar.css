@@ -8,22 +8,17 @@
     transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition on scroll */
   }
   
-  /* Change background and shadow when scrolling */
-  .navbar.scrolled {
-    background-color: #007bff; /* Change background color on scroll */
-    box-shadow: 0 6px 4px -4px rgba(0, 0, 0, 0.2); /* Enhance shadow when scrolled */
-  }
-  
+
   /* Style for the navbar brand (logo) */
   .navbar-brand {
     cursor: pointer; /* Indicate the logo is clickable */
   }
-  
-  /* Styling for the toggle button in mobile view */
-  .navbar-toggler {
-    border-color: rgba(0, 0, 0, 0.1);
-  }
-  
+  .button-navbar {
+    transition: none !important;
+    animation: none !important;
+}
+
+
   /* Adjust navbar link styles */
   .navbar-nav .nav-link {
     color: #333;
@@ -73,18 +68,48 @@
     font-size: 0.8em; /* Adjust font size as necessary */
 }
 
-
-.notification-dropdown .dropdown-item {
-  font-size: 0.875rem; /* Adjust to desired size */
-  display: flex; /* Use flexbox */
-  justify-content: flex-start; /* Align items to the start (left) */
-  align-items: center; /* Center vertically */
-  padding: 8px 12px; /* Optional: adjust padding for better spacing */
+.notification-dropdown-toggle {
+  padding: 0.5rem;
+  font-size: 0.9rem;
+  display: flex;
+  align-items: center;
+  position: relative;
 }
 
-/* If you want to add a hover effect */
-.notification-dropdown .dropdown-item:hover {
-  background-color: #f8f9fa; /* Change background color on hover */
+.notification-dropdown-toggle .badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: red;
+  color: white;
+  font-size: 0.7rem;
+  padding: 2px 5px;
+  border-radius: 50%;
+}
+
+/* Styling for notification dropdown menu */
+.notification-dropdown-menu {
+  min-width: 250px;
+  max-width: 250px;
+  padding: 0;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Each notification item style */
+.notification-item {
+  font-size: 0.85rem;
+  padding: 10px;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+/* Hover effect for notification items */
+.notification-item:hover {
+  background-color: #f8f9fa;
+  cursor: pointer;
 }
 .me-3.button-navbar{
   background-color: #0d4417;

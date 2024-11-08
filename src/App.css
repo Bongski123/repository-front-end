@@ -200,14 +200,6 @@ margin-top: 1rem;
   padding-bottom: 0rem;
 }
 
-.upload-container{
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 10em;
-  font-family: 'Outfit', sans-serif;
-  padding-bottom: 0rem;
-}
 
 .category-card-title {
   font-family: 'Outfit';

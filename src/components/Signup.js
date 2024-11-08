@@ -1,35 +1,51 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom'; 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
-import { FaEye, FaEyeSlash } from 'react-icons/fa';  // Import eye icons
-import './CSS/signup.css'; // Import custom CSS file
+import axios from 'axios';  // Import axios for API requests
+import './CSS/signup.css'; 
 
 const SignUp = () => {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
+  const location = useLocation();
+  const { email, name } = location.state || {}; 
+
+  const [nameInput, setName] = useState(name || ''); 
+  const [emailInput, setEmail] = useState(email || ''); 
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [programId, setProgramId] = useState('');
   const [institution, setInstitution] = useState('');
+  const [roleId, setRoleId] = useState('');  // State for user type (role)
+  const [roles, setRoles] = useState([]);  // State to store roles fetched from API
   const [programs, setPrograms] = useState([]);
-  const [passwordVisible, setPasswordVisible] = useState(false);  // For showing/hiding password
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);  // For confirm password
+  const [passwordVisible, setPasswordVisible] = useState(false);  
+  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);  
+
+  const navigate = useNavigate();
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchRoles = async () => {
+      try {
+        const response = await axios.get('https://ccsrepo.onrender.com/roles/all');
+        const filteredRoles = response.data.roles.filter(role => role.role_id !== 1);
+        setRoles(filteredRoles);  // Assuming the response contains an array of roles
+      } catch (error) {
+        console.error('Error fetching roles:', error);
+        Swal.fire({
+          icon: 'error',
+          title: 'Error Fetching Roles',
+          text: 'An error occurred while fetching user roles.',
+        });
+      }
+    };
+
+    const fetchPrograms = async () => {
       try {
         const response = await fetch('https://ccsrepo.onrender.com/programs/all');
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
-
-        const contentType = response.headers.get('Content-Type');
-        if (!contentType || !contentType.includes('application/json')) {
-          throw new Error('Received non-JSON response');
-        }
-
         const data = await response.json();
         if (Array.isArray(data.programs)) {
           setPrograms(data.programs);
@@ -41,7 +57,8 @@ const SignUp = () => {
       }
     };
 
-    fetchData();
+    fetchRoles();
+    fetchPrograms();
   }, []);
 
   const handleSubmit = async (e) => {
@@ -63,12 +80,12 @@ const SignUp = () => {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          name,
-          email,
+          name: nameInput,
+          email: emailInput,
           password,
-          program_id: programId, // Default role_id
+          program_id: programId,
           institution,
-          role_id: 3
+          role_id: roleId  // Add role_name to the request payload
         }),
       });
 
@@ -81,12 +98,8 @@ const SignUp = () => {
           text: 'You have been registered successfully.',
         });
 
-        // Clear form fields after successful registration
-        setName('');
-        setEmail('');
-        setPassword('');
-        setConfirmPassword('');
-        setProgramId('');
+        // After successful registration, redirect to login or dashboard page
+        navigate('/login'); 
       } else {
         Swal.fire({
           icon: 'error',
@@ -113,7 +126,7 @@ const SignUp = () => {
           <Form.Control
             type="text"
             placeholder="Enter full name"
-            value={name}
+            value={nameInput}
             onChange={(e) => setName(e.target.value)}
             required
           />
@@ -124,7 +137,7 @@ const SignUp = () => {
           <Form.Control
             type="email"
             placeholder="Enter email"
-            value={email}
+            value={emailInput}
             onChange={(e) => setEmail(e.target.value)}
             required
           />
@@ -140,12 +153,6 @@ const SignUp = () => {
               onChange={(e) => setPassword(e.target.value)}
               required
             />
-            <div
-              className="password-toggle-icon"
-              onClick={() => setPasswordVisible(!passwordVisible)}
-            >
-              {passwordVisible ? <FaEyeSlash /> : <FaEye />}
-            </div>
           </div>
         </Form.Group>
 
@@ -159,12 +166,6 @@ const SignUp = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
-            <div
-              className="password-toggle-icon"
-              onClick={() => setConfirmPasswordVisible(!confirmPasswordVisible)}
-            >
-              {confirmPasswordVisible ? <FaEyeSlash /> : <FaEye />}
-            </div>
           </div>
         </Form.Group>
 
@@ -188,12 +189,28 @@ const SignUp = () => {
         <Form.Group controlId="institution">
           <Form.Label>Institution</Form.Label>
           <Form.Control
-            type="institution"
+            type="text"
             placeholder="Enter Institution"
             value={institution}
             onChange={(e) => setInstitution(e.target.value)}
             required
           />
+        </Form.Group>
+
+        {/* User Type Selection from fetched roles */}
+        <Form.Group controlId="roleName">
+          <Form.Label>User Type</Form.Label>
+          <Form.Control
+            as="select"
+            value={roleId}
+            onChange={(e) => setRoleId(e.target.value)}
+            required
+          >
+            <option value="">Select a User Type</option>
+            {roles.map((role) => (
+              <option key={role.role_id} value={role.role_id}>{role.role_name}</option>  // Assuming the role object has 'id' and 'name' fields
+            ))}
+          </Form.Control>
         </Form.Group>
 
         <Button variant="primary" type="submit" className="sign-up-btn">

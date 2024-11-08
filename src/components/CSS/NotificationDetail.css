@@ -1,0 +1,97 @@
+/* NotificationDetail.css */
+
+/* Container for the notification details page */
+.notification-detail-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+/* Title styling */
+.notification-detail-container h1 {
+    font-size: 24px;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* Notification message styling */
+.notification-detail-container p {
+    font-size: 16px;
+    color: #555;
+    line-height: 1.6;
+    margin-bottom: 15px;
+}
+
+.notification-detail-container p strong {
+    color: #333;
+}
+
+/* Research papers table styling */
+.research-papers-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.research-papers-table th,
+.research-papers-table td {
+    padding: 12px;
+    text-align: left;
+    font-size: 15px;
+    color: #444;
+}
+
+.research-papers-table th {
+    background-color: #4CAF50;
+    color: white;
+    font-weight: 600;
+}
+
+.research-papers-table td {
+    border-bottom: 1px solid #e0e0e0;
+}
+
+/* Alternating row background for better readability */
+.research-papers-table tr:nth-child(even) {
+    background-color: #f7f7f7;
+}
+
+/* Hover effect for table rows */
+.research-papers-table tr:hover {
+    background-color: #f1f1f1;
+    cursor: pointer;
+}
+
+/* Loading spinner and error message styling */
+.loading-spinner,
+.error-message {
+    text-align: center;
+    font-size: 16px;
+    color: #777;
+    margin: 20px 0;
+}
+
+.error-message {
+    color: #d9534f;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .notification-detail-container {
+        padding: 15px;
+    }
+
+    .notification-detail-container h1 {
+        font-size: 20px;
+    }
+
+    .research-papers-table th,
+    .research-papers-table td {
+        padding: 10px;
+        font-size: 14px;
+    }
+}

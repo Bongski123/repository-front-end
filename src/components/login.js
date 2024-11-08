@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import {jwtDecode} from 'jwt-decode'; // Import jwt-decode
+import { jwtDecode } from 'jwt-decode'; // Import jwt-decode
 import "./CSS/Login.css";
 
 const GOOGLE_CLIENT_ID = '968089167315-ch1eu1t6l1g8m2uuhrdc5s75gk9pn03d.apps.googleusercontent.com'; // Hardcoded Client ID
@@ -18,46 +18,54 @@ const Login = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-
+  
     try {
       const response = await fetch('https://ccsrepo.onrender.com/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-
+  
       if (!response.ok) {
         const errorMessage = await response.json();
-        throw new Error(errorMessage.error);
+        throw new Error(errorMessage.error || 'Login failed. Please try again.');
       }
-
+  
       const responseData = await response.json();
-      const { token } = responseData;
-
+      const { token } = responseData; 
+  
+      if (!email ) {
+        throw new Error('Missing email or name from server response');
+      }
+  
+  
+  
       // Decode the token to extract roleId and other info
       const decodedToken = jwtDecode(token);
-      const { roleId } = decodedToken;
-      const { userId } = decodedToken;
-
+      const { roleId, userId } = decodedToken;
+  
       // Store token and roleId in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('roleId', roleId);
       localStorage.setItem('userId', userId);
-
+  
       // Navigate based on roleId
       if (roleId === 1) {
         navigate('/admin/dashboard'); // Admin dashboard
       } else {
         navigate('/user/dashboard'); // User dashboard
       }
-
+  
     } catch (error) {
-      Swal.fire({ icon: 'error', title: 'Login Failed', text: error.message });
+      Swal.fire({
+        icon: 'error',
+        title: 'Login Failed',
+        text: error.message || 'An error occurred during login. Please try again.'
+      });
     } finally {
       setLoading(false);
     }
   };
-
   const handleGoogleLogin = async (response) => {
     try {
       const res = await fetch('https://ccsrepo.onrender.com/google-login', {
@@ -65,37 +73,42 @@ const Login = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_token: response.credential }) // Use id_token
       });
-  
+
       if (!res.ok) {
         const errorMessage = await res.json();
-        throw new Error(errorMessage.error);
+        throw new Error(errorMessage.error || 'Google login failed');
       }
-  
+
       const data = await res.json();
-      const { token } = data;
-      
-      // Decode the token to extract roleId and other info
-      const decodedToken = jwtDecode(token);
-      const { roleId } = decodedToken;
-      const { userId } = decodedToken;
-     
-      // Store token and roleId in localStorage
-      localStorage.setItem('token', token);
-      localStorage.setItem('roleId', roleId);
-      localStorage.setItem('userId', userId);
-  
-      // Navigate based on roleId
-      if (roleId === 1) {
-        navigate('/admin/dashboard'); // Admin dashboard
+      const { token, userExists, email, name } = data;
+
+      // If user is already registered, log them in directly
+      if (userExists) {
+        // Decode the token to extract user information
+        const decodedToken = jwtDecode(token);
+        const { roleId, userId } = decodedToken;
+
+        // Store token and roleId in localStorage
+        localStorage.setItem('token', token);
+        localStorage.setItem('roleId', roleId);
+        localStorage.setItem('userId', userId);
+
+        // Redirect based on role
+        if (roleId === 1) {
+          navigate('/admin/dashboard'); // Admin dashboard
+        } else {
+          navigate('/user/dashboard'); // User dashboard
+        }
       } else {
-        navigate('/user/dashboard'); // User dashboard
+        // If user doesn't exist, redirect to sign-up page with email and name
+        navigate('/signup', { state: { email, name } });
       }
 
     } catch (error) {
       Swal.fire({
         icon: 'error',
         title: 'Google Login Failed',
-        text: error.message
+        text: error.message || 'An error occurred during Google login. Please try again.'
       });
     }
   };

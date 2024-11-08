@@ -57,12 +57,7 @@ const Sidebar = () => {
               <span>Researches</span>
             </Link>
           </li>
-          <li>
-            <Link to="/watch-later">
-              <FaRegClock />
-              <span>Watch Later</span>
-            </Link>
-          </li>
+    
         </ul>
       </nav>
     </>

@@ -76,4 +76,52 @@
   .toggle-sidebar-button {
     margin-right: 10px;
   }
+  /* Spinner Styles */
+  .spinner-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh; /* Full height of the viewport */
+  }
+  
+  .spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid #008000; /* Green color */
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .research-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  
+  .research-table th,
+  .research-table td {
+    padding: 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+  }
+  
+  .research-table th {
+    background-color: #f4f4f4;
+  }
+  
+  .research-table tr:hover {
+    background-color: #f1f1f1;
+  }
+  
+  .research-table td {
+    cursor: pointer;
+  }
+  
+  .research-table td:hover {
+    background-color: #f9f9f9;
+  }
   

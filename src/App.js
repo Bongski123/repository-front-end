@@ -31,7 +31,7 @@ import SearchResultsPage from "./components/SearchResultPage.js";
 import CategoryDetail from "./components/CategoryDetail.js";
 import CategoryTable from "./components/CategoryTable.js";
 import KeywordTable from "./components/KeywordsTable.js";
-
+import NotificationDetailsPage from "./components/Pages/NotificationDetailPage.js";
 function App() {
   const [activeTab, setActiveTab] = useState('');
 
@@ -89,6 +89,7 @@ function App() {
 
                 <Route path="/" exact component={Categories} />
                <Route path="/category/:categoryId" element={<CategoryDetail />} />
+               <Route path="/notification-details/:notificationId" element={<NotificationDetailsPage />} />
             
 
           </Routes>

@@ -6,7 +6,7 @@ import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Link, useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { SearchBar } from "./SearchBar";
 import { FaGlobe } from 'react-icons/fa';
 import axios from 'axios';
@@ -42,7 +42,7 @@ function NavigationBar({ activeTab }) {
                 return;
             }
 
-            const response = await axios.get(`http://localhost:9000/notifications/${userId}`, {
+            const response = await axios.get(`https://ccsrepo.onrender.com/notifications/${userId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`,
                 },
@@ -50,7 +50,14 @@ function NavigationBar({ activeTab }) {
 
             const notificationsData = response.data;
             const unreadCount = notificationsData.filter(notification => !notification.read).length;
-            setNotifications(notificationsData);
+
+            // Shorten the notification message here
+            const shortenedNotifications = notificationsData.map(notification => ({
+                ...notification,
+                shortMessage: notification.message.length > 30 ? `${notification.message.substring(0, 30)}...` : notification.message,
+            }));
+
+            setNotifications(shortenedNotifications);
             setNotificationCount(unreadCount);
         } catch (error) {
             console.error('Error fetching notifications:', error);
@@ -149,18 +156,18 @@ function NavigationBar({ activeTab }) {
                     <Nav className="ms-auto d-flex align-items-center">
                         {isLoggedIn() && !isAdmin() && (
                             <Dropdown align="end" onToggle={handleDropdownToggle}>
-                                <Dropdown.Toggle variant="success" className="me-3 button-navbar">
-                                    <FaGlobe size={24} color="black" />
+                                <Dropdown.Toggle variant="success" className="me-3 notification-dropdown-toggle">
+                                    <FaGlobe size={18} color="black" />
                                     {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
                                 </Dropdown.Toggle>
-                                <Dropdown.Menu style={{ minWidth: '200px' }}>
+                                <Dropdown.Menu className="notification-dropdown-menu">
                                     {loadingNotifications ? (
                                         <Dropdown.Item disabled>Loading notifications...</Dropdown.Item>
                                     ) : (
                                         notifications.length > 0 ? (
                                             notifications.map((notification, index) => (
-                                                <Dropdown.Item key={index} onClick={handleNotificationClick}>
-                                                    {notification.message}
+                                                <Dropdown.Item key={index} className="notification-item" onClick={handleNotificationClick}>
+                                                    {notification.shortMessage} {/* Display shortened message */}
                                                 </Dropdown.Item>
                                             ))
                                         ) : (
@@ -172,7 +179,7 @@ function NavigationBar({ activeTab }) {
                         )}
                         {isLoggedIn() ? (
                             <Dropdown align="end">
-                                <Dropdown.Toggle variant="success" className="me-3 button-navbar">
+                                <Dropdown.Toggle variant="success" className="button">
                                     {getUserFirstName()}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
