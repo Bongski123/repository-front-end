@@ -3,11 +3,11 @@
     position: sticky;
     top: 0;
     z-index: 1000; /* Ensures it's always above other elements */
-    background-color: #213d1d; /* Background to prevent transparency */
+    background-color: rgba(33, 61, 29, 1); /* Use rgba for opacity control */
     box-shadow: 0 2px 2px -2px rgb(22, 66, 26); /* Subtle shadow for depth */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease; /* Smooth transition on scroll */
-  }
-  
+    transition: background-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+}
+
 
   /* Style for the navbar brand (logo) */
   .navbar-brand {
