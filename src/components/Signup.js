@@ -140,6 +140,7 @@ const SignUp = () => {
             value={emailInput}
             onChange={(e) => setEmail(e.target.value)}
             required
+            disabled={!!email}  // Disable email input if it's passed in the state (i.e., from Google login)
           />
         </Form.Group>
 
