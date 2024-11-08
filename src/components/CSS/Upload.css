@@ -1,24 +1,44 @@
 /* Upload Form Container */
 .upload-container {
-    max-width: 600px;
+    max-width: 100%;
+    width: 100%;
     margin: 2rem auto;
     padding: 2rem;
     background-color: #ffffff;
     border-radius: 8px;
-    
-
+    box-sizing: border-box; /* Ensures padding is included in width calculation */
 }
 
-/* Form Title */
-.title-bar {
+/* Title Container */
+.title-bar1 {
     text-align: center;
     margin-bottom: 1.5rem;
+    margin-left: 0; /* Remove static margin */
+    /* Use auto margins to center it */
+    margin-left: auto;
+    margin-right: auto;
 }
 
+/* Title Styling */
 .title1 {
     font-size: 1.8rem;
     font-weight: 600;
     color: #333333;
+    text-transform: uppercase;
+    word-wrap: break-word; /* Ensures title doesn't overflow */
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .title1 {
+        font-size: 1.6rem; /* Adjust font size for tablets */
+    }
+}
+
+@media (max-width: 480px) {
+    .title1 {
+        font-size: 1.4rem; /* Further adjust for smaller screens */
+    }
 }
 
 /* Input Fields Styling */
@@ -32,7 +52,6 @@
     font-size: 1rem;
     padding: 0.5rem 0.75rem;
     border: 1px solid #cccccc;
-    
 }
 
 /* Authors Section */
@@ -48,8 +67,6 @@
     padding: 0.25rem 0.75rem;
 }
 
-
-    
 /* Keywords Selector */
 .basic-multi-select {
     margin-bottom: 1.5rem;
@@ -61,41 +78,60 @@
     font-size: 1rem;
 }
 
-/* Upload Button */
+/* Upload Button Styles */
 .upload-button {
-    display: block;
-    width: 100%;
-    padding: 0.75rem;
-    font-size: 1.1rem;
-    background-color: #11491e; /* Change to a green shade */
-    color: #ffffff;
-    border: none;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: background-color 0.3s ease-in-out;
+  display: block;
+  width: 99%; /* Button takes full width on large screens */
+  padding: 0.75rem;
+  font-size: 1.1rem;
+  background-color: #11491e; /* Green shade */
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: background-color 0.3s ease-in-out;
 }
-    
-
 
 .upload-button:hover {
-    background-color: #305b0f;
+  background-color: #0d3b17; /* Darker green on hover */
+  
 }
-/* Make drop button square */
+
+/* Responsive Styles for Smaller Screens */
+@media (max-width: 768px) {
+  .upload-button {
+    font-size: 1rem; /* Smaller font size on smaller screens */
+    padding: 0.2rem; /* Reduced padding for mobile screens */
+    
+   
+  }
+}
+
+@media (max-width: 480px) {
+  .upload-button {
+    font-size: 0.9rem; /* Further reduce font size on very small screens */
+    padding: 0.4rem; /* Further reduce padding */
+  }
+}
+
+/* File Drop Button */
 .file-drop-button {
-    width: 1250px; /* Default width for larger screens */
-    height: 200px; /* Default height for larger screens */
+    width: 100%; /* Auto adjust based on screen width */
+    max-width: 1250px; /* Max width for larger screens */
+    height: 200px;
     border-radius: 16px;
     border: 3px dashed #178c11;
     background-color: #f0f7ff;
-
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
     cursor: pointer;
     transition: border-color 0.3s ease;
-    margin-left: 10px;
+    margin: 10px 0;
+    box-sizing: border-box; /* Ensure padding and border are included in width calculation */
 }
+
 .file-drop-button:hover,
 .file-drop-button.active {
     border-color: #12821a;
@@ -114,12 +150,13 @@
     color: #666666;
     text-align: center;
 }
+
 .file-dropzone {
     margin-left: 50px;
-    /* Set initial dimensions */
     width: 300px;
     height: 200px;
 }
+
 .upload-container.with-sidebar {
     margin-left: 250px; /* Adjust based on sidebar width */
 }
@@ -128,33 +165,17 @@
     margin-left: 0;
 }
 
-@media (max-width: 768px) {
-    .file-dropzone {
-        margin-left: 0; /* Remove left margin on smaller screens */
-        width: 100%; /* Make the dropzone full-width */
-    }
-    .upload-text {
-        font-size: 0.75rem; /* Adjust font size */
-    }
-}
-
-/* Extra small screens */
-@media (max-width: 480px) {
-    .file-dropzone {
-        margin-left: 0;
-        width: 100%;
-    }
-    .upload-text {
-        font-size: 0.7rem; /* Further adjust font size */
-    }
-}
-
 /* Small screens */
 @media (max-width: 768px) {
-    .file-drop-button {
-        width: 80%; /* Adjust width to fit smaller screens */
-        height: 150px; /* Reduced height for better fit */
+    .upload-container {
+        padding: 1.5rem; /* Reduce padding on smaller screens */
     }
+
+    .file-drop-button {
+        width: 90%; /* Adjust width for smaller screens */
+        height: 150px; /* Reduced height */
+    }
+    
     .cloud-icon {
         font-size: 5rem; /* Scale down icon size */
     }
@@ -167,6 +188,7 @@
         height: 120px; /* Fixed height to make it square */
         border-radius: 10px; /* Slightly adjust corner radius */
     }
+    
     .cloud-icon {
         font-size: 3.5rem; /* Further reduce icon size */
     }

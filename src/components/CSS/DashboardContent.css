@@ -10,8 +10,9 @@
 
 .info-cards {
   display: flex;
-  justify-content: center;
-  gap: 20px; /* Adjust the space between the cards */
+  justify-content: space-evenly; /* Ensure cards are spaced out evenly */
+  flex-wrap: wrap; /* Allows cards to wrap in case of smaller screens */
+  gap: 20px; /* Adjust space between cards */
   margin-bottom: 20px;
 }
 
@@ -20,8 +21,14 @@
   border-radius: 30px;
   padding: 20px;
   text-align: center;
-  width: 500px; /* Increase width to 500px or desired value */
+  width: 220px; /* Set a flexible width */
+  height: 180px; /* Adjust the height for better fitting */
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease-in-out; /* Adds smooth hover effect */
+}
+
+.info-card:hover {
+  transform: scale(1.05); /* Slightly enlarges the card on hover */
 }
 
 .info-card p {
@@ -51,18 +58,38 @@
   border: 5px solid #ffeb3b;
 }
 
-
-/* DashboardContent.css */
+/* Peak Downloads Chart */
 .peak-downloads-chart {
-  width: 100%; /* Set to full width or specify a percentage */
-  height: 10px; /* Adjust the height as needed */
-  margin-bottom: 20px; /* Optional margin for spacing */
-  
+  width: 100%; /* Full width for responsiveness */
+  height: 200px; /* Adjust the height as needed */
+  margin-bottom: 20px; /* Space below the chart */
 }
-  
-  .charts {
-    margin: 20px 0; /* Space above and below each chart */
-    text-align: center;
-    box-shadow: 0 30px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s; /* Adds a hover effect */
+
+.charts {
+  margin: 20px 0; /* Space above and below each chart */
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust shadow for consistency */
+  transition: transform 0.2s ease-in-out; /* Smooth hover effect */
+}
+
+.charts:hover {
+  transform: scale(1.05); /* Slightly enlarges the chart on hover */
+}
+
+/* Media Queries for Mobile and Smaller Screens */
+@media (max-width: 768px) {
+  .info-cards {
+    flex-direction: column; /* Stack cards vertically */
+    align-items: center; /* Center the cards when stacked */
+    gap: 1.5rem; /* More space between vertically stacked cards */
   }
+
+  .info-card {
+    width: 80%; /* Take up more width on small screens */
+    height: auto; /* Allow height to adjust based on content */
+  }
+
+  .charts {
+    margin-top: 10px; /* Adjust margin for smaller screens */
+  }
+}

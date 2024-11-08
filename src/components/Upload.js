@@ -104,8 +104,8 @@ const Upload = () => {
     return (
         <section id="upload" className="block categories-block">
             <Container fluid className="upload-container">
-                <div className="title-bar">
-                    <h1 className="title">Upload </h1>
+                <div className="title-bar1">
+                    <h1 className="title">Upload</h1>
                 </div>
             </Container>
 
