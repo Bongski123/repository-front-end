@@ -6,6 +6,14 @@ import Swal from 'sweetalert2';
 import axios from 'axios';  // Import axios for API requests
 import './CSS/signup.css'; 
 
+import bg1 from './../assets/bg1.jpg';
+import bg2 from './../assets/bg2.jpg';
+import bg3 from './../assets/bg3.jpg';
+import bg4 from './../assets/bg4.jpg';
+import bg5 from './../assets/bg5.jpg';
+import logo from './../assets/CCS LOGO.png'; // Import your logo image here
+
+
 const SignUp = () => {
   const location = useLocation();
   const { email, name } = location.state || {}; 
@@ -21,8 +29,21 @@ const SignUp = () => {
   const [programs, setPrograms] = useState([]);
   const [passwordVisible, setPasswordVisible] = useState(false);  
   const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);  
+  const [bgImageIndex, setBgImageIndex] = useState(0); // For background switching
 
   const navigate = useNavigate();
+
+
+  
+const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
+
+useEffect(() => {
+  const interval = setInterval(() => {
+    setBgImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
+  }, 5000); // Change every 5 seconds
+
+  return () => clearInterval(interval); // Clean up the interval on unmount
+}, []);
 
   useEffect(() => {
     const fetchRoles = async () => {
@@ -118,11 +139,19 @@ const SignUp = () => {
   };
 
   return (
+    <div>
+      <div
+        className="login-background"
+        style={{ backgroundImage: `url(${backgroundImages[bgImageIndex]})` }}
+      ></div>
+       <div className="logo-container">
+          <img src={logo} alt="NCG Logo" className="logo" />
+        </div>
     <div className="sign-up-container">
-      <h2 className="sign-up-header">Sign Up</h2>
+   
       <Form onSubmit={handleSubmit} className="sign-up-form">
         <Form.Group controlId="name">
-          <Form.Label>Full Name</Form.Label>
+
           <Form.Control
             type="text"
             placeholder="Enter full name"
@@ -133,7 +162,7 @@ const SignUp = () => {
         </Form.Group>
 
         <Form.Group controlId="email">
-          <Form.Label>Email address</Form.Label>
+  
           <Form.Control
             type="email"
             placeholder="Enter email"
@@ -145,7 +174,7 @@ const SignUp = () => {
         </Form.Group>
 
         <Form.Group controlId="password">
-          <Form.Label>Password</Form.Label>
+       
           <div className="password-input-container">
             <Form.Control
               type={passwordVisible ? 'text' : 'password'}
@@ -158,7 +187,7 @@ const SignUp = () => {
         </Form.Group>
 
         <Form.Group controlId="confirmPassword">
-          <Form.Label>Confirm Password</Form.Label>
+        
           <div className="password-input-container">
             <Form.Control
               type={confirmPasswordVisible ? 'text' : 'password'}
@@ -171,7 +200,7 @@ const SignUp = () => {
         </Form.Group>
 
         <Form.Group controlId="programId">
-          <Form.Label>Program ID</Form.Label>
+    
           <Form.Control
             as="select"
             value={programId}
@@ -188,7 +217,7 @@ const SignUp = () => {
         </Form.Group>
 
         <Form.Group controlId="institution">
-          <Form.Label>Institution</Form.Label>
+         
           <Form.Control
             type="text"
             placeholder="Enter Institution"
@@ -200,7 +229,7 @@ const SignUp = () => {
 
         {/* User Type Selection from fetched roles */}
         <Form.Group controlId="roleName">
-          <Form.Label>User Type</Form.Label>
+  
           <Form.Control
             as="select"
             value={roleId}
@@ -222,6 +251,7 @@ const SignUp = () => {
       <p className="sign-up-footer">
         Already have an account? <Link to="/login">Login</Link>
       </p>
+    </div>
     </div>
   );
 };

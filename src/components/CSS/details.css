@@ -20,6 +20,7 @@
   color: #000000;
   font-size: 24px;
   margin-bottom: 15px;
+ 
   
 }
 
@@ -34,14 +35,14 @@
 }
 
 .label {
-  font-weight:lighter;
+  font-weight:500;
   color: #000000;
   margin: 5px 0; /* Add space between lines */
 
 }
 
 .label span {
-  font-weight: normal;
+  font-weight: initial;
   color: #000000;
   text-align: justify; /* Justifying text */
   font-size: 15px;

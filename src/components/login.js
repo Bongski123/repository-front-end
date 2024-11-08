@@ -1,61 +1,66 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode'; // Import jwt-decode
+import { jwtDecode } from 'jwt-decode'; // Correct import
 import "./CSS/Login.css";
+import bg1 from './../assets/bg1.jpg';
+import bg2 from './../assets/bg2.jpg';
+import bg3 from './../assets/bg3.jpg';
+import bg4 from './../assets/bg4.jpg';
+import bg5 from './../assets/bg5.jpg';
+import logo from './../assets/CCS LOGO.png'; // Import your logo image here
 
-const GOOGLE_CLIENT_ID = '968089167315-ch1eu1t6l1g8m2uuhrdc5s75gk9pn03d.apps.googleusercontent.com'; // Hardcoded Client ID
+const GOOGLE_CLIENT_ID = '968089167315-ch1eu1t6l1g8m2uuhrdc5s75gk9pn03d.apps.googleusercontent.com';
 
 const Login = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
+  const [bgImageIndex, setBgImageIndex] = useState(0); // For background switching
   const navigate = useNavigate();
+
+  const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBgImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
+    }, 5000); // Change every 5 seconds
+
+    return () => clearInterval(interval); // Clean up the interval on unmount
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     try {
       const response = await fetch('https://ccsrepo.onrender.com/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-  
+
       if (!response.ok) {
         const errorMessage = await response.json();
         throw new Error(errorMessage.error || 'Login failed. Please try again.');
       }
-  
+
       const responseData = await response.json();
-      const { token } = responseData; 
-  
-      if (!email ) {
-        throw new Error('Missing email or name from server response');
-      }
-  
-  
-  
-      // Decode the token to extract roleId and other info
+      const { token } = responseData;
+
+      if (!token) throw new Error('Missing token from server response');
+
       const decodedToken = jwtDecode(token);
       const { roleId, userId } = decodedToken;
-  
-      // Store token and roleId in localStorage
+
       localStorage.setItem('token', token);
       localStorage.setItem('roleId', roleId);
       localStorage.setItem('userId', userId);
-  
-      // Navigate based on roleId
-      if (roleId === 1) {
-        navigate('/admin/dashboard'); // Admin dashboard
-      } else {
-        navigate('/user/dashboard'); // User dashboard
-      }
-  
+
+      roleId === 1 ? navigate('/admin/dashboard') : navigate('/user/dashboard');
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -66,12 +71,13 @@ const Login = () => {
       setLoading(false);
     }
   };
+
   const handleGoogleLogin = async (response) => {
     try {
       const res = await fetch('https://ccsrepo.onrender.com/google-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_token: response.credential }) // Use id_token
+        body: JSON.stringify({ id_token: response.credential })
       });
 
       if (!res.ok) {
@@ -82,28 +88,20 @@ const Login = () => {
       const data = await res.json();
       const { token, userExists, email, name } = data;
 
-      // If user is already registered, log them in directly
+      if (!token) throw new Error('Missing token from server response');
+
+      const decodedToken = jwtDecode(token);
+      const { roleId, userId } = decodedToken;
+
+      localStorage.setItem('token', token);
+      localStorage.setItem('roleId', roleId);
+      localStorage.setItem('userId', userId);
+
       if (userExists) {
-        // Decode the token to extract user information
-        const decodedToken = jwtDecode(token);
-        const { roleId, userId } = decodedToken;
-
-        // Store token and roleId in localStorage
-        localStorage.setItem('token', token);
-        localStorage.setItem('roleId', roleId);
-        localStorage.setItem('userId', userId);
-
-        // Redirect based on role
-        if (roleId === 1) {
-          navigate('/admin/dashboard'); // Admin dashboard
-        } else {
-          navigate('/user/dashboard'); // User dashboard
-        }
+        roleId === 1 ? navigate('/admin/dashboard') : navigate('/user/dashboard');
       } else {
-        // If user doesn't exist, redirect to sign-up page with email and name
         navigate('/signup', { state: { email, name } });
       }
-
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -114,47 +112,59 @@ const Login = () => {
   };
 
   return (
-    <div className="login-container">
-      <h2>Login</h2>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="email">
-          <Form.Label>Email address</Form.Label>
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group controlId="password">
-          <Form.Label>Password</Form.Label>
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
-
-        <Button variant="secondary" type="submit" className="login-btn" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </Button>
-      </Form>
-
-      <div className="google-login">
-        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-          <GoogleLogin
-            onSuccess={handleGoogleLogin}
-            onError={() => Swal.fire({ icon: 'error', title: 'Google Login Failed', text: 'An error occurred during Google login. Please try again.' })}
-          />
-        </GoogleOAuthProvider>
+    <div>
+      <div
+        className="login-background"
+        style={{ backgroundImage: `url(${backgroundImages[bgImageIndex]})` }}
+      ></div>
+          {/* NCG Logo at the top */}
+        <div className="logo-container">
+          <img src={logo} alt="NCG Logo" className="logo" />
+        </div>
+        
+      <div className="login-container">
+    
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="email" style={{ marginBottom: '15px' }}>
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="password" style={{ marginBottom: '15px' }}>
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Button variant="secondary" type="submit" className="login-btn" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </Button>
+        </Form>
+        <p>or</p>
+        <div className="google-login">
+          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() =>
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Google Login Failed',
+                  text: 'An error occurred during Google login. Please try again.'
+                })
+              }
+            />
+          </GoogleOAuthProvider>
+        </div>
+        <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
+        <p><Link to="/forgot-password">Forgot Password?</Link></p>
       </div>
-
-      <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
-      <p><Link to="/forgot-password">Forgot Password?</Link></p> {/* Forgot Password Link */}
     </div>
   );
 };

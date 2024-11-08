@@ -1,43 +1,97 @@
-/* Login Form Styles */
-.login-container {
-  width: 400px;
-  margin: 0 auto;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  background-color: #fff;
-  box-shadow: 0 2px 4px rgba(10, 106, 10, 0.1);
-  margin-top: 50px;
+/* Full-screen container with a blurred background */
+.login-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: center;
+  filter: blur(15px); /* Apply blur only to background */
+  z-index: -1; /* Place it behind the login form */
 }
 
-.login-container h2 {
+/* Container for the login form */
+.login-container {
+  position: relative;
+  background: rgba(255, 255, 255, 0.9); /* Slightly transparent white for contrast */
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  z-index: 1; /* Keep above the blurred background */
+  margin: auto;
+  top: 50%;
+  transform: translateY(-50%);
+  margin-top: 220px;
+}
+
+/* Styling for the form logo */
+.logo-container {
+  text-align: center;
+  margin-bottom: 20px;
+  margin-top: 20px;
+}
+
+.logo {
+  max-width: 150px; /* Adjust the size of the logo */
+  height: auto;
+}
+
+/* Add space between form elements */
+.form-group {
+  margin-bottom: 20px; /* Adjust space between form elements */
+  display: flex;
+  flex-direction: column; /* Stack form controls vertically */
+  align-items: center; /* Center the form elements horizontally */
+}
+
+/* Make both form fields and buttons take the full width */
+.form-control,
+.login-btn {
+  width: 100%; /* Full width for input and button */
+  padding: 10px; /* Add padding for better touch area */
+  margin: 8px 0; /* Add margin for spacing between elements */
+}
+
+/* Adjust styles for the login button */
+.login-btn {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+/* Add hover effect to login button */
+.login-btn:hover {
+  background-color: #0056b3;
+}
+
+/* Disabled button styles */
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* Google login button */
+.google-login {
+  margin-top: 20px;
+}
+
+/* NCG Logo styling */
+.logo-container {
   text-align: center;
   margin-bottom: 20px;
 }
 
-.login-btn {
-  width: 100%;
-}
+.logo {
+  max-width: 170px; /* Adjust logo size */
+  height: auto;
 
-.login-btn:hover {
-  background-color: #134119;
-}
-
-.login-btn:focus {
-  box-shadow: 0 0 0 0.2rem rgba(56, 153, 17, 0.5);
-}
-
-/* Link Styles */
-p {
-  text-align: center;
-  margin-top: 20px;
-}
-
-p a {
-  color: #18551d;
-  text-decoration: none;
-}
-
-p a:hover {
-  text-decoration: underline;
 }
