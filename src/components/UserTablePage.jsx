@@ -2,27 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './CSS/UserTable.css';
 import Sidebar from './Sidebar';
 import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import Swal from 'sweetalert2'; // Import Swal for alerts
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 const UserTablePage = () => {
   const [users, setUsers] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [roles, setRoles] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
-  const [showModal, setShowModal] = useState(false);
-  const [newUser, setNewUser] = useState({
-    name: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-    program_id: '',
-    role_id: '',
-    institution:''
-  });
-  const navigate = useNavigate();
+  const navigate = useNavigate(); // Initialize the navigate function
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -80,8 +68,18 @@ const UserTablePage = () => {
   };
 
   const handleDelete = async (userId) => {
-    const confirmDelete = window.confirm('Are you sure you want to delete this user?');
-    if (confirmDelete) {
+    // Show a SweetAlert2 confirmation dialog
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'You won\'t be able to revert this!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    });
+
+    if (result.isConfirmed) {
       try {
         const response = await fetch(`https://ccsrepo.onrender.com/users/delete/${userId}`, {
           method: 'DELETE',
@@ -89,91 +87,38 @@ const UserTablePage = () => {
         if (!response.ok) {
           throw new Error('Failed to delete user');
         }
+
+        // Show success message if user is deleted successfully
+        Swal.fire(
+          'Deleted!',
+          'The user has been deleted.',
+          'success'
+        );
+
+        // Reload the user list after deletion
         fetchUsers();
       } catch (error) {
         console.error('Error deleting user:', error.message);
+        // Show error message if there is a failure in deletion
+        Swal.fire(
+          'Error!',
+          'There was a problem deleting the user.',
+          'error'
+        );
       }
     }
   };
 
-  const handleShowModal = () => setShowModal(true);
-  const handleCloseModal = () => {
-    setShowModal(false);
-    // Reset newUser state on modal close
-    setNewUser({
-      name: '',
-      email: '',
-      password: '',
-      confirmPassword: '',
-      program_id: '',
-      role_id: '',
-      institution: ''
-    });
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setNewUser({ ...newUser, [name]: value });
-  };
-
-  const handleAddUser = async () => {
-    if (newUser.password !== newUser.confirmPassword) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Passwords do not match',
-        text: 'Please make sure your passwords match.',
-      });
-      return;
-    }
-
-    try {
-      const response = await fetch('https://ccsrepo.onrender.com/register', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          name: newUser.name,
-          email: newUser.email,
-          password: newUser.password,
-          program_id: newUser.program_id,
-          role_id: newUser.role_id || 3 ,// Default role_id if not provided
-          institution:newUser.institution
-        }),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        Swal.fire({
-          icon: 'success',
-          title: 'User Added Successfully',
-          text: 'The new user has been registered.',
-        });
-
-        // Reset form fields
-        handleCloseModal(); // Close modal resets state
-        fetchUsers(); // Refresh user list
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Registration Failed',
-          text: data.error || 'An error occurred during registration.',
-        });
-      }
-    } catch (error) {
-      console.error('Error adding user:', error.message);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: 'An unexpected error occurred. Please try again later.',
-      });
-    }
+  // Redirects to the Signup page when "Add User" button is clicked
+  const handleAddUserRedirect = () => {
+    navigate('/signup'); // Redirect to the signup page
   };
 
   return (
     <div className="user-table-container">
       <Sidebar toggleSidebar={toggleSidebar} />
       <h2>User Management</h2>
-      <Button variant="success" onClick={handleShowModal}>Add User</Button>
+      <Button variant="success" onClick={handleAddUserRedirect}>Add User</Button> {/* Button now redirects to Signup */}
       
       <table>
         <thead>
@@ -202,119 +147,6 @@ const UserTablePage = () => {
           ))}
         </tbody>
       </table>
-
-      <Modal show={showModal} onHide={handleCloseModal}>
-        <Modal.Header closeButton>
-          <Modal.Title>Add New User</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group controlId="formName">
-              <Form.Label>Full Name</Form.Label>
-              <Form.Control
-                type="text"
-                placeholder="Enter full name"
-                name="name"
-                value={newUser.name}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formEmail">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Enter email"
-                name="email"
-                value={newUser.email}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formPassword">
-              <Form.Label>Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Enter password"
-                name="password"
-                value={newUser.password}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formConfirmPassword">
-              <Form.Label>Confirm Password</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="Confirm password"
-                name="confirmPassword"
-                value={newUser.confirmPassword}
-                onChange={handleInputChange}
-                required
-              />
-            </Form.Group>
-            <Form.Group controlId="formProgram">
-              <Form.Label>Program</Form.Label>
-              <Form.Control
-                as="select"
-                name="program_id"
-                value={newUser.program_id}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Program</option>
-                {programs.length > 0 ? (
-                  programs.map(program => (
-                    <option key={program.program_id} value={program.program_id}>
-                      {program.program_name}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No programs available</option>
-                )}
-              </Form.Control>
-            </Form.Group>
-            <Form.Group controlId="formRole">
-              <Form.Label>Role</Form.Label>
-              <Form.Control
-                as="select"
-                name="role_id"
-                value={newUser.role_id}
-                onChange={handleInputChange}
-                required
-              >
-                <option value="">Select Role</option>
-                {roles.length > 0 ? (
-                  roles.map(role => (
-                    <option key={role.role_id} value={role.role_id}>
-                      {role.role_name}
-                    </option>
-                  ))
-                ) : (
-                  <option disabled>No roles available</option>
-                )}
-              </Form.Control>
-            </Form.Group>
-
-            <Form.Group controlId="formInstitution">
-  <Form.Label>Institution</Form.Label>
-  <Form.Control
-    type="text" // Corrected type to "text"
-    placeholder="Institution"
-    name="institution" // Corrected name to match state property
-    value={newUser.institution}
-    onChange={handleInputChange}
-    required
-  />
-</Form.Group>
-
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="secondary" onClick={handleCloseModal}>Close</Button>
-          <Button variant="primary" onClick={handleAddUser}>Add User</Button>
-        </Modal.Footer>
-      </Modal>
     </div>
   );
 };

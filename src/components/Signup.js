@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useLocation, useNavigate } from 'react-router-dom'; 
+import { useLocation, useNavigate } from 'react-router-dom'; 
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
-import axios from 'axios';  // Import axios for API requests
+import axios from 'axios';  
 import './CSS/signup.css'; 
 
 import bg1 from './../assets/bg1.jpg';
@@ -11,8 +11,10 @@ import bg2 from './../assets/bg2.jpg';
 import bg3 from './../assets/bg3.jpg';
 import bg4 from './../assets/bg4.jpg';
 import bg5 from './../assets/bg5.jpg';
-import logo from './../assets/CCS LOGO.png'; // Import your logo image here
+import logo from './../assets/CCS LOGO.png';
 
+// Icon imports
+import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 const SignUp = () => {
   const location = useLocation();
@@ -20,72 +22,118 @@ const SignUp = () => {
 
   const [nameInput, setName] = useState(name || ''); 
   const [emailInput, setEmail] = useState(email || ''); 
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
+  const [password, setPassword] = useState(null);
+  const [confirmPassword, setConfirmPassword] = useState(null);
+  const [passwordValid, setPasswordValid] = useState(false);
+  const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
   const [programId, setProgramId] = useState('');
-  const [institution, setInstitution] = useState('');
-  const [roleId, setRoleId] = useState('');  // State for user type (role)
-  const [roles, setRoles] = useState([]);  // State to store roles fetched from API
+  const [institutionId, setInstitutionId] = useState('');
+  const [roleId, setRoleId] = useState(''); 
+  const [roles, setRoles] = useState([]); 
   const [programs, setPrograms] = useState([]);
-  const [passwordVisible, setPasswordVisible] = useState(false);  
-  const [confirmPasswordVisible, setConfirmPasswordVisible] = useState(false);  
-  const [bgImageIndex, setBgImageIndex] = useState(0); // For background switching
+  const [institutions, setInstitutions] = useState([]);
+  const [newInstitution, setNewInstitution] = useState('');
+  const [newProgram, setNewProgram] = useState('');
+  const [bgImageIndex, setBgImageIndex] = useState(0); 
 
   const navigate = useNavigate();
+  const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
 
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setBgImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
+    }, 5000); 
 
-  
-const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
+    return () => clearInterval(interval);
+  }, []);
 
-useEffect(() => {
-  const interval = setInterval(() => {
-    setBgImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
-  }, 5000); // Change every 5 seconds
+  const passwordRegex = /^(?=.*[A-Z])(?=.*\W).{8,}$/;
 
-  return () => clearInterval(interval); // Clean up the interval on unmount
-}, []);
+  const handlePasswordChange = (e) => {
+    const newPassword = e.target.value;
+    setPassword(newPassword);
+
+    if (passwordRegex.test(newPassword)) {
+      setPasswordValid(true);
+    } else {
+      setPasswordValid(false);
+    }
+  };
+
+  const handleConfirmPasswordChange = (e) => {
+    const newConfirmPassword = e.target.value;
+    setConfirmPassword(newConfirmPassword);
+
+    // Validate confirm password matches the password
+    if (newConfirmPassword === password) {
+      setConfirmPasswordValid(true);
+    } else {
+      setConfirmPasswordValid(false);
+    }
+  };
 
   useEffect(() => {
     const fetchRoles = async () => {
       try {
         const response = await axios.get('https://ccsrepo.onrender.com/roles/all');
-        const filteredRoles = response.data.roles.filter(role => role.role_id !== 1);
-        setRoles(filteredRoles);  // Assuming the response contains an array of roles
+        const rolesData = response.data.roles;
+
+        const currentUserRoleId = localStorage.getItem('roleId');
+
+        if (currentUserRoleId === '1') {
+          setRoles(rolesData);
+        } else {
+          const filteredRoles = rolesData.filter(role => role.role_id !== 1 && role.role_id !== 5);
+          setRoles(filteredRoles);
+        }
       } catch (error) {
         console.error('Error fetching roles:', error);
-        Swal.fire({
-          icon: 'error',
-          title: 'Error Fetching Roles',
-          text: 'An error occurred while fetching user roles.',
-        });
       }
     };
 
     const fetchPrograms = async () => {
       try {
         const response = await fetch('https://ccsrepo.onrender.com/programs/all');
-        if (!response.ok) {
-          throw new Error('Network response was not ok');
-        }
         const data = await response.json();
         if (Array.isArray(data.programs)) {
           setPrograms(data.programs);
-        } else {
-          console.error('Fetched programs data is not an array:', data);
         }
       } catch (error) {
         console.error('Error fetching programs:', error);
       }
     };
 
+    const fetchInstitutions = async () => {
+      try {
+        const response = await fetch('https://ccsrepo.onrender.com/institutions/all'); 
+        const data = await response.json();
+        if (Array.isArray(data.institutions)) {
+          setInstitutions(data.institutions);
+        }
+      } catch (error) {
+        console.error('Error fetching institutions:', error);
+      }
+    };
+
     fetchRoles();
     fetchPrograms();
+    fetchInstitutions();
   }, []);
+
+  const handleRoleChange = (e) => {
+    const selectedRoleId = e.target.value;
+    setRoleId(selectedRoleId);
+
+    if (selectedRoleId !== '2') {
+      setProgramId('');
+      setNewProgram('');
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
+    if (!email && password !== confirmPassword) {
       Swal.fire({
         icon: 'error',
         title: 'Passwords do not match',
@@ -95,19 +143,23 @@ useEffect(() => {
     }
 
     try {
+      const dataToSend = {
+        name: nameInput,
+        email: emailInput,
+        password,
+        program_id: programId || null, 
+        institution_id: institutionId,
+        role_id: roleId,
+        new_institution_name: institutionId === 'new' ? newInstitution : undefined,
+        new_program_name: programId === 'new' ? newProgram : undefined,
+      };
+
       const response = await fetch('https://ccsrepo.onrender.com/register', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          name: nameInput,
-          email: emailInput,
-          password,
-          program_id: programId,
-          institution,
-          role_id: roleId  // Add role_name to the request payload
-        }),
+        body: JSON.stringify(dataToSend),
       });
 
       const data = await response.json();
@@ -118,9 +170,7 @@ useEffect(() => {
           title: 'Registration Successful',
           text: 'You have been registered successfully.',
         });
-
-        // After successful registration, redirect to login or dashboard page
-        navigate('/login'); 
+        navigate('/login');
       } else {
         Swal.fire({
           icon: 'error',
@@ -140,118 +190,152 @@ useEffect(() => {
 
   return (
     <div>
-      <div
-        className="login-background"
-        style={{ backgroundImage: `url(${backgroundImages[bgImageIndex]})` }}
-      ></div>
-       <div className="logo-container">
-          <img src={logo} alt="NCG Logo" className="logo" />
-        </div>
-    <div className="sign-up-container">
-   
-      <Form onSubmit={handleSubmit} className="sign-up-form">
-        <Form.Group controlId="name">
-
-          <Form.Control
-            type="text"
-            placeholder="Enter full name"
-            value={nameInput}
-            onChange={(e) => setName(e.target.value)}
-            required
-          />
-        </Form.Group>
-
-        <Form.Group controlId="email">
-  
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            value={emailInput}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            disabled={!!email}  // Disable email input if it's passed in the state (i.e., from Google login)
-          />
-        </Form.Group>
-
-        <Form.Group controlId="password">
-       
-          <div className="password-input-container">
+      <div className="login-background" style={{ backgroundImage: `url(${backgroundImages[bgImageIndex]})` }}></div>
+      <div className="logo-container">
+        <img src={logo} alt="CCS Logo" className="logo" />
+      </div>
+      <div className="sign-up-container">
+        <Form onSubmit={handleSubmit} className="sign-up-form">
+          <Form.Group controlId="name">
             <Form.Control
-              type={passwordVisible ? 'text' : 'password'}
-              placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              type="text"
+              placeholder="Enter full name"
+              value={nameInput}
+              onChange={(e) => setName(e.target.value)}
               required
             />
-          </div>
-        </Form.Group>
-
-        <Form.Group controlId="confirmPassword">
-        
-          <div className="password-input-container">
+          </Form.Group>
+          
+          <Form.Group controlId="email">
             <Form.Control
-              type={confirmPasswordVisible ? 'text' : 'password'}
-              placeholder="Confirm Password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
+              type="email"
+              placeholder="Enter email"
+              value={emailInput}
+              onChange={(e) => setEmail(e.target.value)}
               required
+              disabled={!!email}
             />
-          </div>
-        </Form.Group>
+          </Form.Group>
 
-        <Form.Group controlId="programId">
-    
-          <Form.Control
-            as="select"
-            value={programId}
-            onChange={(e) => setProgramId(e.target.value)}
-            required
-          >
-            <option value="">Select a Program</option>
-            {programs.map((program) => (
-              <option key={program.program_id} value={program.program_id}>
-                {program.program_name}
-              </option>
-            ))}
-          </Form.Control>
-        </Form.Group>
+          {!email && (
+            <>
+              <Form.Group controlId="password">
+                <Form.Control
+                  type="password"
+                  placeholder="Password"
+                  value={password || ''}
+                  onChange={handlePasswordChange}
+                  required
+                  style={{
+                    borderColor: password && !passwordValid ? 'red' : '',
+                    borderWidth: '2px',
+                  }}
+                />
+                {!passwordValid && password && (
+                  <div style={{ color: 'red', fontSize: '12px' }}>
+                    <FaTimesCircle /> Password must be at least 8 characters long, include a capital letter, and a special character.
+                  </div>
+                )}
+                {passwordValid && password && (
+                  <div style={{ color: 'green', fontSize: '12px' }}>
+                    <FaCheckCircle /> Password is valid.
+                  </div>
+                )}
+              </Form.Group>
 
-        <Form.Group controlId="institution">
-         
-          <Form.Control
-            type="text"
-            placeholder="Enter Institution"
-            value={institution}
-            onChange={(e) => setInstitution(e.target.value)}
-            required
-          />
-        </Form.Group>
+              <Form.Group controlId="confirmPassword">
+                <Form.Control
+                  type="password"
+                  placeholder="Confirm Password"
+                  value={confirmPassword || ''}
+                  onChange={handleConfirmPasswordChange}
+                  required
+                  style={{
+                    borderColor: confirmPassword && !confirmPasswordValid ? 'red' : '',
+                    borderWidth: '2px',
+                  }}
+                />
+                {!confirmPasswordValid && confirmPassword && (
+                  <div style={{ color: 'red', fontSize: '12px' }}>
+                    <FaTimesCircle /> Passwords do not match.
+                  </div>
+                )}
+                {confirmPasswordValid && confirmPassword && (
+                  <div style={{ color: 'green', fontSize: '12px' }}>
+                    <FaCheckCircle /> Passwords match.
+                  </div>
+                )}
+              </Form.Group>
+            </>
+          )}
 
-        {/* User Type Selection from fetched roles */}
-        <Form.Group controlId="roleName">
-  
-          <Form.Control
-            as="select"
-            value={roleId}
-            onChange={(e) => setRoleId(e.target.value)}
-            required
-          >
-            <option value="">Select a User Type</option>
-            {roles.map((role) => (
-              <option key={role.role_id} value={role.role_id}>{role.role_name}</option>  // Assuming the role object has 'id' and 'name' fields
-            ))}
-          </Form.Control>
-        </Form.Group>
+          <Form.Group controlId="role">
+            <Form.Control
+              as="select"
+              value={roleId}
+              onChange={handleRoleChange}
+              required
+            >
+              <option value="">Select Role</option>
+              {roles.map(role => (
+                <option key={role.role_id} value={role.role_id}>{role.role_name}</option>
+              ))}
+            </Form.Control>
+          </Form.Group>
 
-        <Button variant="primary" type="submit" className="sign-up-btn">
-          Sign Up
-        </Button>
-      </Form>
+          {roleId === '2' && (
+            <Form.Group controlId="program">
+              <Form.Control
+                as="select"
+                value={programId}
+                onChange={(e) => setProgramId(e.target.value)}
+                required
+              >
+                <option value="">Select Program</option>
+                {programs.map(program => (
+                  <option key={program.program_id} value={program.program_id}>{program.program_name}</option>
+                ))}
+                <option value="new">Other (Enter New Program)</option>
+              </Form.Control>
+              {programId === 'new' && (
+                <Form.Control
+                  type="text"
+                  placeholder="Enter New Program"
+                  value={newProgram}
+                  onChange={(e) => setNewProgram(e.target.value)}
+                  required
+                />
+              )}
+            </Form.Group>
+          )}
 
-      <p className="sign-up-footer">
-        Already have an account? <Link to="/login">Login</Link>
-      </p>
-    </div>
+          <Form.Group controlId="institution">
+            <Form.Control
+              as="select"
+              value={institutionId}
+              onChange={(e) => setInstitutionId(e.target.value)}
+              required
+            >
+              <option value="">Select Institution</option>
+              {institutions.map(institution => (
+                <option key={institution.institution_id} value={institution.institution_id}>{institution.institution_name}</option>
+              ))}
+              <option value="new">Other (Enter New Institution)</option>
+            </Form.Control>
+            {institutionId === 'new' && (
+              <Form.Control
+                type="text"
+                placeholder="Enter New Institution"
+                value={newInstitution}
+                onChange={(e) => setNewInstitution(e.target.value)}
+                required
+              />
+            )}
+          </Form.Group>
+
+          <Button variant="primary" type="submit">Register</Button>
+        </Form>
+      </div>
     </div>
   );
 };

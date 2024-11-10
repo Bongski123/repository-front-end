@@ -183,8 +183,10 @@ const Login = () => {
         </GoogleOAuthProvider>
       </div>
 
-      <p>Don't have an account? <Link to="/signup">Sign up</Link></p>
-      <p><Link to="/forgot-password">Forgot Password?</Link></p> {/* Forgot Password Link */}
+      <p>Don't have an account? <Link to="/signup" className="no-underline">Register</Link></p>
+<p><Link to="/forgot-password" className="no-underline">Forgot your Password?</Link></p>
+
+
     </div>
     </div>
   );

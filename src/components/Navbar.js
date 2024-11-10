@@ -5,7 +5,7 @@ import Container from "react-bootstrap/Container";
 import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Dropdown from 'react-bootstrap/Dropdown';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';   
 import { jwtDecode } from 'jwt-decode';
 import { SearchBar } from "./SearchBar";
 import { FaGlobe } from 'react-icons/fa';
@@ -134,7 +134,7 @@ function NavigationBar({ activeTab }) {
     };
 
     return (
-        <Navbar expand="lg" className="bg-body-tertiary" sticky="top">
+        <Navbar expand="lg" className="bg-body-tertiary" >
             <Container>
                 <Navbar.Brand href="#home" onClick={redirectToNCF}>
                     <Image

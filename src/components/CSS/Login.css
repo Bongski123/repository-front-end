@@ -9,7 +9,7 @@
   height: 100%;
   background-size: cover;
   background-position: center;
-  filter: blur(15px); /* Apply blur only to background */
+  filter: blur(20px); /* Apply blur only to background */
   z-index: -1; /* Place it behind the login form */
 }
 
@@ -94,4 +94,8 @@ button:disabled {
   max-width: 170px; /* Adjust logo size */
   height: auto;
 
+}
+.no-underline {
+  text-decoration: none;
+  
 }
