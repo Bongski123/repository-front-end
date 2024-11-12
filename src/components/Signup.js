@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom'; 
+import { useLocation, useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
-import axios from 'axios';  
-import './CSS/signup.css'; 
+import axios from 'axios';
+import './CSS/signup.css';
 
 import bg1 from './../assets/bg1.jpg';
 import bg2 from './../assets/bg2.jpg';
@@ -13,28 +13,30 @@ import bg4 from './../assets/bg4.jpg';
 import bg5 from './../assets/bg5.jpg';
 import logo from './../assets/CCS LOGO.png';
 
-// Icon imports
 import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 const SignUp = () => {
   const location = useLocation();
-  const { email, name } = location.state || {}; 
+  const { email } = location.state || {};
 
-  const [nameInput, setName] = useState(name || ''); 
-  const [emailInput, setEmail] = useState(email || ''); 
-  const [password, setPassword] = useState(null);
-  const [confirmPassword, setConfirmPassword] = useState(null);
+  const [firstName, setFirstName] = useState('');
+  const [middleName, setMiddleName] = useState('');
+  const [lastName, setLastName] = useState('');
+  const [suffix, setSuffix] = useState('');
+  const [emailInput, setEmail] = useState(email || '');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [passwordValid, setPasswordValid] = useState(false);
   const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
   const [programId, setProgramId] = useState('');
   const [institutionId, setInstitutionId] = useState('');
-  const [roleId, setRoleId] = useState(''); 
-  const [roles, setRoles] = useState([]); 
+  const [roleId, setRoleId] = useState('');
+  const [roles, setRoles] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [institutions, setInstitutions] = useState([]);
   const [newInstitution, setNewInstitution] = useState('');
   const [newProgram, setNewProgram] = useState('');
-  const [bgImageIndex, setBgImageIndex] = useState(0); 
+  const [bgImageIndex, setBgImageIndex] = useState(0);
 
   const navigate = useNavigate();
   const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
@@ -42,7 +44,7 @@ const SignUp = () => {
   useEffect(() => {
     const interval = setInterval(() => {
       setBgImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
-    }, 5000); 
+    }, 5000);
 
     return () => clearInterval(interval);
   }, []);
@@ -52,24 +54,13 @@ const SignUp = () => {
   const handlePasswordChange = (e) => {
     const newPassword = e.target.value;
     setPassword(newPassword);
-
-    if (passwordRegex.test(newPassword)) {
-      setPasswordValid(true);
-    } else {
-      setPasswordValid(false);
-    }
+    setPasswordValid(passwordRegex.test(newPassword));
   };
 
   const handleConfirmPasswordChange = (e) => {
     const newConfirmPassword = e.target.value;
     setConfirmPassword(newConfirmPassword);
-
-    // Validate confirm password matches the password
-    if (newConfirmPassword === password) {
-      setConfirmPasswordValid(true);
-    } else {
-      setConfirmPasswordValid(false);
-    }
+    setConfirmPasswordValid(newConfirmPassword === password);
   };
 
   useEffect(() => {
@@ -79,13 +70,11 @@ const SignUp = () => {
         const rolesData = response.data.roles;
 
         const currentUserRoleId = localStorage.getItem('roleId');
+        const filteredRoles = currentUserRoleId === '1'
+          ? rolesData
+          : rolesData.filter(role => role.role_id !== 1 && role.role_id !== 5);
 
-        if (currentUserRoleId === '1') {
-          setRoles(rolesData);
-        } else {
-          const filteredRoles = rolesData.filter(role => role.role_id !== 1 && role.role_id !== 5);
-          setRoles(filteredRoles);
-        }
+        setRoles(filteredRoles);
       } catch (error) {
         console.error('Error fetching roles:', error);
       }
@@ -93,11 +82,8 @@ const SignUp = () => {
 
     const fetchPrograms = async () => {
       try {
-        const response = await fetch('https://ccsrepo.onrender.com/programs/all');
-        const data = await response.json();
-        if (Array.isArray(data.programs)) {
-          setPrograms(data.programs);
-        }
+        const response = await axios.get('https://ccsrepo.onrender.com/programs/all');
+        setPrograms(response.data.programs || []);
       } catch (error) {
         console.error('Error fetching programs:', error);
       }
@@ -105,11 +91,8 @@ const SignUp = () => {
 
     const fetchInstitutions = async () => {
       try {
-        const response = await fetch('https://ccsrepo.onrender.com/institutions/all'); 
-        const data = await response.json();
-        if (Array.isArray(data.institutions)) {
-          setInstitutions(data.institutions);
-        }
+        const response = await axios.get('https://ccsrepo.onrender.com/institutions/all');
+        setInstitutions(response.data.institutions || []);
       } catch (error) {
         console.error('Error fetching institutions:', error);
       }
@@ -121,10 +104,8 @@ const SignUp = () => {
   }, []);
 
   const handleRoleChange = (e) => {
-    const selectedRoleId = e.target.value;
-    setRoleId(selectedRoleId);
-
-    if (selectedRoleId !== '2') {
+    setRoleId(e.target.value);
+    if (e.target.value !== '2') {
       setProgramId('');
       setNewProgram('');
     }
@@ -132,7 +113,8 @@ const SignUp = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+  
+    // Validate that passwords match if the email is not pre-filled
     if (!email && password !== confirmPassword) {
       Swal.fire({
         icon: 'error',
@@ -141,52 +123,55 @@ const SignUp = () => {
       });
       return;
     }
-
+  
     try {
+      // Prepare data to send
       const dataToSend = {
-        name: nameInput,
+        first_name: firstName,
+        middle_name: middleName || null,
+        last_name: lastName,
+        suffix: suffix || null,
         email: emailInput,
-        password,
-        program_id: programId || null, 
+        password: password || null,
+        program_id: programId || null,
         institution_id: institutionId,
         role_id: roleId,
         new_institution_name: institutionId === 'new' ? newInstitution : undefined,
         new_program_name: programId === 'new' ? newProgram : undefined,
       };
-
-      const response = await fetch('https://ccsrepo.onrender.com/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
+  
+      // Send registration request to the backend
+      const response = await axios.post('https://ccsrepo.onrender.com/register', dataToSend);
+  
+      // Check if the response status is 201 (created)
+      if (response.status === 201) {
         Swal.fire({
           icon: 'success',
           title: 'Registration Successful',
-          text: 'You have been registered successfully.',
+          text: response.data.message || 'You have been registered successfully.',
         });
-        navigate('/login');
+        navigate('/login');  // Redirect to login page on success
       } else {
+        // Show the error message from the backend
         Swal.fire({
           icon: 'error',
           title: 'Registration Failed',
-          text: data.error || 'An error occurred during registration.',
+          text: response.data.error || 'An error occurred during registration.',
         });
       }
     } catch (error) {
       console.error('Error registering user:', error);
+  
+      // Show an error message if the request fails (network issues, etc.)
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: 'An unexpected error occurred. Please try again later.',
+        text: error.response?.data?.error || 'An unexpected error occurred. Please try again later.',
       });
     }
   };
+  
+  
 
   return (
     <div>
@@ -196,13 +181,38 @@ const SignUp = () => {
       </div>
       <div className="sign-up-container">
         <Form onSubmit={handleSubmit} className="sign-up-form">
-          <Form.Group controlId="name">
+          <Form.Group controlId="firstName">
             <Form.Control
               type="text"
-              placeholder="Enter full name"
-              value={nameInput}
-              onChange={(e) => setName(e.target.value)}
+              placeholder="First Name"
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
               required
+            />
+          </Form.Group>
+          <Form.Group controlId="middleName">
+            <Form.Control
+              type="text"
+              placeholder="Middle Name (if applicable)"
+              value={middleName}
+              onChange={(e) => setMiddleName(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="lastName">
+            <Form.Control
+              type="text"
+              placeholder="Last Name"
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+              required
+            />
+          </Form.Group>
+          <Form.Group controlId="suffix">
+            <Form.Control
+              type="text"
+              placeholder="Suffix (if applicable)"
+              value={suffix}
+              onChange={(e) => setSuffix(e.target.value)}
             />
           </Form.Group>
           
@@ -217,19 +227,17 @@ const SignUp = () => {
             />
           </Form.Group>
 
+          {/* Password fields */}
           {!email && (
             <>
               <Form.Group controlId="password">
                 <Form.Control
                   type="password"
                   placeholder="Password"
-                  value={password || ''}
+                  value={password}
                   onChange={handlePasswordChange}
                   required
-                  style={{
-                    borderColor: password && !passwordValid ? 'red' : '',
-                    borderWidth: '2px',
-                  }}
+                  style={{ borderColor: password && !passwordValid ? 'red' : '', borderWidth: '2px' }}
                 />
                 {!passwordValid && password && (
                   <div style={{ color: 'red', fontSize: '12px' }}>
@@ -247,13 +255,10 @@ const SignUp = () => {
                 <Form.Control
                   type="password"
                   placeholder="Confirm Password"
-                  value={confirmPassword || ''}
+                  value={confirmPassword}
                   onChange={handleConfirmPasswordChange}
                   required
-                  style={{
-                    borderColor: confirmPassword && !confirmPasswordValid ? 'red' : '',
-                    borderWidth: '2px',
-                  }}
+                  style={{ borderColor: confirmPassword && !confirmPasswordValid ? 'red' : '', borderWidth: '2px' }}
                 />
                 {!confirmPasswordValid && confirmPassword && (
                   <div style={{ color: 'red', fontSize: '12px' }}>
@@ -269,6 +274,7 @@ const SignUp = () => {
             </>
           )}
 
+          {/* Role, Program, and Institution selectors */}
           <Form.Group controlId="role">
             <Form.Control
               as="select"

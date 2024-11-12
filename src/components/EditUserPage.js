@@ -1,20 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
+import Swal from 'sweetalert2'; // Import SweetAlert
 import './CSS/EditUserPage.css'; // Add your custom styling
 
-const EditUserPage = () => {
+const EditUserPage = ({ show, handleClose }) => {
   const { userId } = useParams(); // Get the userId from URL parameter
   const navigate = useNavigate();
 
   const [user, setUser] = useState({
-    name: '',
+    firstName: '',
+    middleName: '',
+    lastName: '',
+    suffix: '',
     email: '',
-    role_id: '', // Correct the name to match the backend
-    institution_id: '', // Match backend property name
-    program_id: '', // Match backend property name
-    institution: '',  // To store the institution name for display
-    program: ''       // To store the program name for display
+    role_id: '',
+    institution_id: '',
+    program_id: '',
+    institution: '',
+    program: ''
   });
 
   const [roles, setRoles] = useState([]);
@@ -22,26 +27,30 @@ const EditUserPage = () => {
   const [institutions, setInstitutions] = useState([]);
 
   useEffect(() => {
-    fetchUserData();
-    fetchRoles();
-    fetchPrograms();
-    fetchInstitutions();
-  }, [userId]);
+    if (show) {
+      fetchUserData();
+      fetchRoles();
+      fetchPrograms();
+      fetchInstitutions();
+    }
+  }, [userId, show]);
 
-  // Fetch user data to pre-fill form
   const fetchUserData = async () => {
     try {
       const response = await fetch(`https://ccsrepo.onrender.com/users/${userId}`);
       const data = await response.json();
       if (data.user) {
         setUser({
-          name: data.user.name,
+          firstName: data.user.first_name,
+          middleName: data.user.middle_name,
+          lastName: data.user.last_name,
+          suffix: data.user.suffix,
           email: data.user.email,
-          role_id: data.user.role_id, // Match backend property name
-          institution_id: data.user.institution_id, // Match backend property name
-          program_id: data.user.program_id, // Match backend property name
-          institution: data.user.institution_name,  // For display in the dropdown
-          program: data.user.program_name         // For display in the dropdown
+          role_id: data.user.role_id,
+          institution_id: data.user.institution_id,
+          program_id: data.user.program_id,
+          institution: data.user.institution_name,
+          program: data.user.program_name
         });
       }
     } catch (error) {
@@ -49,7 +58,6 @@ const EditUserPage = () => {
     }
   };
 
-  // Fetch roles for the role dropdown
   const fetchRoles = async () => {
     try {
       const response = await fetch('https://ccsrepo.onrender.com/roles/all');
@@ -60,7 +68,6 @@ const EditUserPage = () => {
     }
   };
 
-  // Fetch programs for the program dropdown
   const fetchPrograms = async () => {
     try {
       const response = await fetch('https://ccsrepo.onrender.com/programs/all');
@@ -71,7 +78,6 @@ const EditUserPage = () => {
     }
   };
 
-  // Fetch institutions for the institution dropdown
   const fetchInstitutions = async () => {
     try {
       const response = await fetch('https://ccsrepo.onrender.com/institutions/all');
@@ -82,7 +88,6 @@ const EditUserPage = () => {
     }
   };
 
-  // Handle form field changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setUser(prevState => ({
@@ -91,109 +96,157 @@ const EditUserPage = () => {
     }));
   };
 
-  // Handle form submission to update user data
   const handleSubmit = async (e) => {
     e.preventDefault();
     const updatedUser = {
-      name: user.name,
+      first_name: user.firstName,
+      middle_name: user.middleName,
+      last_name: user.lastName,
+      suffix: user.suffix,
       email: user.email,
-      role_id: user.role_id, // Correct the name to match the backend
-      institution_id: user.institution_id, // Correct the name to match the backend
-      program_id: user.program_id // Correct the name to match the backend
+      role_id: user.role_id,
+      institution_id: user.institution_id,
+      program_id: user.program_id
     };
-
+  
     try {
       const response = await fetch(`https://ccsrepo.onrender.com/users/update/${userId}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(updatedUser)
       });
-
-      if (!response.ok) {
-        // Log the response error for debugging
-        const errorData = await response.text(); // Use text to capture non-JSON response
-        console.error('Error response:', errorData);
-        alert('Failed to update user');
+  
+      const responseData = await response.json();
+  
+      if (response.ok) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: responseData.message || 'User updated successfully.',
+        }).then(() => {
+          handleClose(); // Close the modal after success
+          navigate('/users');
+        });
       } else {
-        navigate('/users');
+        Swal.fire({
+          icon: 'error',
+          title: 'Error!',
+          text: responseData.message || 'Failed to update user.',
+        });
       }
     } catch (error) {
       console.error('Error updating user:', error.message);
-      alert('Error updating user');
+      Swal.fire({
+        icon: 'error',
+        title: 'Error!',
+        text: 'Error updating user.',
+      });
     }
   };
-
+  
   return (
-    <div className="edit-user-container">
-      <h2>Edit User</h2>
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Name:</label>
-          <input
-            type="text"
-            name="name"
-            value={user.name}
-            onChange={handleChange}
-            required
-          />
-        </div>
-        <div>
-          <label>Email:</label>
-          <input
-            type="email"
-            name="email"
-            value={user.email}
-            onChange={handleChange}
-            required
-            disabled
-          />
-        </div>
-        <div>
-          <label>Role:</label>
-          <select
-            name="role_id" // Corrected name to match the backend
-            value={user.role_id}
-            onChange={handleChange}
-            required
-          >
-            {roles.map(role => (
-              <option key={role.role_id} value={role.role_id}>{role.role_name}</option> // Corrected to match role_id
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Institution:</label>
-          <select
-            name="institution_id" // Corrected name to match the backend
-            value={user.institution_id}
-            onChange={handleChange}
-            required
-          >
-            {institutions.map(institution => (
-              <option key={institution.institution_id} value={institution.institution_id}>
-                {institution.institution_name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <div>
-          <label>Program:</label>
-          <select
-            name="program_id" // Corrected name to match the backend
-            value={user.program_id}
-            onChange={handleChange}
-            required
-          >
-            {programs.map(program => (
-              <option key={program.program_id} value={program.program_id}>
-                {program.program_name}
-              </option>
-            ))}
-          </select>
-        </div>
-        <Button type="submit" variant="primary">Update User</Button>
-      </form>
-    </div>
+    <Modal show={show} onHide={handleClose}>
+      <Modal.Header closeButton>
+        <Modal.Title>Edit User</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <form onSubmit={handleSubmit}>
+          <div>
+            <label>First Name:</label>
+            <input
+              type="text"
+              name="firstName"
+              value={user.firstName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Middle Name:</label>
+            <input
+              type="text"
+              name="middleName"
+              value={user.middleName}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label>Last Name:</label>
+            <input
+              type="text"
+              name="lastName"
+              value={user.lastName}
+              onChange={handleChange}
+              required
+            />
+          </div>
+          <div>
+            <label>Suffix:</label>
+            <input
+              type="text"
+              name="suffix"
+              value={user.suffix}
+              onChange={handleChange}
+            />
+          </div>
+          <div>
+            <label>Email:</label>
+            <input
+              type="email"
+              name="email"
+              value={user.email}
+              onChange={handleChange}
+              required
+              disabled
+            />
+          </div>
+          <div>
+            <label>Role:</label>
+            <select
+              name="role_id"
+              value={user.role_id}
+              onChange={handleChange}
+              required
+            >
+              {roles.map(role => (
+                <option key={role.role_id} value={role.role_id}>{role.role_name}</option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Institution:</label>
+            <select
+              name="institution_id"
+              value={user.institution_id}
+              onChange={handleChange}
+              required
+            >
+              {institutions.map(institution => (
+                <option key={institution.institution_id} value={institution.institution_id}>
+                  {institution.institution_name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <div>
+            <label>Program:</label>
+            <select
+              name="program_id"
+              value={user.program_id}
+              onChange={handleChange}
+              required
+            >
+              {programs.map(program => (
+                <option key={program.program_id} value={program.program_id}>
+                  {program.program_name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <Button type="submit" variant="primary">Update User</Button>
+        </form>
+      </Modal.Body>
+    </Modal>
   );
 };
 

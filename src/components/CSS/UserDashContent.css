@@ -4,20 +4,21 @@
 
 .info-cards {
   display: flex;
-  justify-content: space-evenly;
+  justify-content:  flex-start;
   flex-wrap: wrap; /* Allows cards to wrap in case of smaller screens */
-  gap: 1rem; /* Adds gap between cards */
+  gap: 3rem; /* Adds gap between cards */
 }
 
 .info-card {
   background-color: #f0f0f0; /* Default background color */
   border-radius: 8px;
   padding: 15px; /* Increased padding for better card content spacing */
-  width: 220px; /* Adjust width for more balanced card size */
-  height: 140px; /* Slightly larger height for better content fitting */
+  width: 220px;
+  height: 140px;
   text-align: center;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* More subtle shadow for a cleaner look */
   transition: transform 0.2s ease-in-out; /* Adds a smooth hover effect */
+  cursor: pointer;
 }
 
 .info-card:hover {

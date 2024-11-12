@@ -63,12 +63,14 @@ const Login = () => {
   
       // Decode the token to extract roleId and other info
       const decodedToken = jwtDecode(token);
-      const { roleId, userId } = decodedToken;
+const { firstName, lastName, roleId, userId } = decodedToken;
   
       // Store token and roleId in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('roleId', roleId);
       localStorage.setItem('userId', userId);
+      localStorage.setItem('firstName', firstName);
+localStorage.setItem('lastName', lastName);
   
       // Navigate based on roleId
       if (roleId === 1) {
@@ -101,18 +103,19 @@ const Login = () => {
       }
 
       const data = await res.json();
-      const { token, userExists, email, name } = data;
+      const { token, userExists, email, firstName } = data;
 
       // If user is already registered, log them in directly
       if (userExists) {
         // Decode the token to extract user information
         const decodedToken = jwtDecode(token);
-        const { roleId, userId } = decodedToken;
+        const { roleId, userId,firstName } = decodedToken;
 
         // Store token and roleId in localStorage
         localStorage.setItem('token', token);
         localStorage.setItem('roleId', roleId);
         localStorage.setItem('userId', userId);
+        localStorage.setItem('firstName', firstName);
 
         // Redirect based on role
         if (roleId === 1) {
@@ -122,7 +125,7 @@ const Login = () => {
         }
       } else {
         // If user doesn't exist, redirect to sign-up page with email and name
-        navigate('/signup', { state: { email, name } });
+        navigate('/signup', { state: { email, firstName } });
       }
 
     } catch (error) {

@@ -4,14 +4,18 @@ import { FaQuoteRight } from "react-icons/fa";
 import { IoMdCloudDownload } from "react-icons/io";
 import { Line } from 'react-chartjs-2';
 import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend } from 'chart.js';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
+import './CSS/UserDashContent.css';
 
 // Register necessary components
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend);
 
 const DashboardContent = () => {
+  const navigate = useNavigate(); // Initialize useNavigate
   const [downloads, setDownloads] = useState(0);
   const [citations, setCitations] = useState(0);
   const [totalUsers, setTotalUsers] = useState(0);
+  const [totalResearches, setTotalResearches] = useState(0);
   const [dailyDownloads, setDailyDownloads] = useState([]);
   const [dailyCitations, setDailyCitations] = useState([]);
 
@@ -30,13 +34,16 @@ const DashboardContent = () => {
         const usersData = await usersResponse.json();
         setTotalUsers(usersData.total_users);
 
+        const researchesResponse = await fetch('https://ccsrepo.onrender.com/total/researches');
+        const researchesData = await researchesResponse.json();
+        setTotalResearches(researchesData.total_researches);
+
         const dailyDownloadsResponse = await fetch('https://ccsrepo.onrender.com/daily/downloads');
         const dailyDownloadsData = await dailyDownloadsResponse.json();
 
-        const dailyCitationsResponse = await fetch('https://ccsrepo.onrender.com/daily/citations'); // Fetch daily citations
+        const dailyCitationsResponse = await fetch('https://ccsrepo.onrender.com/daily/citations');
         const dailyCitationsData = await dailyCitationsResponse.json();
 
-        // Aggregate downloads by day of the week
         const downloadsByDay = Array(7).fill(0);
         dailyDownloadsData.forEach(({ date, downloads }) => {
           const dayOfWeek = new Date(date).getDay();
@@ -44,7 +51,6 @@ const DashboardContent = () => {
           downloadsByDay[adjustedDay] += downloads;
         });
 
-        // Aggregate citations by day of the week
         const citationsByDay = Array(7).fill(0);
         dailyCitationsData.forEach(({ date, citations }) => {
           const dayOfWeek = new Date(date).getDay();
@@ -70,7 +76,6 @@ const DashboardContent = () => {
     fetchDashboardData();
   }, []);
 
-  // Prepare chart data for downloads
   const downloadsChartData = {
     labels: dailyDownloads.labels || [],
     datasets: [
@@ -85,7 +90,6 @@ const DashboardContent = () => {
     ],
   };
 
-  // Prepare chart data for citations
   const citationsChartData = {
     labels: dailyCitations.labels || [],
     datasets: [
@@ -93,14 +97,13 @@ const DashboardContent = () => {
         label: 'Daily Citations',
         data: dailyCitations.data || [],
         fill: false,
-        backgroundColor: 'rgba(255,99,132,0.4)', // Different color for citations
+        backgroundColor: 'rgba(255,99,132,0.4)',
         borderColor: 'rgba(255,99,132,1)',
         tension: 0.1,
       },
     ],
   };
 
-  // Chart options
   const options = {
     responsive: true,
     plugins: {
@@ -143,14 +146,20 @@ const DashboardContent = () => {
           <p>Total Citations</p>
           <h3>{citations}</h3>
         </div>
-        <div className="info-card yellow">
+        <div className="info-card yellow" onClick={() => navigate('/admin/users')}>
           <FaUser className="user-icon" />
           <div className="info-text">
             <p>Total Users</p>
             <h3>{totalUsers}</h3>
           </div>
         </div>
+        <div className="info-card purple" onClick={() => navigate('/researchList')}>
+          <FaUser className="research-icon" />
+          <p>Total Researches</p>
+          <h3>{totalResearches}</h3>
+        </div>
       </div>
+
       <div className="charts1">
         <div className="peak-downloads-chart">
           <h3>Peak Downloads Daily</h3>

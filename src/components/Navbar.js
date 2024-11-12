@@ -102,7 +102,16 @@ function NavigationBar({ activeTab }) {
         const token = localStorage.getItem('token');
         if (token) {
             const decodedToken = jwtDecode(token);
-            return decodedToken.name;
+            return decodedToken.firstName;
+        }
+        return '';
+    };
+
+    const getUserLastName = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            return decodedToken.lastName;
         }
         return '';
     };
@@ -134,7 +143,7 @@ function NavigationBar({ activeTab }) {
     };
 
     return (
-        <Navbar expand="lg" className="bg-body-tertiary" >
+        <Navbar expand="lg" className="bg-body-tertiary">
             <Container>
                 <Navbar.Brand href="#home" onClick={redirectToNCF}>
                     <Image
@@ -180,7 +189,7 @@ function NavigationBar({ activeTab }) {
                         {isLoggedIn() ? (
                             <Dropdown align="end">
                                 <Dropdown.Toggle variant="success" className="button">
-                                    {getUserFirstName()}
+                                    {`${getUserFirstName()} ${getUserLastName()}`} {/* Concatenate first and last name */}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     <Dropdown.Item href="/forgot-password">Reset Password</Dropdown.Item>
