@@ -69,23 +69,7 @@ function SearchResult({ result }) {
       </h3>
       <p style={{ fontSize: "12px", margin: "0" }}>Authors: {result.authors}</p>
       
-      {/* PDF download link or loading/error message */}
-      {loading ? (
-        <p>Loading PDF...</p>
-      ) : error ? (
-        <p className="error-message">{error}</p>
-      ) : (
-        fileData && (
-          <a
-            href={fileData}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{ fontSize: "12px" }}
-          >
-            Download PDF
-          </a>
-        )
-      )}
+   
 
       {/* Citation Format Selection */}
     
