@@ -217,7 +217,7 @@ function Details() {
                         ) : error ? (
                             <p>{error}</p>
                         ) : (
-                            <div className="pdf-container" style={{ height: '500px', overflowY: 'auto' }}>
+                            <div className="pdf-container" style={{ height: '600px', overflowY: 'auto' }}>
                                 <Document
                                     file={pdfBlobUrl}
                                     onLoadSuccess={onDocumentLoadSuccess}

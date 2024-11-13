@@ -51,12 +51,14 @@
 /* PDF Section */
 .pdf-container {
   text-align: center;
+
 }
 
 .pdf-container .react-pdf__Page {
   border: 1px solid #ddd;
   border-radius: 8px;
   margin: 0 auto;
+ 
 }
 
 /* Button Styling */

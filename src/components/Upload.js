@@ -68,7 +68,9 @@ const Upload = () => {
             const token = localStorage.getItem('token');
             const decodedToken = jwtDecode(token);
             const uploaderId = decodedToken.userId;
-
+            const roleId = decodedToken.roleId;  // Assuming 'roleId' is part of the token
+            const isAdmin = decodedToken.isAdmin; // Assuming 'isAdmin' is part of the token
+    
             const formData = new FormData();
             formData.append('file', file);
             formData.append('title', title);
@@ -77,14 +79,21 @@ const Upload = () => {
             formData.append('keywords', keywords.map(k => k.value).join(', '));
             formData.append('abstract', abstract);
             formData.append('uploader_id', uploaderId);
-
+    
+            // Auto-approve if roleId === 1 or user is admin
+            if (roleId === 1 || isAdmin) {
+                formData.append('status', 'approved');
+            } else {
+                formData.append('status', 'pending');
+            }
+    
             const response = await axios.post('https://ccsrepo.onrender.com/upload', formData, {
                 headers: {
                     'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${token}`
                 }
             });
-
+    
             if (response.status === 201) {
                 Swal.fire('Success!', 'Upload successful', 'success');
                 setTitle('');
@@ -100,6 +109,7 @@ const Upload = () => {
             Swal.fire('Error!', error.response?.data?.error || error.message, 'error');
         }
     };
+    
 
     return (
         <section id="upload" className="block categories-block">

@@ -14,7 +14,7 @@ export default function CategoryDetail() {
     const [searchTerm, setSearchTerm] = useState("");
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 10;
-    const [categoryName, setCategoryName] = useState("");
+    const [category_name, setCategoryName] = useState("");
 
     // Function to fetch research items
     const fetchResearchItems = async () => {
@@ -26,7 +26,7 @@ export default function CategoryDetail() {
             const data = await response.json();
             console.log("Fetched Data:", data);
             setResearchItems(data.categoryDocuments || []); // Assuming your API returns this structure
-            setCategoryName(data.categoryName || ""); // Assuming the API returns categoryName
+            setCategoryName(data.category_name || ""); // Assuming the API returns categoryName
         } catch (error) {
             console.error("Error fetching research items:", error);
             setError(error.message);
@@ -59,7 +59,7 @@ export default function CategoryDetail() {
 
     return (
         <Container>
-            <h2>Research Items in Category: {categoryName}</h2> {/* Display the category name */}
+            <h2> {category_name}</h2> {/* Display the category name */}
             {/* Search bar */}
             <Form className="mb-3">
                 <Form.Group controlId="search">
@@ -76,12 +76,17 @@ export default function CategoryDetail() {
                     currentItems.map((item) => (
                         <Col key={item.research_id} xs={12} className="mb-3">
                             {/* Make each item clickable and pass data to /details route */}
-                            <Link to={`/details`} state={{ result: item }} style={{ textDecoration: 'none' }}>
-                                <div className="p-3 border rounded shadow-sm hover-shadow" style={{ backgroundColor: '#f9f9f9' }}>
-                                    <h5 className="mb-1">{item.title}</h5>
-                                    <p className="mb-0 text-muted">Authors: {item.authors}</p> {/* Display authors */}
-                                </div>
-                            </Link>
+                            <Link
+    to="/details"
+    state={{ result: item, category_name }}
+    style={{ textDecoration: 'none' }}
+>
+    <div className="p-3 border rounded shadow-sm hover-shadow" style={{ backgroundColor: '#f9f9f9' }}>
+        <h5 className="mb-1">{item.title}</h5>
+        <p className="mb-0 text-muted">Authors: {item.authors}</p>
+    </div>
+</Link>
+
                         </Col>
                     ))
                 ) : (

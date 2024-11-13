@@ -1,4 +1,4 @@
-import React, { useState ,useEffect} from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
@@ -23,7 +23,6 @@ const Login = () => {
   const [bgImageIndex, setBgImageIndex] = useState(0);
   const navigate = useNavigate();
 
-
   const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
 
   useEffect(() => {
@@ -33,52 +32,45 @@ const Login = () => {
     return () => clearInterval(interval);
   }, []);
 
-
-
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-  
+
     try {
       const response = await fetch('https://ccsrepo.onrender.com/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
       });
-  
+
       if (!response.ok) {
         const errorMessage = await response.json();
         throw new Error(errorMessage.error || 'Login failed. Please try again.');
       }
-  
+
       const responseData = await response.json();
-      const { token } = responseData; 
-  
-      if (!email ) {
-        throw new Error('Missing email or name from server response');
+      const { token } = responseData;
+
+      if (!email) {
+        throw new Error('Missing email from server response');
       }
-  
-  
-  
+
       // Decode the token to extract roleId and other info
       const decodedToken = jwtDecode(token);
-const { firstName, lastName, roleId, userId } = decodedToken;
-  
+      const { roleId, userId } = decodedToken;
+
       // Store token and roleId in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('roleId', roleId);
       localStorage.setItem('userId', userId);
-      localStorage.setItem('firstName', firstName);
-localStorage.setItem('lastName', lastName);
-  
+
       // Navigate based on roleId
       if (roleId === 1) {
         navigate('/admin/dashboard'); // Admin dashboard
       } else {
         navigate('/user/dashboard'); // User dashboard
       }
-  
+
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -96,27 +88,39 @@ localStorage.setItem('lastName', lastName);
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_token: response.credential }) // Use id_token
       });
-
+  
       if (!res.ok) {
         const errorMessage = await res.json();
         throw new Error(errorMessage.error || 'Google login failed');
       }
-
+  
       const data = await res.json();
-      const { token, userExists, email, firstName } = data;
-
+      const { token, userExists, email, name } = data;
+  
+      // Ensure that `name` is defined before attempting to split
+      let first_name = '';
+      let last_name = '';
+      if (name) {
+        const nameParts = name.split(' ');
+        first_name = nameParts[0];
+        last_name = nameParts.slice(1).join(' ');
+      }
+  
       // If user is already registered, log them in directly
       if (userExists) {
         // Decode the token to extract user information
         const decodedToken = jwtDecode(token);
-        const { roleId, userId,firstName } = decodedToken;
-
+        const { roleId, userId } = decodedToken;
+  
         // Store token and roleId in localStorage
         localStorage.setItem('token', token);
         localStorage.setItem('roleId', roleId);
         localStorage.setItem('userId', userId);
-        localStorage.setItem('firstName', firstName);
-
+  
+        // Store name if available
+        localStorage.setItem('firstName', first_name || ''); // Default to empty string if undefined
+        localStorage.setItem('lastName', last_name || '');
+  
         // Redirect based on role
         if (roleId === 1) {
           navigate('/admin/dashboard'); // Admin dashboard
@@ -124,10 +128,17 @@ localStorage.setItem('lastName', lastName);
           navigate('/user/dashboard'); // User dashboard
         }
       } else {
-        // If user doesn't exist, redirect to sign-up page with email and name
-        navigate('/signup', { state: { email, firstName } });
+        // If user doesn't exist, check if email is from 'gbox.ncf.edu.ph'
+        const isGboxEmail = email.endsWith('@gbox.ncf.edu.ph');
+        const roleId = isGboxEmail ? 2 : undefined;
+        const institutionId = isGboxEmail ? 16 : undefined;
+  
+        // Redirect to sign-up page with additional info (including firstName and lastName if available)
+        navigate('/signup', {
+          state: { email, roleId, institutionId, first_name, last_name }
+        });
       }
-
+  
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -136,61 +147,59 @@ localStorage.setItem('lastName', lastName);
       });
     }
   };
-
+  
+  
+  
   return (
     <div>
-       <div
+      <div
         className="login-background"
         style={{ backgroundImage: `url(${backgroundImages[bgImageIndex]})` }}
       ></div>
-       <div className="logo-container">
+      <div className="logo-container">
         <img src={logo} alt="NCG Logo" className="logo" />
       </div>
 
-    <div className="login-container">
-      <h2>Login</h2>
-      <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="email">
-        
-          <Form.Control
-            type="email"
-            placeholder="Enter email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-        </Form.Group>
+      <div className="login-container">
+        <h2>Login</h2>
+        <Form onSubmit={handleSubmit}>
+          <Form.Group controlId="email">
+            <Form.Control
+              type="email"
+              placeholder="Enter email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <Form.Group controlId="password">
-        
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-        </Form.Group>
+          <Form.Group controlId="password">
+            <Form.Control
+              type="password"
+              placeholder="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </Form.Group>
 
-        <Button variant="secondary" type="submit" className="login-btn" disabled={loading}>
-          {loading ? 'Logging in...' : 'Login'}
-        </Button>
-      </Form>
+          <Button variant="secondary" type="submit" className="login-btn" disabled={loading}>
+            {loading ? 'Logging in...' : 'Login'}
+          </Button>
+        </Form>
 
-      <div className="google-login">
-        <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
-          <GoogleLogin
-            onSuccess={handleGoogleLogin}
-            onError={() => Swal.fire({ icon: 'error', title: 'Google Login Failed', text: 'An error occurred during Google login. Please try again.' })}
-          />
-        </GoogleOAuthProvider>
+        <div className="google-login">
+          <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
+            <GoogleLogin
+              onSuccess={handleGoogleLogin}
+              onError={() => Swal.fire({ icon: 'error', title: 'Google Login Failed', text: 'An error occurred during Google login. Please try again.' })}
+            />
+          </GoogleOAuthProvider>
+        </div>
+
+        <p>Don't have an account? <Link to="/signup" className="no-underline">Register</Link></p>
+        <p><Link to="/forgot-password" className="no-underline">Forgot your Password?</Link></p>
       </div>
-
-      <p>Don't have an account? <Link to="/signup" className="no-underline">Register</Link></p>
-<p><Link to="/forgot-password" className="no-underline">Forgot your Password?</Link></p>
-
-
-    </div>
     </div>
   );
 };

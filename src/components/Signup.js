@@ -17,64 +17,59 @@ import { FaCheckCircle, FaTimesCircle } from 'react-icons/fa';
 
 const SignUp = () => {
   const location = useLocation();
-  const { email } = location.state || {};
+  const navigate = useNavigate();
+  const { email, first_name, middle_name, last_name, suffix, roleId, institutionId } = location.state || {};  // Extract from location.state
 
-  const [firstName, setFirstName] = useState('');
-  const [middleName, setMiddleName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [suffix, setSuffix] = useState('');
-  const [emailInput, setEmail] = useState(email || '');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [passwordValid, setPasswordValid] = useState(false);
-  const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
-  const [programId, setProgramId] = useState('');
-  const [institutionId, setInstitutionId] = useState('');
-  const [roleId, setRoleId] = useState('');
+  const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
+  const [bgImageIndex, setBgImageIndex] = useState(0);
+  const [formData, setFormData] = useState({
+    firstName: first_name || '',  // Prefill first name
+    middleName: middle_name || '',  // Prefill middle name
+    lastName: last_name || '',  // Prefill last name
+    suffix: suffix || '',  // Prefill suffix
+    emailInput: email || '',  // Prefill email
+    password: '',  // Keep password blank initially
+    confirmPassword: '',  // Keep confirm password blank
+    programId: '',
+    institutionId: institutionId || '',  // Prefill institution if available
+    roleId: roleId || '',  // Prefill role ID if available
+    newInstitution: '',
+    newProgram: ''
+  });
+  const [formValidation, setFormValidation] = useState({
+    passwordValid: false,
+    confirmPasswordValid: false
+  });
   const [roles, setRoles] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [institutions, setInstitutions] = useState([]);
-  const [newInstitution, setNewInstitution] = useState('');
-  const [newProgram, setNewProgram] = useState('');
-  const [bgImageIndex, setBgImageIndex] = useState(0);
-
-  const navigate = useNavigate();
-  const backgroundImages = [bg1, bg2, bg3, bg4, bg5];
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setBgImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
-    }, 5000);
-
-    return () => clearInterval(interval);
-  }, []);
 
   const passwordRegex = /^(?=.*[A-Z])(?=.*\W).{8,}$/;
 
-  const handlePasswordChange = (e) => {
-    const newPassword = e.target.value;
-    setPassword(newPassword);
-    setPasswordValid(passwordRegex.test(newPassword));
-  };
-
-  const handleConfirmPasswordChange = (e) => {
-    const newConfirmPassword = e.target.value;
-    setConfirmPassword(newConfirmPassword);
-    setConfirmPasswordValid(newConfirmPassword === password);
-  };
+  useEffect(() => {
+    // Change background image every 5 seconds
+    const interval = setInterval(() => {
+      setBgImageIndex((prevIndex) => (prevIndex + 1) % backgroundImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   useEffect(() => {
+    // Set role and institution defaults based on email domain
+    const checkEmailDomain = () => {
+      if (formData.emailInput.endsWith('@gbox.ncf.edu.ph')) {
+        setFormData((prev) => ({ ...prev, roleId: '2', institutionId: '16' }));
+      } else if (formData.emailInput.endsWith('@ncf.edu.ph')) {
+        setFormData((prev) => ({ ...prev, roleId: '3', institutionId: '16' }));
+      }
+    };
+    checkEmailDomain();
+
+    // Fetch roles, programs, and institutions
     const fetchRoles = async () => {
       try {
         const response = await axios.get('https://ccsrepo.onrender.com/roles/all');
-        const rolesData = response.data.roles;
-
-        const currentUserRoleId = localStorage.getItem('roleId');
-        const filteredRoles = currentUserRoleId === '1'
-          ? rolesData
-          : rolesData.filter(role => role.role_id !== 1 && role.role_id !== 5);
-
-        setRoles(filteredRoles);
+        setRoles(filterRoles(response.data.roles));
       } catch (error) {
         console.error('Error fetching roles:', error);
       }
@@ -101,77 +96,105 @@ const SignUp = () => {
     fetchRoles();
     fetchPrograms();
     fetchInstitutions();
-  }, []);
+  }, [formData.emailInput]);
 
+  const filterRoles = (rolesData) => {
+    const currentUserRoleId = localStorage.getItem('roleId');
+    return currentUserRoleId === '1'
+      ? rolesData
+      : rolesData.filter(role => role.role_id !== 1 && role.role_id !== 5);
+  };
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handlePasswordChange = (e) => {
+    const password = e.target.value;
+    setFormData((prev) => ({ ...prev, password }));
+  
+    const isPasswordValid = passwordRegex.test(password);
+    setFormValidation((prev) => ({
+      ...prev,
+      passwordValid: isPasswordValid,
+      confirmPasswordValid: isPasswordValid && password === formData.confirmPassword, // Update confirmPassword validation as well
+    }));
+  };
+  
+  const handleConfirmPasswordChange = (e) => {
+    const confirmPassword = e.target.value;
+    setFormData((prev) => ({ ...prev, confirmPassword }));
+  
+    const isConfirmPasswordValid = confirmPassword === formData.password;
+    setFormValidation((prev) => ({
+      ...prev,
+      confirmPasswordValid: isConfirmPasswordValid,
+    }));
+  };
+  
   const handleRoleChange = (e) => {
-    setRoleId(e.target.value);
-    if (e.target.value !== '2') {
-      setProgramId('');
-      setNewProgram('');
-    }
+    const roleId = e.target.value;
+    setFormData((prev) => ({
+      ...prev,
+      roleId,
+      programId: roleId === '2' ? prev.programId : '',
+      newProgram: ''
+    }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-  
-    // Validate that passwords match if the email is not pre-filled
-    if (!email && password !== confirmPassword) {
+    if (formData.password && formData.password !== formData.confirmPassword) {
       Swal.fire({
         icon: 'error',
         title: 'Passwords do not match',
-        text: 'Please make sure your passwords match.',
+        text: 'Please make sure your passwords match.'
       });
       return;
     }
-  
+
+    const dataToSend = {
+      first_name: formData.firstName,
+      middle_name: formData.middleName || null,
+      last_name: formData.lastName,
+      suffix: formData.suffix || null,
+      email: formData.emailInput,
+      password: formData.password || null,
+      program_id: formData.programId || null,
+      institution_id: formData.institutionId,
+      role_id: formData.roleId,
+      new_institution_name: formData.institutionId === 'new' ? formData.newInstitution : undefined,
+      new_program_name: formData.programId === 'new' ? formData.newProgram : undefined,
+    };
+
     try {
-      // Prepare data to send
-      const dataToSend = {
-        first_name: firstName,
-        middle_name: middleName || null,
-        last_name: lastName,
-        suffix: suffix || null,
-        email: emailInput,
-        password: password || null,
-        program_id: programId || null,
-        institution_id: institutionId,
-        role_id: roleId,
-        new_institution_name: institutionId === 'new' ? newInstitution : undefined,
-        new_program_name: programId === 'new' ? newProgram : undefined,
-      };
-  
-      // Send registration request to the backend
       const response = await axios.post('https://ccsrepo.onrender.com/register', dataToSend);
-  
-      // Check if the response status is 201 (created)
       if (response.status === 201) {
         Swal.fire({
           icon: 'success',
           title: 'Registration Successful',
-          text: response.data.message || 'You have been registered successfully.',
+          text: response.data.message || 'You have been registered successfully.'
         });
-        navigate('/login');  // Redirect to login page on success
+        navigate('/login');
       } else {
-        // Show the error message from the backend
         Swal.fire({
           icon: 'error',
           title: 'Registration Failed',
-          text: response.data.error || 'An error occurred during registration.',
+          text: response.data.error || 'An error occurred during registration.'
         });
       }
     } catch (error) {
       console.error('Error registering user:', error);
-  
-      // Show an error message if the request fails (network issues, etc.)
       Swal.fire({
         icon: 'error',
         title: 'Error',
-        text: error.response?.data?.error || 'An unexpected error occurred. Please try again later.',
+        text: error.response?.data?.error || 'An unexpected error occurred. Please try again later.'
       });
     }
   };
-  
-  
+
+  const isGboxEmail = formData.emailInput.endsWith('@gbox.ncf.edu.ph');
 
   return (
     <div>
@@ -181,134 +204,118 @@ const SignUp = () => {
       </div>
       <div className="sign-up-container">
         <Form onSubmit={handleSubmit} className="sign-up-form">
-          <Form.Group controlId="firstName">
-            <Form.Control
-              type="text"
-              placeholder="First Name"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="middleName">
-            <Form.Control
-              type="text"
-              placeholder="Middle Name (if applicable)"
-              value={middleName}
-              onChange={(e) => setMiddleName(e.target.value)}
-            />
-          </Form.Group>
-          <Form.Group controlId="lastName">
-            <Form.Control
-              type="text"
-              placeholder="Last Name"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              required
-            />
-          </Form.Group>
-          <Form.Group controlId="suffix">
-            <Form.Control
-              type="text"
-              placeholder="Suffix (if applicable)"
-              value={suffix}
-              onChange={(e) => setSuffix(e.target.value)}
-            />
-          </Form.Group>
-          
+          {['firstName', 'middleName', 'lastName', 'suffix'].map((field) => (
+            <Form.Group controlId={field} key={field}>
+              <Form.Control
+                type="text"
+                placeholder={field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1').trim()}
+
+                value={formData[field]}
+                onChange={handleChange}
+                name={field}
+                required={field !== 'middleName' && field !== 'suffix'}
+              />
+            </Form.Group>
+          ))}
+
           <Form.Group controlId="email">
             <Form.Control
               type="email"
               placeholder="Enter email"
-              value={emailInput}
-              onChange={(e) => setEmail(e.target.value)}
+              value={formData.emailInput}
+              onChange={(e) => setFormData((prev) => ({ ...prev, emailInput: e.target.value }))}
               required
-              disabled={!!email}
+              disabled={!!email || isGboxEmail} // Disable if email is already provided or is from gbox.ncf.edu.ph
             />
           </Form.Group>
 
-          {/* Password fields */}
           {!email && (
             <>
-              <Form.Group controlId="password">
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                  required
-                  style={{ borderColor: password && !passwordValid ? 'red' : '', borderWidth: '2px' }}
-                />
-                {!passwordValid && password && (
-                  <div style={{ color: 'red', fontSize: '12px' }}>
-                    <FaTimesCircle /> Password must be at least 8 characters long, include a capital letter, and a special character.
-                  </div>
-                )}
-                {passwordValid && password && (
-                  <div style={{ color: 'green', fontSize: '12px' }}>
-                    <FaCheckCircle /> Password is valid.
-                  </div>
-                )}
-              </Form.Group>
+             <Form.Group controlId="password">
+  <Form.Control
+    type="password"
+    placeholder="Password"
+    value={formData.password}
+    onChange={handlePasswordChange}
+    required
+    style={{ 
+      borderColor: formData.password && !formValidation.passwordValid ? 'red' : '', 
+      borderWidth: '2px' 
+    }}
+  />
+  {formData.password && !formValidation.passwordValid && (
+    <ValidationMessage 
+      isValid={formValidation.passwordValid} 
+      message="Password must be at least 8 characters long, include a capital letter, and a special character." 
+    />
+  )}
+</Form.Group>
 
-              <Form.Group controlId="confirmPassword">
-                <Form.Control
-                  type="password"
-                  placeholder="Confirm Password"
-                  value={confirmPassword}
-                  onChange={handleConfirmPasswordChange}
-                  required
-                  style={{ borderColor: confirmPassword && !confirmPasswordValid ? 'red' : '', borderWidth: '2px' }}
-                />
-                {!confirmPasswordValid && confirmPassword && (
-                  <div style={{ color: 'red', fontSize: '12px' }}>
-                    <FaTimesCircle /> Passwords do not match.
-                  </div>
-                )}
-                {confirmPasswordValid && confirmPassword && (
-                  <div style={{ color: 'green', fontSize: '12px' }}>
-                    <FaCheckCircle /> Passwords match.
-                  </div>
-                )}
-              </Form.Group>
+<Form.Group controlId="confirmPassword">
+  <Form.Control
+    type="password"
+    placeholder="Confirm Password"
+    value={formData.confirmPassword}
+    onChange={handleConfirmPasswordChange}
+    required
+    style={{ 
+      borderColor: formData.confirmPassword && !formValidation.confirmPasswordValid ? 'red' : '', 
+      borderWidth: '2px' 
+    }}
+  />
+  {formData.confirmPassword && !formValidation.confirmPasswordValid && (
+    <ValidationMessage 
+      isValid={formValidation.confirmPasswordValid} 
+      message="Passwords must match." 
+    />
+  )}
+</Form.Group>
             </>
           )}
 
-          {/* Role, Program, and Institution selectors */}
           <Form.Group controlId="role">
+       
             <Form.Control
               as="select"
-              value={roleId}
+              value={formData.roleId}
               onChange={handleRoleChange}
+              disabled={isGboxEmail} // Disable if email is from gbox.ncf.edu.ph
               required
             >
               <option value="">Select Role</option>
-              {roles.map(role => (
-                <option key={role.role_id} value={role.role_id}>{role.role_name}</option>
+              {roles.map((role) => (
+                <option key={role.role_id} value={role.role_id}>
+                  {role.role_name}
+                </option>
               ))}
             </Form.Control>
           </Form.Group>
 
-          {roleId === '2' && (
+          {formData.roleId === '2' && (
             <Form.Group controlId="program">
+    
               <Form.Control
                 as="select"
-                value={programId}
-                onChange={(e) => setProgramId(e.target.value)}
+                value={formData.programId}
+                onChange={handleChange}
+                name="programId"
                 required
               >
                 <option value="">Select Program</option>
-                {programs.map(program => (
-                  <option key={program.program_id} value={program.program_id}>{program.program_name}</option>
+                {programs.map((program) => (
+                  <option key={program.program_id} value={program.program_id}>
+                    {program.program_name}
+                  </option>
                 ))}
-                <option value="new">Other (Enter New Program)</option>
+                <option value="new">Other (Add new program)</option>
               </Form.Control>
-              {programId === 'new' && (
+              {formData.programId === 'new' && (
                 <Form.Control
                   type="text"
-                  placeholder="Enter New Program"
-                  value={newProgram}
-                  onChange={(e) => setNewProgram(e.target.value)}
+                  placeholder="New Program Name"
+                  value={formData.newProgram}
+                  onChange={handleChange}
+                  name="newProgram"
                   required
                 />
               )}
@@ -316,34 +323,49 @@ const SignUp = () => {
           )}
 
           <Form.Group controlId="institution">
+
             <Form.Control
               as="select"
-              value={institutionId}
-              onChange={(e) => setInstitutionId(e.target.value)}
+              value={formData.institutionId}
+              onChange={handleChange}
+              name="institutionId"
+              disabled={isGboxEmail} // Disable if email is from gbox.ncf.edu.ph
               required
             >
               <option value="">Select Institution</option>
-              {institutions.map(institution => (
-                <option key={institution.institution_id} value={institution.institution_id}>{institution.institution_name}</option>
+              {institutions.map((institution) => (
+                <option key={institution.institution_id} value={institution.institution_id}>
+                  {institution.institution_name}
+                </option>
               ))}
-              <option value="new">Other (Enter New Institution)</option>
+              <option value="new">Other (Add new institution)</option>
             </Form.Control>
-            {institutionId === 'new' && (
+            {formData.institutionId === 'new' && (
               <Form.Control
                 type="text"
-                placeholder="Enter New Institution"
-                value={newInstitution}
-                onChange={(e) => setNewInstitution(e.target.value)}
+                placeholder="New Institution Name"
+                value={formData.newInstitution}
+                onChange={handleChange}
+                name="newInstitution"
                 required
               />
             )}
           </Form.Group>
 
-          <Button variant="primary" type="submit">Register</Button>
+          <Button variant="primary" type="submit" >
+            Register
+          </Button>
         </Form>
       </div>
     </div>
   );
 };
+
+
+const ValidationMessage = ({ isValid, message }) => (
+  <p className={isValid ? 'text-success' : 'text-danger'}>
+    {isValid ? <FaCheckCircle /> : <FaTimesCircle />} {message}
+  </p>
+);
 
 export default SignUp;
