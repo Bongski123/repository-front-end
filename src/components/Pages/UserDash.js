@@ -18,17 +18,19 @@ const UserDashboard = () => {
       try {
         const decodedToken = jwtDecode(token);
         setEmail(decodedToken.email);
-        setRoleId(decodedToken.role_id);
+        setRoleId(decodedToken.roleId);
 
-        if (decodedToken.role_id !== 1) {
-          navigate('/user/dashboard');
+        // Redirect based on roleId: if admin, go to admin dashboard
+        if (decodedToken.roleId === 1) {
+          navigate('/admin/dashboard');
         }
       } catch (error) {
         console.error('Failed to decode token:', error);
+        navigate('/login'); // Redirect to login if token decoding fails
       }
     } else {
       console.warn('No token found in local storage.');
-      navigate('/login');
+      navigate('/login'); // Redirect to login if no token
     }
   }, [navigate]);
 
@@ -43,7 +45,6 @@ const UserDashboard = () => {
         <header className="dashboard-header">
           <h1>Welcome, {email || 'User'}!</h1>
         </header>
-       
         <UserDashContent />
       </main>
     </div>

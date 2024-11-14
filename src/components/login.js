@@ -110,12 +110,13 @@ const Login = () => {
       if (userExists) {
         // Decode the token to extract user information
         const decodedToken = jwtDecode(token);
-        const { roleId, userId } = decodedToken;
+        const { roleId, userId,picture } = decodedToken;
   
         // Store token and roleId in localStorage
         localStorage.setItem('token', token);
         localStorage.setItem('roleId', roleId);
         localStorage.setItem('userId', userId);
+        localStorage.setItem('picture', picture);
   
         // Store name if available
         localStorage.setItem('firstName', first_name || ''); // Default to empty string if undefined
