@@ -116,11 +116,10 @@ const SignUp = () => {
     const password = e.target.value;
     setFormData((prev) => ({ ...prev, password }));
   
-    const isPasswordValid = passwordRegex.test(password);
     setFormValidation((prev) => ({
       ...prev,
-      passwordValid: isPasswordValid,
-      confirmPasswordValid: isPasswordValid && password === formData.confirmPassword, // Update confirmPassword validation as well
+      passwordValid: passwordRegex.test(password),
+      confirmPasswordValid: password === formData.confirmPassword, // Ensure this updates when the password changes
     }));
   };
   
@@ -128,10 +127,9 @@ const SignUp = () => {
     const confirmPassword = e.target.value;
     setFormData((prev) => ({ ...prev, confirmPassword }));
   
-    const isConfirmPasswordValid = confirmPassword === formData.password;
     setFormValidation((prev) => ({
       ...prev,
-      confirmPasswordValid: isConfirmPasswordValid,
+      confirmPasswordValid: confirmPassword === formData.password, // Ensure this updates when confirmPassword changes
     }));
   };
   
@@ -199,6 +197,26 @@ const SignUp = () => {
 
   const isGboxEmail = formData.emailInput.endsWith('@gbox.ncf.edu.ph');
 
+  // ValidationMessage Component
+const ValidationMessage = ({ isValid, message }) => (
+  <p
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      margin: '5px 0',
+      color: isValid ? 'green' : 'red',
+      fontSize: '0.9rem',
+    }}
+  >
+    {isValid ? (
+      <FaCheckCircle style={{ marginRight: '5px', color: 'green' }} />
+    ) : (
+      <FaTimesCircle style={{ marginRight: '5px', color: 'red' }} />
+    )}
+    {message}
+  </p>
+);
+
   return (
     <div>
       <div className="login-background" style={{ backgroundImage: `url(${backgroundImages[bgImageIndex]})` }}></div>
@@ -234,24 +252,40 @@ const SignUp = () => {
 
           {!email && (
             <>
-             <Form.Group controlId="password">
-  <Form.Control
-    type="password"
-    placeholder="Password"
-    value={formData.password}
-    onChange={handlePasswordChange}
-    required
-    style={{ 
-      borderColor: formData.password && !formValidation.passwordValid ? 'red' : '', 
-      borderWidth: '2px' 
-    }}
-  />
-  {formData.password && !formValidation.passwordValid && (
-    <ValidationMessage 
-      isValid={formValidation.passwordValid} 
-      message="Password must be at least 8 characters long, include a capital letter, and a special character." 
+       <Form.Group controlId="password">
+  <div style={{ position: 'relative' }}>
+    <Form.Control
+      type="password"
+      placeholder="Password"
+      value={formData.password}
+      onChange={handlePasswordChange}
+      required
+      style={{
+        borderColor: formData.password && !formValidation.passwordValid ? 'red' : '',
+        borderWidth: '2px',
+        paddingRight: '30px', // To make space for the icon
+      }}
+    />
+    {formValidation.passwordValid && formData.password && (
+      <FaCheckCircle
+        style={{
+          position: 'absolute',
+          right: '10px',
+          top: '50%',
+          transform: 'translateY(-50%)',
+          color: 'green',
+        }}
+        
+      />
+      
+    )}
+     {formData.password && !formValidation.passwordValid && (
+    <ValidationMessage
+      isValid={formValidation.passwordValid}
+      message="Password must be at least 8 characters long, include a capital letter, and a special character."
     />
   )}
+  </div>
 </Form.Group>
 
 <Form.Group controlId="confirmPassword">
@@ -261,15 +295,23 @@ const SignUp = () => {
     value={formData.confirmPassword}
     onChange={handleConfirmPasswordChange}
     required
-    style={{ 
-      borderColor: formData.confirmPassword && !formValidation.confirmPasswordValid ? 'red' : '', 
-      borderWidth: '2px' 
+    style={{
+      borderColor: formData.confirmPassword
+        ? formValidation.confirmPasswordValid
+          ? 'green'
+          : 'red'
+        : '',
+      borderWidth: '2px',
     }}
   />
-  {formData.confirmPassword && !formValidation.confirmPasswordValid && (
-    <ValidationMessage 
-      isValid={formValidation.confirmPasswordValid} 
-      message="Passwords must match." 
+  {formData.confirmPassword && (
+    <ValidationMessage
+      isValid={formValidation.confirmPasswordValid}
+      message={
+        formValidation.confirmPasswordValid
+          ? 'Password is matched'
+          : 'Passwords must match.'
+      }
     />
   )}
 </Form.Group>
