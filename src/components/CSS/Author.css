@@ -1,17 +1,25 @@
 /* Authors.css */
-.author-title-bar {
-    text-align: center;
-  padding-left: 550px;
-    margin-bottom: 20px;
-    
-  }
-  
 
-
-  
-  .authors-container {
-    padding: 20px;
+.authors-card-title {
+  font-family: 'Outfit';
+  font-size: 1.5em;
+  font-weight: 400;
 }
+
+  /* Categories */
+.authors-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 10em;
+  font-family: 'Outfit', sans-serif;
+  padding-bottom: 0rem;
+}
+
+
+
+
+
 
 .author-item {
     display: flex;

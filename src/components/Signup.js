@@ -61,6 +61,8 @@ const SignUp = () => {
         setFormData((prev) => ({ ...prev, roleId: '2', institutionId: '16' }));
       } else if (formData.emailInput.endsWith('@ncf.edu.ph')) {
         setFormData((prev) => ({ ...prev, roleId: '3', institutionId: '16' }));
+      }else {
+        setFormData((prev) => ({ ...prev, roleId: '4', institutionId: '', userType: 'non-ncf-user' })); // Defaults for non-NCF users
       }
     };
     checkEmailDomain();
@@ -164,6 +166,7 @@ const SignUp = () => {
       program_id: formData.programId || null,
       institution_id: formData.institutionId,
       role_id: formData.roleId,
+      userType: formData.userType || 'non-ncf-user', // Include userType
       new_institution_name: formData.institutionId === 'new' ? formData.newInstitution : undefined,
       new_program_name: formData.programId === 'new' ? formData.newProgram : undefined,
     };
@@ -279,7 +282,7 @@ const SignUp = () => {
               as="select"
               value={formData.roleId}
               onChange={handleRoleChange}
-              disabled={isGboxEmail} // Disable if email is from gbox.ncf.edu.ph
+              disabled={isGboxEmail|| email} // Disable if email is from gbox.ncf.edu.ph
               required
             >
               <option value="">Select Role</option>
@@ -288,7 +291,9 @@ const SignUp = () => {
                   {role.role_name}
                 </option>
               ))}
+              
             </Form.Control>
+            
           </Form.Group>
 
           {formData.roleId === '2' && (

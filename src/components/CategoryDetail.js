@@ -24,9 +24,9 @@ export default function CategoryDetail() {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
             const data = await response.json();
-            console.log("Fetched Data:", data);
+            console.log("Category data:", data.category);
             setResearchItems(data.categoryDocuments || []); // Assuming your API returns this structure
-            setCategoryName(data.category_name || ""); // Assuming the API returns categoryName
+            setCategoryName(data.category?.category_name || ""); // Assuming category is an object
         } catch (error) {
             console.error("Error fetching research items:", error);
             setError(error.message);
@@ -59,7 +59,8 @@ export default function CategoryDetail() {
 
     return (
         <Container>
-            <h2> {category_name}</h2> {/* Display the category name */}
+<h1>{category_name}</h1>
+
             {/* Search bar */}
             <Form className="mb-3">
                 <Form.Group controlId="search">

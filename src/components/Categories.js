@@ -78,7 +78,9 @@ export default function Categories() {
 
             <Container>
                 <h2 className="category-card-title">Browse by Category</h2>
+             
                 <Form.Control
+                
                     type="text"
                     placeholder="Search categories..."
                     value={searchTerm}
