@@ -264,6 +264,12 @@ const ValidationMessage = ({ isValid, message }) => (
         borderColor: formData.password && !formValidation.passwordValid ? 'red' : '',
         borderWidth: '2px',
         paddingRight: '30px', // To make space for the icon
+        borderColor: formData.confirmPassword
+        ? formValidation.confirmPasswordValid
+          ? 'green'
+          : 'red'
+        : '',
+      borderWidth: '2px',
       }}
     />
     {formValidation.passwordValid && formData.password && (
