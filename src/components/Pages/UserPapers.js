@@ -26,23 +26,30 @@ const UserPaper = () => {
   const fetchResearches = async () => {
     setLoading(true);
     const userId = getCurrentUserId();
-
+  
     if (!userId) {
-      setError('No user ID found in local storage');
+      setError(''); // Empty message for no user ID
       setLoading(false);
       return;
     }
-
+  
     try {
       const response = await axios.get(`https://ccsrepo.onrender.com/user/researches/${userId}`);
-      setResearches(response.data.data || []);
-      setError(null);
+      if (response.status === 200) {
+        setResearches(response.data.data || []);
+        setError(''); // Clear any previous errors
+      } else if (response.status === 404) {
+        setResearches([]);
+        setError(''); // Clear any error message
+      }
     } catch (err) {
-      setError(`Error fetching research papers: ${err.message}`);
+      setResearches([]); // Clear data on error
+      setError(''); // Ensure error message is empty
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
     fetchResearches();
