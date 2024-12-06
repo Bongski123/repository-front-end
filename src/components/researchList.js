@@ -149,7 +149,7 @@ function ResearchList() {
               <option value="approved">Approved</option>
               <option value="pending">Pending</option>
               <option value="rejected">Rejected</option>
-              <option value="archived">Archived</option>
+
             </select>
           </label>
         </div>

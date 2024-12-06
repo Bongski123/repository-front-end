@@ -74,8 +74,8 @@ const Login = () => {
     } catch (error) {
       Swal.fire({
         icon: 'error',
-        title: 'Login Failed',
-        text: error.message || 'An error occurred during login. Please try again.'
+        title: 'Login Failed! ',
+        text:  'Check Email or Password'
       });
     } finally {
       setLoading(false);

@@ -2,15 +2,15 @@ import React, { useState, useEffect } from 'react';
 import './CSS/UserTable.css';
 import Sidebar from './Sidebar';
 import Button from 'react-bootstrap/Button';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate for redirection
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import { useNavigate } from 'react-router-dom';
+import Swal from 'sweetalert2';
 
 const UserTablePage = () => {
   const [users, setUsers] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate(); // Initialize the navigate function
+  const [isOpen, setIsOpen] = useState(false); // Sidebar is closed by default
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -68,7 +68,6 @@ const UserTablePage = () => {
   };
 
   const handleDelete = async (userId) => {
-    // Show a SweetAlert2 confirmation dialog
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: 'You won\'t be able to revert this!',
@@ -88,65 +87,53 @@ const UserTablePage = () => {
           throw new Error('Failed to delete user');
         }
 
-        // Show success message if user is deleted successfully
-        Swal.fire(
-          'Deleted!',
-          'The user has been deleted.',
-          'success'
-        );
-
-        // Reload the user list after deletion
+        Swal.fire('Deleted!', 'The user has been deleted.', 'success');
         fetchUsers();
       } catch (error) {
         console.error('Error deleting user:', error.message);
-        // Show error message if there is a failure in deletion
-        Swal.fire(
-          'Error!',
-          'There was a problem deleting the user.',
-          'error'
-        );
+        Swal.fire('Error!', 'There was a problem deleting the user.', 'error');
       }
     }
   };
 
-  // Redirects to the Signup page when "Add User" button is clicked
   const handleAddUserRedirect = () => {
-    navigate('/signup'); // Redirect to the signup page
+    navigate('/signup');
   };
 
   return (
-    <div className="user-table-container">
+    <div className={`user-table-wrapper ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
       <Sidebar toggleSidebar={toggleSidebar} />
-      <h2>User Management</h2>
-      <Button variant="success" onClick={handleAddUserRedirect}>Add User</Button> {/* Button now redirects to Signup */}
-      
-      <table>
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Full Name</th>
-            <th>Email</th>
-            <th>Role</th>
-            <th>Institution</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody>
-          {users.map(user => (
-            <tr key={user.user_id}>
-              <td>{user.user_id}</td>
-              <td>{user.name}</td>
-              <td>{user.email}</td>
-              <td>{user.role_name}</td>
-              <td>{user.institution}</td>
-              <td>
-                <Button variant="primary" onClick={() => handleEdit(user.user_id)}>Edit</Button>
-                <Button variant="danger" onClick={() => handleDelete(user.user_id)}>Delete</Button>
-              </td>
+      <div className="user-table-content">
+        <h2>User Management</h2>
+        <Button variant="success" onClick={handleAddUserRedirect}>Add User</Button>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Full Name</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Institution</th>
+              <th>Action</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {users.map(user => (
+              <tr key={user.user_id}>
+                <td>{user.user_id}</td>
+                <td>{user.full_name}</td>
+                <td>{user.email}</td>
+                <td>{user.role_name}</td>
+                <td>{user.institution}</td>
+                <td>
+                  <Button variant="primary" onClick={() => handleEdit(user.user_id)}>Edit</Button>
+                  <Button variant="danger" onClick={() => handleDelete(user.user_id)}>Delete</Button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

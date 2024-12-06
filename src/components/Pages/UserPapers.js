@@ -6,116 +6,134 @@ import Swal from 'sweetalert2';
 import UserSidebar from '../UserSidebar';
 import '../CSS/UserPaper.css';
 
-const getCurrentUserId = () => {
-  return localStorage.getItem('userId');
-};
+const getCurrentUserId = () => localStorage.getItem('userId');
 
 const UserPaper = () => {
   const [researches, setResearches] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
-  const [selectedResearch, setSelectedResearch] = useState(null);
-  const [abstract, setAbstract] = useState('');
-  const [showModal, setShowModal] = useState(false);
+  const [modalState, setModalState] = useState({
+    show: false,
+    selectedResearch: null,
+    abstract: '',
+  });
+  const [selectedFile, setSelectedFile] = useState(null);
 
   const navigate = useNavigate();
 
+  // Fetch user research papers
+  const fetchResearches = async () => {
+    setLoading(true);
+    const userId = getCurrentUserId();
+
+    if (!userId) {
+      setError('No user ID found in local storage');
+      setLoading(false);
+      return;
+    }
+
+    try {
+      const response = await axios.get(`https://ccsrepo.onrender.com/user/researches/${userId}`);
+      setResearches(response.data.data || []);
+      setError(null);
+    } catch (err) {
+      setError(`Error fetching research papers: ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   useEffect(() => {
-    const fetchResearches = async () => {
-      setLoading(true);
-      const userId = getCurrentUserId();
-      if (!userId) {
-        setError('No user ID found in local storage');
-        setLoading(false);
-        return;
-      }
-
-      try {
-        const response = await axios.get(`https://ccsrepo.onrender.com/user/researches/${userId}`);
-        setResearches(response.data.data);
-      } catch (err) {
-        if (err.response && err.response.status === 404) {
-          setResearches([]);
-          setError(null);
-        } else {
-          setError(`Error fetching research papers: ${err.message}`);
-        }
-      } finally {
-        setLoading(false);
-      }
-    };
-
     fetchResearches();
   }, []);
 
-  const toggleSidebar = () => {
-    setIsSidebarVisible(!isSidebarVisible);
-  };
+  const toggleSidebar = () => setIsSidebarVisible((prev) => !prev);
 
-  const handleEditPdfClick = (researchId) => {
-    navigate(`/edit-pdf/${researchId}`);
-  };
+  const handleFileChange = (event) => setSelectedFile(event.target.files[0]);
 
-  const handleAbstractChange = (event) => {
-    setAbstract(event.target.value);
+  const handleReuploadFile = async (researchId) => {
+    if (!selectedFile) {
+      Swal.fire({
+        icon: 'error',
+        title: 'No File Selected',
+        text: 'Please select a file to upload.',
+        confirmButtonText: 'OK',
+      });
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', selectedFile);
+
+    try {
+      const response = await axios.post(
+        `https://ccsrepo.onrender.com/research/${researchId}/upload`,
+        formData,
+        { headers: { 'Content-Type': 'multipart/form-data' } }
+      );
+
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'File Uploaded',
+          text: 'Your file has been successfully reuploaded.',
+          confirmButtonText: 'OK',
+        });
+        setSelectedFile(null);
+        fetchResearches();
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Upload Failed',
+        text: `Failed to upload file: ${err.message}`,
+        confirmButtonText: 'OK',
+      });
+    }
   };
 
   const handleSaveAbstract = async () => {
-    console.log("Attempting to save abstract...");
-  
+    const { selectedResearch, abstract } = modalState;
+
     try {
       const response = await axios.put(
         `https://ccsrepo.onrender.com/research/${selectedResearch.research_id}/abstract`,
         { abstract }
       );
-  
+
       if (response.status === 202) {
-        console.log("Abstract updated successfully!");
-  
-        // Show success alert using SweetAlert2
-        await Swal.fire({
+        Swal.fire({
           icon: 'success',
           title: 'Success',
           text: 'Abstract updated successfully!',
-          confirmButtonText: 'OK'
+          confirmButtonText: 'OK',
         });
-  
-        // Optionally, trigger a browser notification
-        if (Notification.permission === 'granted') {
-          new Notification('Abstract Updated', {
-            body: 'Your research abstract has been successfully updated.',
-            icon: 'https://example.com/success-icon.png', // Optional icon
-          });
-        }
-  
-        // Close the modal after showing the alert
-        setShowModal(false);
-      } else {
-        throw new Error('Failed to update abstract');
+        setModalState({ ...modalState, show: false });
+        fetchResearches();
       }
     } catch (err) {
-      console.error("Error updating abstract:", err.message);
-      setError(`Error updating abstract: ${err.message}`);
-  
-      // Show error alert
-      await Swal.fire({
+      Swal.fire({
         icon: 'error',
         title: 'Error',
         text: `Failed to update abstract: ${err.message}`,
-        confirmButtonText: 'OK'
+        confirmButtonText: 'OK',
       });
     }
   };
 
   const openModal = (research) => {
-    setSelectedResearch(research);
-    setAbstract(research.abstract || '');
-    setShowModal(true);
+    setModalState({
+      show: true,
+      selectedResearch: research,
+      abstract: research.abstract || '',
+    });
   };
 
+  const closeModal = () => setModalState({ ...modalState, show: false });
+
   return (
-    <div className="container">
+    <div className="containers">
       <UserSidebar isOpen={isSidebarVisible} toggleSidebar={toggleSidebar} />
       <main className={`content ${isSidebarVisible ? 'with-sidebar' : 'full-width'}`}>
         <header className="header">
@@ -127,61 +145,37 @@ const UserPaper = () => {
           </div>
         ) : error ? (
           <p className="error">{error}</p>
-        ) : researches.length > 0 ? (
-          <table className="research-table">
-            <thead>
-              <tr>
-                <th>Title</th>
-                <th>Status</th>
-                <th>Published On</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {researches.map((research) => (
-                <tr key={research.research_id}>
-                  <td>{research.title}</td>
-                  <td>{research.status}</td>
-                  <td>{new Date(research.publish_date).toLocaleDateString()}</td>
-                  <td>
-                    <Button variant="primary" onClick={() => handleEditPdfClick(research.research_id)}>
-                      Edit PDF
-                    </Button>{' '}
-                    <Button variant="secondary" onClick={() => openModal(research)}>
-                      Edit Abstract
-                    </Button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
         ) : (
-          <p>Research Paper is empty</p>
+          <>
+            {researches.length > 0 ? (
+              <table className="research-table">
+                <thead>
+                  <tr>
+                    <th>Title</th>
+                    <th>Status</th>
+                    <th>Published On</th>
+        
+                  </tr>
+                </thead>
+                <tbody>
+                  {researches.map((research) => (
+                    <tr key={research.research_id}>
+                      <td>{research.title}</td>
+                      <td>{research.status}</td>
+                      <td>{new Date(research.publish_date).toLocaleDateString()}</td>
+                      
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            ) : (
+              <p>No research papers found.</p>
+            )}
+          </>
         )}
       </main>
 
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
-        <Modal.Header closeButton>
-          <Modal.Title>Edit Abstract</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <textarea
-            className="form-control"
-            value={abstract}
-            onChange={handleAbstractChange}
-            rows="5"
-            placeholder="Enter the updated abstract here..."
-          />
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="primary" onClick={handleSaveAbstract}>
-            Save
-          </Button>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancel
-          </Button>
-        </Modal.Footer>
-      </Modal>
+      
     </div>
   );
 };

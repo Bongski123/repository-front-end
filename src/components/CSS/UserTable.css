@@ -1,45 +1,29 @@
-
-  table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-top: 20px;
-    
-  }
-  
-  th, td {
-    border: 1px solid #ddd;
-    padding: 8px;
-    text-align: left;
-    
-  }
-  
-  th {
-    background-color: #f2f2f2;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  tr:hover {
-    background-color: #ddd;
-  }
-  /* UserTable.css */
-.user-table-container {
-  margin: 20px;
-  padding: 20px;
-  max-width: 100%; /* Ensures it takes up the available space */
-  overflow-x: auto; /* Makes the table scrollable horizontally if needed */
-  padding-left: 250px;
+/* UserTableWrapper Adjustments */
+.user-table-wrapper {
+  display: flex;
+  height: 100vh;
+  flex-direction: column; /* Default to column for smaller screens */
 }
 
+/* Sidebar and content adjustments for different screen sizes */
+.sidebar-open .user-table-content {
+  margin-left: 250px; /* Adjust based on sidebar width */
+  transition: margin 0.3s ease;
+}
+
+.sidebar-closed .user-table-content {
+  margin-left: 50px; /* Adjust based on collapsed sidebar width */
+  transition: margin 0.3s ease;
+}
+
+/* Table Styling */
 table {
   width: 100%; /* Ensures the table takes up the full container width */
   border-collapse: collapse;
 }
 
 th, td {
-  padding: 15px;
+  padding: 10px; /* Reduced padding for compactness */
   text-align: left;
   border-bottom: 1px solid #ddd;
   white-space: nowrap; /* Prevents text from wrapping */
@@ -54,5 +38,83 @@ tbody tr:hover {
 }
 
 button {
-  margin-right: 10px;
+  font-size: 0.8rem; /* Smaller button text for a more compact layout */
+  margin-right: 8px;
+  padding: 5px 10px;
+}
+
+/* Table Container Adjustments */
+.user-table-container {
+  margin: 20px;
+  padding: 20px;
+  max-width: 100%; /* Ensures it takes up the available space */
+  overflow-x: auto; /* Makes the table scrollable horizontally if needed */
+  transition: padding-left 0.3s ease; /* Smooth transition for padding change */
+}
+
+/* Sidebar specific CSS */
+.sidebar-open .user-table-container {
+  padding-left: 250px; /* Adjust this based on the sidebar width when open */
+}
+
+.sidebar-closed .user-table-container {
+  padding-left: 50px; /* Adjust for collapsed sidebar */
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  /* Stack the layout vertically for smaller screens */
+  .user-table-wrapper {
+    flex-direction: column; /* Column layout on smaller screens */
+  }
+
+  .sidebar-open .user-table-content {
+    margin-left: 0; /* Remove margin when the sidebar is open on smaller screens */
+  }
+
+  .sidebar-closed .user-table-content {
+    margin-left: 0; /* Ensure no margin when sidebar is collapsed */
+  }
+
+  .user-table-container {
+    padding-left: 0; /* No padding for small screens */
+  }
+
+  /* Sidebar styling for mobile */
+  .sidebar {
+    width: 100%; /* Make sidebar take full width for mobile */
+    position: fixed; /* Fixed positioning for better mobile handling */
+    top: 0;
+    left: 0;
+    bottom: 0;
+    z-index: 1000; /* Ensures it stays on top */
+    transition: transform 0.3s ease;
+    transform: translateX(-100%); /* Initially off-screen */
+  }
+
+  .sidebar-open .sidebar {
+    transform: translateX(0); /* Slide in the sidebar */
+  }
+
+  .toggle-sidebar-button {
+    position: fixed; /* Button stays on top for mobile */
+    top: 15px;
+    left: 15px;
+    z-index: 1001; /* Ensure button stays above other content */
+  }
+}
+
+/* For tablets, adjust as needed */
+@media (max-width: 1024px) {
+  .user-table-wrapper {
+    flex-direction: row; /* Row layout for tablets */
+  }
+
+  .sidebar-open .user-table-content {
+    margin-left: 200px; /* Slightly reduced margin for tablets */
+  }
+
+  .sidebar-closed .user-table-content {
+    margin-left: 70px; /* Adjust for smaller collapsed sidebar */
+  }
 }
