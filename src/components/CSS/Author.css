@@ -102,15 +102,6 @@ h3 {
   text-align: center;
 }
 
-.search-input {
-  width: 100%;
-  max-width: 400px;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-}
 .spinner-container {
   display: flex;
   justify-content: center;
@@ -121,8 +112,8 @@ h3 {
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #008000; /* Green color */
+  border: 4px solid rgba(11, 98, 11, 0.467); /* Light green */
+  border-top: 4px solid #0e490e; /* Green color */
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }

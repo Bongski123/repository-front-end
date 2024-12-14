@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./CSS/details.css";
 import CitationGeneratorDropdown from './citationGenerator';
 import Swal from 'sweetalert2';
-
+import pdficon from '../assets/pdf-icon.png'
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 function Details() {
@@ -25,7 +25,6 @@ function Details() {
     const [downloadCount, setDownloadCount] = useState(0);
     const [citationCount, setCitationCount] = useState(0);
 
-    // Using useRef to track if view count has been incremented
     const hasIncremented = useRef(false);
 
     useEffect(() => {
@@ -68,18 +67,17 @@ function Details() {
         const token = localStorage.getItem('token');
         setIsLoggedIn(!!token);
 
-        // Increment view count on page load if it hasn't been incremented in this session
         const viewedKey = `viewed_${result?.research_id}`;
         if (result?.research_id && !hasIncremented.current && !sessionStorage.getItem(viewedKey)) {
             incrementViewCount(viewedKey);
-            hasIncremented.current = true;  // Mark as incremented to prevent re-increments
+            hasIncremented.current = true;
         }
     }, [result]);
 
     const incrementViewCount = async (viewedKey) => {
         try {
             await axios.post(`https://ccsrepo.onrender.com/research/view/${result.research_id}`);
-            sessionStorage.setItem(viewedKey, "true");  // Store view status in session storage
+            sessionStorage.setItem(viewedKey, "true");
         } catch (error) {
             console.error("Error incrementing view count:", error);
         }
@@ -163,9 +161,20 @@ function Details() {
         }
     };
 
+    const handleRequestPDF = () => {
+        navigate("/requestpdf", { 
+            state: { 
+                researchTitle: result.title, 
+                authorName: result.authors, 
+                researchId: result.research_id, 
+                authorEmail: result.author_emails 
+            } 
+        });
+    };
+
     const formatDate = (dateString) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString();  // Change format as needed
+        return date.toLocaleDateString();
     };
 
     return (
@@ -173,16 +182,12 @@ function Details() {
             <Row>
                 <Col md={6}>
                     <div className="details-section">
-                        <h3>
-                        <div>
-    <h3>{result.title}</h3>
-    {result.publish_date && (
-        <p className="text-muted ml-1 smaller-date">
-            <strong>Published on:</strong> {formatDate(result.publish_date)}
-        </p>
-    )}
-                           </div> 
-                        </h3>
+                        <h3>{result.title}</h3>
+                        {result.publish_date && (
+                            <p className="text-muted ml-1 smaller-date">
+                                <strong>Published on:</strong> {formatDate(result.publish_date)}
+                            </p>
+                        )}
                         <div className="research-info">
                             <p className="label">
                                 <strong>Authors:</strong> <span>{result.authors}</span>
@@ -198,40 +203,48 @@ function Details() {
                             </p>
                         </div>
                         <div className="button-group">
-                            <Button variant="info" onClick={handleCite} className="cite-button">
-                                Cite
-                            </Button>
-                            <Button variant="success" onClick={handleAddToCollection} className="add-to-collection-button">
-                                Add to Collection
-                            </Button>
+                            <Button variant="info" onClick={handleCite} className="cite-button">Cite</Button>
+                            <Button variant="success" onClick={handleAddToCollection} className="add-to-collection-button">Add to Collection</Button>
                         </div>
                     </div>
                 </Col>
                 <Col md={6}>
                     <div className="pdf-section">
-                        <Button variant="primary" onClick={handleDownload} className="download-button mb-2">
-                            Download 
-                        </Button>
-                        {loading ? (
-                            <p>Loading...</p>
-                        ) : error ? (
-                            <p>{error}</p>
+                        
+                        {result.file_privacy === "public" ? (
+                            loading ? (
+                                <div className="loader"></div>
+                            ) : error ? (
+                                <p>{error}</p>
+                            ) : ( 
+                                <div className="pdf-container" style={{ height: "600px", overflowY: "auto" }}>
+                                      {/* Download Button */}
+                                      <Button className="download-btn" onClick={handleDownload}>Download PDF</Button>
+                                    <Document
+                                        file={pdfBlobUrl}
+                                        onLoadSuccess={onDocumentLoadSuccess}
+                                        className="pdf-document"
+                                    >
+                                        {Array.from(new Array(numPages), (el, index) => (
+                                            <Page
+                                                key={`page_${index + 1}`}
+                                                pageNumber={index + 1}
+                                                renderTextLayer={false}
+                                                width={500}
+                                            />
+                                        ))}
+                                    </Document>
+                        
+                                  
+
+                                    
+                                </div>
+                            )
                         ) : (
-                            <div className="pdf-container" style={{ height: '600px', overflowY: 'auto' }}>
-                                <Document
-                                    file={pdfBlobUrl}
-                                    onLoadSuccess={onDocumentLoadSuccess}
-                                    className="pdf-document"
-                                >
-                                    {Array.from(new Array(numPages), (el, index) => (
-                                        <Page
-                                            key={`page_${index + 1}`}
-                                            pageNumber={index + 1}
-                                            renderTextLayer={false}
-                                            width={500}
-                                        />
-                                    ))}
-                                </Document>
+                            <div className="private-file-section">
+                                <img src={pdficon} alt="PDF icon" style={{ width: "100px" }} />
+                                <p>To read the full-text of this research, you can request a copy directly from the authors.</p>
+                                <Button variant="primary" onClick={handleRequestPDF}>Request full-text PDF</Button>
                             </div>
                         )}
                     </div>
@@ -248,9 +261,7 @@ function Details() {
                     <CitationGeneratorDropdown result={result} />
                 </Modal.Body>
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={handleCloseCitationModal}>
-                        Close
-                    </Button>
+                    <Button variant="secondary" onClick={handleCloseCitationModal}>Close</Button>
                 </Modal.Footer>
             </Modal>
         </Container>

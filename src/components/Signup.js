@@ -164,7 +164,7 @@ const SignUp = () => {
       program_id: formData.programId || null,
       institution_id: formData.institutionId,
       role_id: formData.roleId,
-      userType: formData.userType || 'non-ncf-user', // Include userType
+     
       new_institution_name: formData.institutionId === 'new' ? formData.newInstitution : undefined,
       new_program_name: formData.programId === 'new' ? formData.newProgram : undefined,
     };
@@ -343,69 +343,73 @@ const ValidationMessage = ({ isValid, message }) => (
             </Form.Control>
             
           </Form.Group>
-
           {formData.roleId === '2' && (
-            <Form.Group controlId="program">
-    
-              <Form.Control
-                as="select"
-                value={formData.programId}
-                onChange={handleChange}
-                name="programId"
-                required
-              >
-                <option value="">Select Program</option>
-                {programs.map((program) => (
-                  <option key={program.program_id} value={program.program_id}>
-                    {program.program_name}
-                  </option>
-                ))}
-                <option value="new">Other (Add new program)</option>
-              </Form.Control>
-              {formData.programId === 'new' && (
-                <Form.Control
-                  type="text"
-                  placeholder="New Program Name"
-                  value={formData.newProgram}
-                  onChange={handleChange}
-                  name="newProgram"
-                  required
-                />
-              )}
-            </Form.Group>
-          )}
+  <Form.Group controlId="program">
+    <Form.Control
+      as="select"
+      value={formData.programId}
+      onChange={handleChange}
+      name="programId"
+      required
+    >
+      <option value="">Select Program</option>
+      {programs.map((program) => (
+        <option key={program.program_id} value={program.program_id}>
+          {program.program_name}
+        </option>
+      ))}
+      <option value="new">Other (Add new program)</option>
+    </Form.Control>
+    {formData.programId === 'new' && (
+      <Form.Control
+        type="text"
+        placeholder="New Program Name"
+        value={formData.newProgram}
+        onChange={handleChange}
+        name="newProgram"
+        required={formData.programId === 'new'} // New program name is required if "Other" is selected
+      />
+    )}
+    {formData.programId === 'new' && !formData.newProgram && (
+      <Form.Text className="text-danger">New program name is required.</Form.Text>
+    )}
+  </Form.Group>
+)}
 
-          <Form.Group controlId="institution">
+<Form.Group controlId="institution">
+  <Form.Control
+    as="select"
+    value={formData.institutionId}
+    onChange={handleChange}
+    name="institutionId"
+    disabled={isGboxEmail} // Disable if email is from gbox.ncf.edu.ph
+    required
+  >
+    <option value="">Select Institution</option>
+    {institutions.map((institution) => (
+      <option key={institution.institution_id} value={institution.institution_id}>
+        {institution.institution_name}
+      </option>
+    ))}
+    <option value="new">Other (Add new institution)</option>
+  </Form.Control>
+  {formData.institutionId === 'new' && (
+    <Form.Control
+      type="text"
+      placeholder="New Institution Name"
+      value={formData.newInstitution}
+      onChange={handleChange}
+      name="newInstitution"
+      required={formData.institutionId === 'new'} // New institution name is required if "Other" is selected
+    />
+  )}
+  {formData.institutionId === 'new' && !formData.newInstitution && (
+    <Form.Text className="text-danger">New institution name is required.</Form.Text>
+  )}
+</Form.Group>
 
-            <Form.Control
-              as="select"
-              value={formData.institutionId}
-              onChange={handleChange}
-              name="institutionId"
-              disabled={isGboxEmail} // Disable if email is from gbox.ncf.edu.ph
-              required
-            >
-              <option value="">Select Institution</option>
-              {institutions.map((institution) => (
-                <option key={institution.institution_id} value={institution.institution_id}>
-                  {institution.institution_name}
-                </option>
-              ))}
-              <option value="new">Other (Add new institution)</option>
-            </Form.Control>
-            {formData.institutionId === 'new' && (
-              <Form.Control
-                type="text"
-                placeholder="New Institution Name"
-                value={formData.newInstitution}
-                onChange={handleChange}
-                name="newInstitution"
-                required
-              />
-            )}
-          </Form.Group>
 
-          <Button variant="primary" type="submit" >
+          <Button className='sign-up-btn'  type="submit" >
             Register
           </Button>
         </Form>

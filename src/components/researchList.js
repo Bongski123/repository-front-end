@@ -1,13 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Sidebar from './Sidebar'; // Import the Sidebar component
+import 'bootstrap/dist/css/bootstrap.min.css'; // Import Bootstrap CSS
 
 const containerStyle = {
-  display: 'row', // Use flexbox for layout
+  display: 'flex', // Use flexbox for layout
   padding: '20px',
   fontFamily: 'Arial, sans-serif',
-  padingLeft: '200px',
-  marginLeft: '250px'
+  paddingLeft: '200px',
+  marginLeft: '60px',
 };
 
 const headerStyle = {
@@ -16,34 +17,6 @@ const headerStyle = {
   borderBottom: '2px solid #ddd',
   paddingBottom: '10px',
   width: '100%', // Ensure header takes full width
-};
-
-const tableStyle = {
-  width: '80%', // Adjust width to create space for the sidebar
-  borderCollapse: 'collapse',
-  margin: '20px 0',
-  marginLeft: '20px', // Add left margin to move the table to the right
-};
-
-const thStyle = {
-  backgroundColor: '#f4f4f4',
-  padding: '10px',
-  borderBottom: '2px solid #ddd',
-};
-
-const tdStyle = {
-  padding: '10px',
-  borderBottom: '1px solid #ddd',
-};
-
-const linkStyle = {
-  color: '#007BFF',
-  textDecoration: 'none',
-};
-
-const errorStyle = {
-  color: 'red',
-  fontWeight: 'bold',
 };
 
 // Define status styles
@@ -64,6 +37,14 @@ const statusStyle = {
     color: 'gray',
     fontWeight: 'bold',
   },
+};
+
+// Define styles for title column to apply ellipsis and set width
+const titleColumnStyle = {
+  whiteSpace: 'nowrap',  // Prevent text from wrapping
+  overflow: 'hidden',    // Hide overflowing text
+  textOverflow: 'ellipsis', // Add ellipsis for overflowing text
+  maxWidth: '200px', // Limit the width of the title column
 };
 
 function ResearchList() {
@@ -127,12 +108,10 @@ function ResearchList() {
           placeholder="Search by title..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
+          className="form-control" // Bootstrap form control class
           style={{
             margin: '10px 0',
-            padding: '5px',
             fontSize: '1rem',
-            border: '1px solid #ccc',
-            borderRadius: '4px',
           }}
         />
 
@@ -143,43 +122,41 @@ function ResearchList() {
             <select
               value={statusFilter}
               onChange={(e) => setStatusFilter(e.target.value)}
-              style={{ marginLeft: '10px', padding: '5px', fontSize: '1rem' }}
+              className="form-select" // Bootstrap form select class
+              style={{ marginLeft: '10px', fontSize: '1rem' }}
             >
               <option value="">All</option>
               <option value="approved">Approved</option>
               <option value="pending">Pending</option>
               <option value="rejected">Rejected</option>
-
             </select>
           </label>
         </div>
 
         {/* Loading and Error Messages */}
         {loading && <p>Loading...</p>}
-        {error && <p style={errorStyle}>Error: {error}</p>}
+        {error && <p style={{ color: 'red', fontWeight: 'bold' }}>Error: {error}</p>}
 
         {/* Research Table */}
-        <table style={tableStyle}>
+        <table className="table table-striped table-bordered"> {/* Bootstrap table classes */}
           <thead>
             <tr>
-              <th style={thStyle}>Title</th>
-              <th style={thStyle}>Status</th>
-              <th style={thStyle}>Authors</th>
-              <th style={thStyle}>Actions</th>
+              <th>Title</th>
+              <th>Status</th>
+              <th>Authors</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             {currentResearches.map((research) => (
               <tr key={research.research_id}>
-                <td style={tdStyle}>{research.title}</td>
-                <td style={tdStyle}>
+                <td style={titleColumnStyle}>{research.title}</td>
+                <td>
                   <span style={statusStyle[research.status] || {}}>{research.status}</span>
                 </td>
-                <td style={tdStyle}>
-                  {research.authors || 'No authors available'}
-                </td>
-                <td style={tdStyle}>
-                  <a href={`/research/${research.research_id}`} style={linkStyle}>
+                <td>{research.authors || 'No authors available'}</td>
+                <td>
+                  <a href={`/research/${research.research_id}`} className="btn btn-primary btn-sm">
                     View Details
                   </a>
                 </td>
@@ -194,14 +171,9 @@ function ResearchList() {
             <button
               key={index + 1}
               onClick={() => handleClick(index + 1)}
+              className={`btn btn-sm ${currentPage === index + 1 ? 'btn-primary' : 'btn-secondary'}`}
               style={{
                 margin: '0 5px',
-                padding: '5px 10px',
-                cursor: 'pointer',
-                backgroundColor: currentPage === index + 1 ? '#007BFF' : '#f4f4f4',
-                color: currentPage === index + 1 ? '#fff' : '#000',
-                border: '1px solid #ddd',
-                borderRadius: '4px',
               }}
             >
               {index + 1}

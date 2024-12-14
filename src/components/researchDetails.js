@@ -49,6 +49,10 @@ const styles = {
     backgroundColor: 'red',
     color: 'white',
   },
+  deleteButton: {
+    backgroundColor: 'darkred',
+    color: 'white',
+  },
   modalContent: {
     padding: '20px',
     width: '100%',
@@ -82,6 +86,13 @@ const styles = {
   error: {
     color: 'red',
   },
+  zoomButtons: {
+    marginTop: '10px',
+  },
+  zoomButton: {
+    padding: '5px 10px',
+    marginRight: '10px',
+  },
 };
 
 const rejectionReasons = [
@@ -113,6 +124,7 @@ function ResearchDetail() {
   const [rejectionReason, setRejectionReason] = useState('');
   const [numPages, setNumPages] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [zoom, setZoom] = useState(1.0); // Initial zoom level
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
 
   useEffect(() => {
@@ -186,12 +198,9 @@ function ResearchDetail() {
       });
       return;
     }
-  
+
     try {
-      console.log("Sending rejection reason:", rejectionReason); // Debugging log
       const response = await axios.patch(`https://ccsrepo.onrender.com/research/reject/${research_id}`, { reason: rejectionReason });
-      console.log("Server response:", response); // Debugging log
-  
       Swal.fire({
         title: 'Rejected!',
         text: 'Research rejected successfully.',
@@ -201,7 +210,6 @@ function ResearchDetail() {
       setRejectionModalVisible(false);
       setRejectionReason('');
     } catch (err) {
-      console.error("Error during rejection:", err); // Debugging log
       Swal.fire({
         title: 'Error!',
         text: `Error: ${err.message}`,
@@ -244,125 +252,122 @@ function ResearchDetail() {
     }
   };
 
-  if (loading) {
-    return <p style={styles.loading}>Loading...</p>;
-  }
+  const handleZoomIn = () => setZoom(zoom + 0.25); // Increase zoom
+  const handleZoomOut = () => setZoom(zoom - 0.25); // Decrease zoom
 
-  if (error) {
+  const handleDelete = async () => {
+    const confirmDelete = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This action will delete the research and associated records.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, delete it!',
+      cancelButtonText: 'Cancel',
+    });
+  
+    if (confirmDelete.isConfirmed) {
+      try {
+        await axios.delete(`https://ccsrepo.onrender.com/delete-research/${research_id}`);
+        // Show success Swal and handle redirect after it is closed
+        Swal.fire({
+          title: 'Deleted!',
+          text: 'Research and associated records deleted successfully.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+        }).then(() => {
+          // After user clicks 'OK', redirect to research list
+          window.location.href = '/researchList'; // Replace with your actual URL
+        });
+      } catch (err) {
+        Swal.fire({
+          title: 'Error!',
+          text: `Error: ${err.message}`,
+          icon: 'error',
+          confirmButtonText: 'OK',
+        });
+      }
+    }
+  };
+
+  if (loading) {
     return (
-      <div style={styles.error}>
-        <p>Error: {error}</p>
-        <button onClick={() => fetchPDF(research.research_id)}>Retry</button>
+      <div style={styles.loading}>
+        <p>Loading research details...</p>
       </div>
     );
   }
 
   return (
     <div style={styles.container}>
-      <h1 style={styles.header}>Research Detail</h1>
-      {isSidebarVisible && <Sidebar />}
-
-      {research ? (
+      <Sidebar isVisible={isSidebarVisible} />
+      <h2 style={styles.header}>Research Detail</h2>
+      {error && <p style={styles.error}>{error}</p>}
+      {research && (
         <div>
-          <section style={styles.section}>
-            <table style={styles.table}>
-              <thead>
-                <tr>
-                  <th style={styles.th}>Field</th>
-                  <th style={styles.th}>Details</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td style={styles.td}><strong>Title:</strong></td>
-                  <td style={styles.td}>{research.title || 'No title available'}</td>
-                </tr>
-                <tr>
-                  <td style={styles.td}><strong>Status:</strong></td>
-                  <td style={styles.td}>{research.status || 'No status available'}</td>
-                </tr>
-                <tr>
-                  <td style={styles.td}><strong>Abstract:</strong></td>
-                  <td style={{ ...styles.td, maxWidth: '800px', whiteSpace: 'normal' }}>
-                    {research.abstract || 'No abstract available'}
-                  </td>
-                </tr>
-                <tr>
-                  <td style={styles.td}><strong>Keywords:</strong></td>
-                  <td style={styles.td}>{(research.keywords || '').split(', ').join(', ') || 'No keywords available'}</td>
-                </tr>
-                <tr>
-                  <td style={styles.td}><strong>Authors:</strong></td>
-                  <td style={styles.td}>
-                    {Array.isArray(research.authors) ? 
-                      research.authors.join(', ') : 
-                      (typeof research.authors === 'string' ? research.authors : 'No authors available')}
-                  </td>
-                </tr>
-                <tr>
-                  <td style={styles.td}><strong>Category:</strong></td>
-                  <td style={styles.td}>{research.categories || 'No category available'}</td>
-                </tr>
-              </tbody>
-            </table>
-          </section>
-
+          <div style={styles.section}>
+            <h3>Title: {research.title}</h3>
+            <p><strong>Abstract:</strong> {research.abstract}</p>
+            <p><strong>Category:</strong> {research.categories}</p>
+            <p><strong>Keywords:</strong> {research.keywords}</p>
+            <p><strong>Published on:</strong> {research.publish_date}</p>
+            <p><strong>Status:</strong> {research.status}</p>
+           
+          </div>
           <div style={styles.buttonContainer}>
-            <button style={{ ...styles.button, ...styles.approveButton }} onClick={handleApprove}>
-              Approve
-            </button>
-            <button style={{ ...styles.button, ...styles.rejectButton }} onClick={handleRejectOpen}>
-              Reject
-            </button>
-            <button style={styles.button} onClick={openPdfModal}>
-              View PDF
-            </button>
+          <button onClick={openPdfModal} style={styles.button}>Open PDF</button>
+            <button onClick={handleApprove} style={{ ...styles.button, ...styles.approveButton }}>Approve</button>
+            <button onClick={handleRejectOpen} style={{ ...styles.button, ...styles.rejectButton }}>Reject</button>
+            <button onClick={handleDelete} style={{ ...styles.button, ...styles.deleteButton }}>Delete</button>
           </div>
 
+          {/* PDF Modal */}
           <Modal isOpen={pdfModalVisible} onRequestClose={handlePdfModalClose}>
             <div style={styles.modalContent}>
-              <h2>PDF Preview</h2>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px' }}>
-                <button onClick={goToPreviousPage} disabled={currentPage <= 1}>Previous</button>
-                <span>Page {currentPage} of {numPages}</span>
-                <button onClick={goToNextPage} disabled={currentPage >= numPages}>Next</button>
+            <div>
+                <button onClick={goToPreviousPage} disabled={currentPage === 1}>Previous</button>
+                <span>{currentPage} / {numPages}</span>
+                <button onClick={goToNextPage} disabled={currentPage === numPages}>Next</button>
               </div>
+              <h2>PDF Viewer</h2>
               {pdfBlobUrl && (
-                <Document file={pdfBlobUrl} onLoadSuccess={handleDocumentLoadSuccess}>
-                  <Page pageNumber={currentPage} />
+                <Document
+                  file={pdfBlobUrl}
+                  onLoadSuccess={handleDocumentLoadSuccess}
+                  onLoadError={(error) => setError(error.message)}
+                >
+                  <Page pageNumber={currentPage} scale={zoom} />
                 </Document>
               )}
+            
+              <div style={styles.zoomButtons}>
+                <button onClick={handleZoomIn} style={styles.zoomButton}>Zoom In</button>
+                <button onClick={handleZoomOut} style={styles.zoomButton}>Zoom Out</button>
+              </div>
               <button onClick={handlePdfModalClose}>Close</button>
             </div>
           </Modal>
- {/* Rejection Modal */}
- <Modal
-        isOpen={rejectionModalVisible}
-        onRequestClose={handleModalClose}
-        style={styles.rejectionModalContent}
-      >
-        <h2>Reason for Rejection</h2>
-        <select
-          value={rejectionReason}
-          onChange={(e) => setRejectionReason(e.target.value)}
-          style={styles.rejectionSelect}
-        >
-          <option value="">Select a reason</option>
-          {rejectionReasons.map((reason, index) => (
-            <option key={index} value={reason}>
-              {reason}
-            </option>
-          ))}
-        </select>
-        <button onClick={handleReject} disabled={!rejectionReason}>
-          Submit Rejection
-        </button>
-        <button onClick={handleModalClose}>Cancel</button>
-      </Modal>
 
+          {/* Rejection Modal */}
+          <Modal isOpen={rejectionModalVisible} onRequestClose={handleModalClose} style={styles.rejectionModalContent}>
+            <div style={styles.modalContent}>
+              <h2>Rejection Reason</h2>
+              <select
+                value={rejectionReason}
+                onChange={(e) => setRejectionReason(e.target.value)}
+                style={styles.rejectionSelect}
+              >
+                <option value="">Select a reason</option>
+                {rejectionReasons.map((reason, index) => (
+                  <option key={index} value={reason}>{reason}</option>
+                ))}
+              </select>
+              <div>
+                <button onClick={handleReject}>Reject</button>
+                <button onClick={handleModalClose}>Cancel</button>
+              </div>
+            </div>
+          </Modal>
         </div>
-      ) : (
-        <p>No research found</p>
       )}
     </div>
   );

@@ -33,6 +33,8 @@ import CategoryTable from "./components/CategoryTable.js";
 import KeywordTable from "./components/KeywordsTable.js";
 import NotificationDetailsPage from "./components/Pages/NotificationDetailPage.js";
 import EditUserPage from "./components/EditUserPage.js";
+import RequestPDFForm from "./components/Pages/RequestPdfForm.js";
+import UserPdfRequests from "./components/Pages/usersrequestpdf.js";
 function App() {
   const [activeTab, setActiveTab] = useState('');
 
@@ -55,7 +57,7 @@ function App() {
          
             <Route path="/upload" element={<Upload />} />
             <Route path="/full-document/:pdfUrl" element={<FullDocumentView />} />
-         
+            <Route path="/requestpdf" element={<RequestPDFForm />} />
             <Route path="/login" element={<Login />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/forgot-password" element={<ForgotPassword/>} />
@@ -69,7 +71,7 @@ function App() {
             <Route path="/user/researches/:userId" element={<MyPapers />} />
             <Route path = "/notification/:userId" element = {<NotificationsPage/>}/>
             <Route path="/collections/:userId" element={<Collections />} /> {/* New route */}
-
+            <Route path="/pdf-requests/:userId" element={<UserPdfRequests />} />
         <Route path="/authors" exact element={<Authors/>} />
         <Route path="/authors/:authorId" element={<AuthorPapers/>} /> {/* Add this route */}
         <Route path="/user/researches/:userId" element={<MyPapers/>} /> {/* Add this route */}

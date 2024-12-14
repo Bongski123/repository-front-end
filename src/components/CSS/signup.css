@@ -61,6 +61,7 @@
   width: 100%; /* Full width for input and button */
   padding: 10px; /* Add padding for better touch area */
   margin: 8px 0; /* Add margin for spacing between elements */
+  border-color: #3cb300;
 }
 
 /* Adjust styles for the sign-up button */
@@ -106,6 +107,7 @@ button:disabled {
 
 .sign-up-footer a:hover {
   text-decoration: underline;
+  
 }
 
 /* Styling for logo */

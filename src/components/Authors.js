@@ -3,6 +3,7 @@ import Container from "react-bootstrap/Container";
 import { Link } from "react-router-dom";
 import axios from 'axios';
 import './CSS/Author.css';
+import { Form } from 'react-bootstrap';
 
 export default function Authors() {
     const [authors, setAuthors] = useState([]);
@@ -56,16 +57,15 @@ export default function Authors() {
 
             <Container>
                 <h2 className="author-list-title">Browse by Author</h2>
-
                 <div className="search-bar" style={{ marginBottom: '20px' }}>
-                    <input
-                        type="text"
-                        placeholder="Search authors..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="search-input"
-                    />
-                </div>
+  <Form.Control
+    type="text"
+    placeholder="Search authors..."
+    value={searchQuery}
+    onChange={(e) => setSearchQuery(e.target.value)}
+    className="search-input"
+  />
+</div>
 
                 <div className="alphabet-bar" style={{ marginBottom: '20px', textAlign: 'center' }}>
                     {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(letter => (

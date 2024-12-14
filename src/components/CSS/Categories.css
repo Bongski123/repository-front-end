@@ -13,6 +13,12 @@
     border-radius: 50%;
     animation: pulse 0.6s infinite alternate;
 }
+.category-card-title {
+    font-family: 'Outfit';
+    font-size: 1.5em;
+    font-weight: 400;
+  }
+  
 
 .dot:nth-child(2) {
     animation-delay: 0.2s;

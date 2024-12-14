@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useDropzone } from 'react-dropzone';
-import {jwtDecode} from 'jwt-decode'; // Correct import
+import { jwtDecode } from 'jwt-decode';
 import { Container, FloatingLabel, Form, Button, Row, Col } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import Select from 'react-select';
@@ -11,14 +11,14 @@ import './CSS/Upload.css';
 const Upload = () => {
     const [file, setFile] = useState(null);
     const [title, setTitle] = useState('');
-    const [authors, setAuthors] = useState(['']);
+    const [authors, setAuthors] = useState([{ author_name: '', author_email: '' }]);
     const [category, setCategory] = useState('');
     const [keywords, setKeywords] = useState([]);
     const [newKeyword, setNewKeyword] = useState('');
     const [abstract, setAbstract] = useState('');
     const [categories, setCategories] = useState([]);
     const [keywordOptions, setKeywordOptions] = useState([]);
-    const [isAuthorFieldEditable, setIsAuthorFieldEditable] = useState(false); // Field control state
+    const [isAuthorFieldEditable, setIsAuthorFieldEditable] = useState(false);
 
     // Fetch categories, keywords, and user details
     useEffect(() => {
@@ -47,7 +47,7 @@ const Upload = () => {
 
                 // Set initial author and check editability
                 const fullName = `${firstName} ${lastName}`;
-                setAuthors([fullName]);
+                setAuthors([{ author_name: fullName, author_email: '' }]);
                 setIsAuthorFieldEditable(roleId === 1 || isAdmin);
             } catch (error) {
                 console.error('Error decoding token:', error);
@@ -56,14 +56,14 @@ const Upload = () => {
     }, []);
 
     // Handle author changes
-    const handleAuthorChange = (index, value) => {
+    const handleAuthorChange = (index, field, value) => {
         const updatedAuthors = [...authors];
-        updatedAuthors[index] = value;
+        updatedAuthors[index][field] = value;
         setAuthors(updatedAuthors);
     };
 
     // Add or remove authors
-    const handleAddAuthor = () => setAuthors([...authors, '']);
+    const handleAddAuthor = () => setAuthors([...authors, { author_name: '', author_email: '' }]);
     const handleRemoveAuthor = (index) => setAuthors(authors.filter((_, i) => i !== index));
 
     // Handle keyword changes
@@ -118,7 +118,7 @@ const Upload = () => {
             const formData = new FormData();
             formData.append('file', file);
             formData.append('title', title);
-            formData.append('authors', authors.join(', '));
+            formData.append('authors', authors.map(author => `${author.author_name} (${author.author_email})`).join(', '));
             formData.append('categories', category);
             formData.append('keywords', keywords.map(k => k.value).join(', '));
             formData.append('abstract', abstract);
@@ -135,13 +135,18 @@ const Upload = () => {
             });
 
             if (response.status === 201) {
-                Swal.fire('Success!', 'Upload successful', 'success');
-                setTitle('');
-                setAuthors(['']);
-                setCategory('');
-                setKeywords([]);
-                setAbstract('');
-                setFile(null);
+                Swal.fire('Success!', 'Upload successful', 'success').then(() => {
+                    // Clear form fields
+                    setTitle('');
+                    setAuthors([{ author_name: '', author_email: '' }]);
+                    setCategory('');
+                    setKeywords([]);
+                    setAbstract('');
+                    setFile(null);
+    
+                    // Reload the page after closing the swal notification
+                    window.location.reload();
+                });
             } else {
                 Swal.fire('Failed!', response.data.error || 'Unknown error', 'error');
             }
@@ -165,14 +170,25 @@ const Upload = () => {
 
                 {authors.map((author, index) => (
                     <Row key={index} className="mb-3 align-items-center">
-                        <Col xs={10}>
-                            <FloatingLabel controlId={`author-${index}`} label={`Author ${index + 1}`}>
+                        <Col xs={4}>
+                            <FloatingLabel controlId={`author-${index}`} label={`Author ${index + 1} Name`}>
                                 <Form.Control
                                     type="text"
                                     placeholder="Author Name"
-                                    value={author}
-                                    onChange={(e) => handleAuthorChange(index, e.target.value)}
+                                    value={author.author_name}
+                                    onChange={(e) => handleAuthorChange(index, 'author_name', e.target.value)}
                                     disabled={index === 0 && !isAuthorFieldEditable} // Disable first author field conditionally
+                                    required
+                                />
+                            </FloatingLabel>
+                        </Col>
+                        <Col xs={4}>
+                            <FloatingLabel controlId={`author-email-${index}`} label={`Author ${index + 1} Email`}>
+                                <Form.Control
+                                    type="email"
+                                    placeholder="Author Email"
+                                    value={author.author_email}
+                                    onChange={(e) => handleAuthorChange(index, 'author_email', e.target.value)}
                                     required
                                 />
                             </FloatingLabel>
@@ -222,16 +238,15 @@ const Upload = () => {
                     <div className="d-flex align-items-center mt-2">
                         <Form.Control
                             type="text"
-                            placeholder="Enter new keyword"
                             value={newKeyword}
                             onChange={(e) => setNewKeyword(e.target.value)}
+                            placeholder="New Keyword"
                         />
-                        <Button variant="outline-primary" onClick={handleAddKeyword} className="ms-2">
-                            Add Keyword
-                        </Button>
+                        <Button variant="outline-primary" onClick={handleAddKeyword} className="ms-2">Add</Button>
                     </div>
                 </div>
 
+               
                 <div {...getRootProps({ className: `file-dropzone ${isDragActive ? 'active' : ''}` })} className="file-drop-button square mb-3 p-3 text-center">
                     <FaCloudUploadAlt className="cloud-icon" />
                     <input {...getInputProps()} />

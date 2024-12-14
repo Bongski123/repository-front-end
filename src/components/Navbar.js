@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
 import Container from "react-bootstrap/Container";
@@ -6,7 +6,7 @@ import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Link, useNavigate } from 'react-router-dom';
-import { jwtDecode } from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode';
 import { SearchBar } from "./SearchBar";
 import { FaGlobe } from 'react-icons/fa';
 import axios from 'axios';
@@ -17,17 +17,38 @@ function NavigationBar({ activeTab }) {
     const [notificationCount, setNotificationCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
     const [loadingNotifications, setLoadingNotifications] = useState(false);
-    const [profilePic, setProfilePic] = useState(null);
-    
+    const [profilePic, setProfilePic] = useState(
+        localStorage.getItem('picture') || '/src/assets/person-icon.jpg'
+    );
+
+    const logoutTimer = useRef(null);
 
     useEffect(() => {
         // Load profile picture from localStorage
         const storedProfilePic = localStorage.getItem('picture');
         setProfilePic(storedProfilePic ? storedProfilePic : '/src/assets/person-icon.jpg');
+
+        // Setup auto-logout timer
+        resetLogoutTimer();
+        const events = ['mousemove', 'keydown', 'click', 'scroll'];
+
+        const resetActivity = () => resetLogoutTimer();
+        events.forEach(event => window.addEventListener(event, resetActivity));
+
+        return () => {
+            clearTimeout(logoutTimer.current);
+            events.forEach(event => window.removeEventListener(event, resetActivity));
+        };
     }, []);
 
-    const redirectToNCF = () => {
-        window.open('https://www.ncf.edu.ph/');
+    const resetLogoutTimer = () => {
+        if (logoutTimer.current) {
+            clearTimeout(logoutTimer.current);
+        }
+
+        logoutTimer.current = setTimeout(() => {
+            handleLogout();
+        }, 30 * 60 * 1000); // 30 minutes
     };
 
     const isLoggedIn = () => {
@@ -105,24 +126,6 @@ function NavigationBar({ activeTab }) {
         }
     };
 
-    const getUserFirstName = () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const decodedToken = jwtDecode(token);
-            return decodedToken.firstName;
-        }
-        return '';
-    };
-
-    const getUserLastName = () => {
-        const token = localStorage.getItem('token');
-        if (token) {
-            const decodedToken = jwtDecode(token);
-            return decodedToken.lastName;
-        }
-        return '';
-    };
-
     const handleNotificationClick = async () => {
         const token = localStorage.getItem('token');
         const userId = localStorage.getItem('userId');
@@ -143,16 +146,10 @@ function NavigationBar({ activeTab }) {
         }
     };
 
-    const handleDropdownToggle = () => {
-        if (notificationCount > 0) {
-            setNotificationCount(0);
-        }
-    };
-
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container>
-                <Navbar.Brand href="#home" onClick={redirectToNCF}>
+                <Navbar.Brand href="#home">
                     <Image
                         src={require('../assets/ncf-logo-green.png')}
                         alt="NCF Logo"
@@ -170,8 +167,8 @@ function NavigationBar({ activeTab }) {
                         )}
                     </Nav>
                     <Nav className="ms-auto d-flex align-items-center">
-                        {isLoggedIn() && !isAdmin() && (
-                            <Dropdown align="end" onToggle={handleDropdownToggle}>
+                        {isLoggedIn() && (
+                            <Dropdown align="end" onToggle={() => setNotificationCount(0)}>
                                 <Dropdown.Toggle variant="success" className="me-3 notification-dropdown-toggle">
                                     <FaGlobe size={18} color="white" />
                                     {notificationCount > 0 && <span className="badge">{notificationCount}</span>}
@@ -182,7 +179,7 @@ function NavigationBar({ activeTab }) {
                                     ) : (
                                         notifications.length > 0 ? (
                                             notifications.map((notification, index) => (
-                                                <Dropdown.Item key={index} className="notification-item" onClick={handleNotificationClick}>
+                                                <Dropdown.Item key={index} onClick={handleNotificationClick}>
                                                     {notification.shortMessage}
                                                 </Dropdown.Item>
                                             ))
@@ -195,16 +192,18 @@ function NavigationBar({ activeTab }) {
                         )}
                         {isLoggedIn() ? (
                             <Dropdown align="end">
-                                <Dropdown.Toggle variant="success" className="button d-flex align-items-center">
+                                <Dropdown.Toggle
+                                    variant="success"
+                                    className="p-0 border-0 bg-transparent d-flex align-items-center"
+                                    style={{ width: "40px", height: "40px" }}
+                                >
                                     <Image
                                         src={profilePic}
                                         alt="Profile"
                                         roundedCircle
-                                        width="30"
-                                        height="30"
-                                        className="me-2"
+                                        width="40"
+                                        height="40"
                                     />
-                                    {`${getUserFirstName()}`}
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
                                     <Dropdown.Item href="/forgot-password">Reset Password</Dropdown.Item>

@@ -128,6 +128,7 @@ const Login = () => {
         } else {
           navigate('/user/dashboard'); // User dashboard
         }
+        window.location.reload(); // Refresh the page state
       } else {
         // If user doesn't exist, check if email is from 'gbox.ncf.edu.ph'
         const isGboxEmail = email.endsWith('@gbox.ncf.edu.ph');

@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { Container, Row, Col, Table, Button, Modal } from 'react-bootstrap';
 import { Link } from 'react-router-dom'; 
-import {jwtDecode} from 'jwt-decode'; 
+import { jwtDecode } from 'jwt-decode'; 
 import CitationGeneratorDropdown from '../citationGenerator';
 import UserSidebar from '../UserSidebar';
 import '../CSS/collection.css';
@@ -14,21 +14,23 @@ function Collections() {
     const [showCitationModal, setShowCitationModal] = useState(false);
     const [selectedResearch, setSelectedResearch] = useState(null);
     const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Sidebar state
+    const [roleId, setRoleId] = useState(null); // User role state
 
-    const getUserIdFromToken = () => {
+    // Get user id and role from JWT token
+    const getUserIdAndRoleFromToken = () => {
         try {
             const token = localStorage.getItem('token');
             if (!token) throw new Error('No token found');
             
             const decoded = jwtDecode(token);
-            return decoded.userId;
+            return { userId: decoded.userId, roleId: decoded.roleId };  // Assuming `roleId` is part of JWT
         } catch (err) {
             console.error('Error decoding token:', err);
             return null;
         }
     };
 
-    const userId = getUserIdFromToken();
+    const { userId, roleId: userRoleId } = getUserIdAndRoleFromToken() || {};
 
     useEffect(() => {
         if (userId) {
@@ -78,18 +80,24 @@ function Collections() {
         setSelectedResearch(null);
     };
 
- 
+    // Loading spinner state
     if (loading) return (
         <div className="spinner-container">
             <div className="spinner"></div>
         </div>
     );
+
+    // Render collections
     return (
         <div className="collections-container">
-            <UserSidebar isOpen={isSidebarVisible} toggleSidebar={toggleSidebar} />
+            <UserSidebar 
+                isOpen={isSidebarVisible} 
+                toggleSidebar={toggleSidebar} 
+                roleId={userRoleId}  // Pass roleId to UserSidebar
+                showAllItems={userRoleId !== 4}  // Pass role condition to UserSidebar
+            />
             <div className={`content ${isSidebarVisible ? 'with-sidebar' : 'full-width'}`}>
                 <header className="d-flex justify-content-between align-items-center">
-                  
                     <h1>Your Research Collections</h1>
                 </header>
                 {error && <p style={{ color: 'red' }}>{error}</p>}

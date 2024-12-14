@@ -35,6 +35,18 @@ function SearchResult({ result }) {
     fetchPDF();
   }, [result]);
 
+  // Function to log a search when a result is clicked
+  const logSearch = async (researchId) => {
+    try {
+      const response = await axios.post('https://ccsrepo.onrender.com/log-search', {
+        researchId,
+      });
+      console.log(response.data.message); // Logs: 'Search logged successfully'
+    } catch (error) {
+      console.error('Error logging search:', error);
+    }
+  };
+
   // Handle citation generation based on the selected format
   const generateCitation = () => {
     const currentYear = new Date().getFullYear();
@@ -52,6 +64,8 @@ function SearchResult({ result }) {
 
   // Handle navigation to the details page
   const handleNavigate = () => {
+    // Log the search before navigating to details
+    logSearch(result.research_id);
     navigate("/details", { state: { result } });
   };
 
@@ -68,11 +82,6 @@ function SearchResult({ result }) {
         {result.title}
       </h3>
       <p style={{ fontSize: "12px", margin: "0" }}>Authors: {result.authors}</p>
-      
-   
-
-      {/* Citation Format Selection */}
-    
     </div>
   );
 }

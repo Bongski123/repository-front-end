@@ -4,12 +4,16 @@ import Sidebar from './Sidebar';
 import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
+import { Modal, Form } from 'react-bootstrap';
 
 const UserTablePage = () => {
   const [users, setUsers] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [isOpen, setIsOpen] = useState(false); // Sidebar is closed by default
+  const [institutions, setInstitutions] = useState([]); // State for institutions
+  const [isOpen, setIsOpen] = useState(false); // Sidebar state
+  const [modalShow, setModalShow] = useState(false); // Modal visibility state
+  const [userToEdit, setUserToEdit] = useState(null); // User data for editing
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -20,6 +24,7 @@ const UserTablePage = () => {
     fetchUsers();
     fetchPrograms();
     fetchRoles();
+    fetchInstitutions(); // Fetch institutions
   }, []);
 
   const fetchUsers = async () => {
@@ -63,8 +68,24 @@ const UserTablePage = () => {
     }
   };
 
+  const fetchInstitutions = async () => {
+    try {
+      const response = await fetch('https://ccsrepo.onrender.com/institutions/all');
+      if (!response.ok) {
+        throw new Error('Failed to fetch institutions');
+      }
+      const data = await response.json();
+      setInstitutions(data.institutions || []);
+    } catch (error) {
+      console.error('Error fetching institutions:', error.message);
+      setInstitutions([]);
+    }
+  };
+
   const handleEdit = (userId) => {
-    navigate(`/edit-user/${userId}`);
+    const user = users.find(u => u.user_id === userId); // Find user data by ID
+    setUserToEdit(user); // Set the user data for editing
+    setModalShow(true); // Open modal for editing
   };
 
   const handleDelete = async (userId) => {
@@ -98,6 +119,48 @@ const UserTablePage = () => {
 
   const handleAddUserRedirect = () => {
     navigate('/signup');
+  };
+
+  const handleUpdateUser = async (e) => {
+    e.preventDefault();
+    const { first_name,middle_name, last_name, role_id, institution_id, program_id } = userToEdit;
+  
+    if (!first_name ||!middle_name|| !last_name ||  !role_id || !institution_id || !program_id) {
+      Swal.fire('Error', 'Please fill all the required fields', 'error');
+      return;
+    }
+  
+    try {
+      const response = await fetch(`https://ccsrepo.onrender.com/users/update/${userToEdit.userId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userToEdit),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Error from backend:', errorData); // Log the backend response
+        throw new Error('Failed to update user');
+      }
+  
+      Swal.fire('Success', 'User updated successfully', 'success');
+      setModalShow(false); // Close the modal
+      fetchUsers(); // Refresh the user list
+    } catch (error) {
+      console.error('Error updating user:', error.message);
+      Swal.fire('Error', 'Failed to update user data', 'error');
+    }
+  };
+  
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setUserToEdit(prev => ({
+      ...prev,
+      [name]: value,
+    }));
   };
 
   return (
@@ -134,6 +197,107 @@ const UserTablePage = () => {
           </tbody>
         </table>
       </div>
+
+      {/* Modal for editing user */}
+      <Modal show={modalShow} onHide={() => setModalShow(false)}>
+        <Modal.Header closeButton>
+          <Modal.Title>Edit User</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {userToEdit && (
+            <Form onSubmit={handleUpdateUser}>
+              <Form.Group>
+                <Form.Label>First Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="first_name"
+                  value={userToEdit.first_name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Middle Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="middle_name"
+                  value={userToEdit.middle_name || ''}
+                  onChange={handleInputChange}
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Last Name</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="last_name"
+                  value={userToEdit.last_name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Email</Form.Label>
+                <Form.Control
+                  type="email"
+                  name="email"
+                  value={userToEdit.email}
+                  onChange={handleInputChange}
+                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Role</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="role_id"
+                  value={userToEdit.role_id}
+                  onChange={handleInputChange}
+                  required
+                >
+                  {roles.map(role => (
+                    <option key={role.role_id} value={role.role_id}>
+                      {role.role_name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Institution</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="institution_id"
+                  value={userToEdit.institution_id}
+                  onChange={handleInputChange}
+                  required
+                >
+                  {institutions.map(institution => (
+                    <option key={institution.institution_id} value={institution.institution_id}>
+                      {institution.institution_name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Program</Form.Label>
+                <Form.Control
+                  as="select"
+                  name="program_id"
+                  value={userToEdit.program_id}
+                  onChange={handleInputChange}
+                  required
+                >
+                  {programs.map(program => (
+                    <option key={program.program_id} value={program.program_id}>
+                      {program.program_name}
+                    </option>
+                  ))}
+                </Form.Control>
+              </Form.Group>
+              <Button type="submit" variant="primary">Save Changes</Button>
+            </Form>
+          )}
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

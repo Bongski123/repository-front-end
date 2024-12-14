@@ -1,24 +1,28 @@
 import React, { useState, useEffect, useCallback } from "react";
 import Swal from "sweetalert2"; // Import SweetAlert
 
-
 function CitationGeneratorDropdown({ result }) {
   const [selectedFormat, setSelectedFormat] = useState("APA");
   const [generatedCitation, setGeneratedCitation] = useState("");
 
   // Memoized function to generate citation based on selected format
   const generateCitation = useCallback(() => {
-    let authors = Array.isArray(result.authors) ? result.authors.join(", ") : result.authors || "Unknown author";
+    // Safely handle missing data in 'result'
+    const authors = Array.isArray(result?.authors) ? result.authors.join(", ") : result?.authors || "Unknown author";
+    const title = result?.title || "Untitled";
+    const categoryName = result?.category_name || "Unknown category";
+    const url = result?.url || "#"; // Fallback URL if missing
+
     let citation;
     switch (selectedFormat) {
       case "APA":
-        citation = `${authors}. (${new Date().getFullYear()}). "${result.title}".`;
+        citation = `${authors}. (${new Date().getFullYear()}). "${title}".`;
         break;
       case "MLA":
-        citation = `${authors}. "${result.title}." ${result.category_name}, ${new Date().getFullYear()}.`;
+        citation = `${authors}. "${title}." ${categoryName}, ${new Date().getFullYear()}.`;
         break;
       case "Harvard":
-        citation = `${authors}. (${new Date().getFullYear()}). ${result.title}. ${result.category_name}. Available at: ${result.url}. [Accessed: ${new Date().toLocaleDateString()}].`;
+        citation = `${authors}. (${new Date().getFullYear()}). ${title}. ${categoryName}. Available at: ${url}. [Accessed: ${new Date().toLocaleDateString()}].`;
         break;
       default:
         citation = "Unknown citation format";
@@ -63,10 +67,12 @@ function CitationGeneratorDropdown({ result }) {
       });
   };
 
-  // Generate initial citation when the component mounts
+  // Generate initial citation when the component mounts or when `result` changes
   useEffect(() => {
-    setGeneratedCitation(generateCitation());
-  }, [generateCitation]);
+    if (result) {
+      setGeneratedCitation(generateCitation());
+    }
+  }, [generateCitation, result]);
 
   return (
     <div className="citation-modal" role="dialog" aria-modal="true">
@@ -83,7 +89,6 @@ function CitationGeneratorDropdown({ result }) {
         </select>
         <button onClick={handleCopyCitation} aria-label="Copy citation">Cite</button>
         {generatedCitation && <p className="generated-citation">{generatedCitation}</p>}
-   
       </div>
     </div>
   );
