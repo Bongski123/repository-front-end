@@ -12,7 +12,8 @@ const CategoryTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10; // Items per page
-
+  const [isOpen, setIsOpen] = useState(true); // Sidebar state
+  
   // Fetch categories on component mount
   useEffect(() => {
     const fetchCategories = async () => {
@@ -99,6 +100,11 @@ const CategoryTable = () => {
     isEditing ? updateCategory() : addCategory();
   };
 
+  // Toggle sidebar visibility
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen); // Toggle sidebar
+  };
+
   // Filter categories based on search term
   const filteredCategories = categories.filter((category) =>
     category.category_name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -110,74 +116,77 @@ const CategoryTable = () => {
 
   return (
     <div className="category-table">
-      <Sidebar />
-      <h2>Categories</h2>
-      <input
-        type="text"
-        placeholder="Search categories"
-        value={searchTerm}
-        onChange={handleSearchChange}
-        className="search-input"
-      />
-      <button onClick={openModal}>Add Category</button>
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {currentItems.length > 0 ? (
-            currentItems.map((category) => (
-              <tr key={category.category_id}>
-                <td>{category.category_name}</td>
-                <td>
-                  <button onClick={() => editCategory(category.category_id)}>Edit</button>
-                  <button onClick={() => deleteCategory(category.category_id)}>Delete</button>
-                </td>
-              </tr>
-            ))
-          ) : (
+      <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
+      <div className={`main-content ${isOpen ? 'with-sidebar' : 'no-sidebar'}`}>
+        <h2>Categories</h2>
+        <input
+          type="text"
+          placeholder="Search categories"
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="search-input"
+        />
+        <button onClick={openModal}>Add Category</button>
+        <table>
+          <thead>
             <tr>
-              <td colSpan="2">No categories found</td>
+              <th>Name</th>
+              <th>Actions</th>
             </tr>
-          )}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {currentItems.length > 0 ? (
+              currentItems.map((category) => (
+                <tr key={category.category_id}>
+                  <td>{category.category_name}</td>
+                  <td>
+                    <button onClick={() => editCategory(category.category_id)}>Edit</button>
+                    <button onClick={() => deleteCategory(category.category_id)}>Delete</button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="2">No categories found</td>
+              </tr>
+            )}
+          </tbody>
+        </table>
 
-      {/* Pagination Controls */}
-      <div className="pagination">
-        {Array.from({ length: totalPages }, (_, index) => (
-          <button
-            key={index + 1}
-            onClick={() => setCurrentPage(index + 1)}
-            disabled={currentPage === index + 1}
-          >
-            {index + 1}
-          </button>
-        ))}
-      </div>
-
-      {showModal && (
-        <div className="modal">
-          <div className="modal-content">
-            <span className="close" onClick={() => setShowModal(false)}>&times;</span>
-            <h3>{isEditing ? 'Edit Category' : 'Add Category'}</h3>
-            <form onSubmit={handleSubmit}>
-              <input
-                type="text"
-                name="name"
-                value={currentCategory.name}
-                onChange={handleInputChange}
-                placeholder="Category Name"
-                required
-              />
-              <button type="submit">{isEditing ? 'Update' : 'Add'} Category</button>
-            </form>
-          </div>
+        {/* Pagination Controls */}
+        <div className="pagination">
+          {Array.from({ length: totalPages }, (_, index) => (
+            <button
+              key={index + 1}
+              onClick={() => setCurrentPage(index + 1)}
+              disabled={currentPage === index + 1}
+            >
+              {index + 1}
+            </button>
+          ))}
         </div>
-      )}
+
+        {/* Modal for adding/editing categories */}
+        {showModal && (
+          <div className="modal">
+            <div className="modal-content">
+              <span className="close" onClick={() => setShowModal(false)}>&times;</span>
+              <h3>{isEditing ? 'Edit Category' : 'Add Category'}</h3>
+              <form onSubmit={handleSubmit}>
+                <input
+                  type="text"
+                  name="name"
+                  value={currentCategory.name}
+                  onChange={handleInputChange}
+                  placeholder="Category Name"
+                  required
+                />
+                <button type="submit">{isEditing ? 'Update' : 'Add'} Category</button>
+              </form>
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };

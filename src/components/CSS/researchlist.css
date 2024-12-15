@@ -1,26 +1,80 @@
+/* General table styles */
 table {
-    width: 100%;
-    border-collapse: collapse;
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  }
-  
-  th, td {
-    border: 1px solid #095f30;
-    padding: 8px;
-    text-align: left;
-    
-  }
-  
-  th {
-    background-color: #05381d;
-  }
-  
-  tr:nth-child(even) {
-    background-color: #f9f9f9;
-    
-  }
-  
-  tr:hover {
-    background-color: #217915;
-  }
-  
+th, td {
+  border: 1px solid #095f30; /* Green border */
+  padding: 8px;
+  text-align: left;
+}
+
+th {
+  background-color: #05381d; /* Dark green background for header */
+  color: white; /* White text color for header */
+}
+
+tr:nth-child(even) {
+  background-color: #f9f9f9; /* Light background for even rows */
+}
+
+tr:hover {
+  background-color: #217915; /* Green background on row hover */
+}
+
+/* Adjustments for pagination */
+.pagination button {
+  background-color: #05381d; /* Dark green */
+  color: white;
+  padding: 5px 10px;
+  border: none;
+  cursor: pointer;
+  margin: 0 2px;
+}
+
+.pagination button.active {
+  background-color: #095f30; /* Lighter green for active page */
+}
+
+.pagination button:hover {
+  background-color: #217915; /* Hover effect for pagination */
+}
+
+/* Sidebar adjustments for responsive layout */
+.keyword-table.with-sidebar {
+  margin-left: 250px;
+  transition: margin-left 0.3s ease;
+}
+
+.keyword-table.full-width {
+  margin-left: 0;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  width: 400px;
+}
+
+.close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 30px;
+  cursor: pointer;
+}

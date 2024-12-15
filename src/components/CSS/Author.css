@@ -1,11 +1,35 @@
 /* Authors.css */
 
+/* Title Styling */
 .authors-card-title {
-  font-family: 'Outfit';
-  font-size: 1.5em;
-  font-weight: 400;
+  font-family: 'Outfit', sans-serif; /* Ensures fallback font */
+  font-size: 2em; /* Larger and more prominent title */
+  font-weight: 500; /* Slightly bolder for emphasis */
+  text-align: center; /* Centers the title horizontally */
+  margin: 20px 0; /* Adds spacing above and below */
+  color: #146216; /* Uses a subtle green color for better visual hierarchy */
+  text-transform: uppercase; /* Makes the title more distinct */
+  letter-spacing: 1px; /* Improves readability and aesthetics */
 }
 
+
+@media (max-width: 768px) { /* Small screens, like portrait tablets */
+  .authors-card-title {
+    font-size: 1em; /* Smaller font size for smaller screens */
+    margin: 10px 0; /* Reduced spacing */
+    letter-spacing: 0.8px; /* Adjusted for better fit */
+  }
+}
+
+@media (max-width: 576px) { /* Extra small screens, like mobile phones */
+  .authors-card-title {
+    font-size: 1.2em; /* Even smaller for mobile */
+    margin: 10px 0; /* Compact spacing */
+    letter-spacing: 0.5px; /* Tighter spacing for readability */
+    padding-left: 5px;
+    margin-left: 10px;
+  }
+}
   /* Categories */
 .authors-container {
   display: flex;

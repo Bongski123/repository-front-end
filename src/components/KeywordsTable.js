@@ -12,6 +12,7 @@ const KeywordTable = () => {
   const [showModal, setShowModal] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const keywordsPerPage = 10; // Number of keywords per page
+  const [isOpen, setIsOpen] = useState(true); // Set the initial sidebar state to 'open' (true)
 
   // Fetch keywords on component mount
   useEffect(() => {
@@ -44,6 +45,11 @@ const KeywordTable = () => {
     setCurrentKeyword({ id: null, name: '' });
     setIsEditing(false);
     setShowModal(true);
+  };
+
+  const toggleSidebar = () => {
+    setIsOpen(!isOpen); // Toggle the sidebar visibility
+    console.log("Sidebar toggled: ", isOpen); // Debugging log
   };
 
   const addKeyword = async () => {
@@ -118,8 +124,8 @@ const KeywordTable = () => {
   const totalPages = Math.ceil(filteredKeywords.length / keywordsPerPage);
 
   return (
-    <div className="keyword-table">
-      <Sidebar />
+    <div className={`keyword-table ${isOpen ? 'with-sidebar' : 'full-width'}`}>
+      <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
       <div className="table-container">
         <h2>Keywords</h2>
         <input
@@ -167,7 +173,7 @@ const KeywordTable = () => {
           ))}
         </div>
       </div>
-      
+
       {showModal && (
         <div className="modal">
           <div className="modal-content">

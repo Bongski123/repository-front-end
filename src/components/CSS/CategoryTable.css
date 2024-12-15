@@ -1,3 +1,4 @@
+/* Modal styles */
 .category-table .modal {
   display: flex;
   justify-content: center;
@@ -10,15 +11,23 @@
   height: 100%;
   overflow: auto;
   background-color: rgba(0, 0, 0, 0.5); /* Black background with opacity */
+  padding: 20px; /* Optional: add padding to ensure the modal is not touching edges */
 }
 
 .category-table .modal-content {
   background-color: #fefefe;
-  margin: 15% auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 80%; /* Could be more or less, depending on screen size */
-  max-width: 500px;
+  width: 100%; /* Full width of the container, can be adjusted based on screen size */
+  max-width: 600px; /* Max width for larger screens */
+  border-radius: 8px; /* Optional: adds rounded corners for a softer look */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Optional: adds shadow for depth */
+  transition: transform 0.3s ease-out; /* Smooth animation on open */
+  transform: translateY(-20px); /* Optional: starts from slightly above the screen */
+}
+
+.category-table .modal-content.show {
+  transform: translateY(0); /* Modal slides into position */
 }
 
 .category-table .close {
@@ -26,6 +35,7 @@
   float: right;
   font-size: 28px;
   font-weight: bold;
+  cursor: pointer;
 }
 
 .category-table .close:hover,
@@ -34,9 +44,39 @@
   text-decoration: none;
   cursor: pointer;
 }
+
+/* Category table styles */
 .category-table {
-  padding-left: 270px;
+  padding-left: 30px;
   padding-top: 20px;
-  margin-right: 150px;
+  margin-right: 1px;
+  padding-bottom: 20px; /* Optional: added some bottom padding */
 }
 
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .category-table .modal-content {
+    max-width: 90%; /* Ensures the modal is smaller on mobile */
+  }
+
+  .category-table {
+    padding-left: 20px; /* Reduced padding for smaller screens */
+    margin-right: 20px;
+  }
+}
+/* For the .main-content when sidebar is open */
+.main-content.with-sidebar {
+  padding-left: 0px; /* Adjust as per your sidebar width */
+}
+
+
+.sidebar.hidden {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+.sidebar.open {
+  /* Show when 'open' class is added */
+  display: block;
+}

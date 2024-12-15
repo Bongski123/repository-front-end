@@ -56,7 +56,7 @@ export default function Authors() {
             </Container>
 
             <Container>
-                <h2 className="author-list-title">Browse by Author</h2>
+            <h2 className="category-card-title">Browse by Author</h2>
                 <div className="search-bar" style={{ marginBottom: '20px' }}>
   <Form.Control
     type="text"

@@ -136,27 +136,27 @@ const DashboardContent = () => {
   return (
     <div className="dashboard-content">
       <div className="info-cards">
-        <div className="info-card blue">
-          <IoMdCloudDownload className="download-icon" />
-          <p>Total Downloads</p>
-          <h3>{downloads}</h3>
-        </div>
-        <div className="info-card green">
-          <FaQuoteRight className="cite-icon" />
-          <p>Total Citations</p>
-          <h3>{citations}</h3>
-        </div>
-        <div className="info-card yellow" onClick={() => navigate('/admin/users')}>
-          <FaUser className="user-icon" />
-          <div className="info-text">
-            <p>Total Users</p>
-            <h3>{totalUsers}</h3>
-          </div>
-        </div>
-        <div className="info-card purple" onClick={() => navigate('/researchList')}>
-          <FaUser className="research-icon" />
-          <p>Total Researches</p>
-          <h3>{totalResearches}</h3>
+      <div className="info-card blue">
+    <IoMdCloudDownload className="download-icon" />
+    <p>Total Downloads</p>
+    <h3>{downloads}</h3>
+  </div>
+  <div className="info-card green">
+    <FaQuoteRight className="cite-icon" />
+    <p>Total Citations</p>
+    <h3>{citations}</h3>
+  </div>
+  <div className="info-card purple" onClick={() => navigate('/researchList')}>
+    <FaUser className="research-icon" />
+    <p>Total Researches</p>
+    <h3>{totalResearches}</h3>
+  </div>
+  <div className="info-card yellow" onClick={() => navigate('/admin/users')}>
+    <FaUser className="user-icon" />
+    <div className="info-text">
+      <p>Total Users</p>
+      <h3>{totalResearches}</h3>
+    </div>
         </div>
       </div>
 

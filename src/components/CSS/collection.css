@@ -39,11 +39,11 @@
 }
 
 .content.with-sidebar {
-    margin-left: 250px; /* Width of your sidebar */
+    margin-left: 300px; /* Width of your sidebar */
 }
 
 .content.full-width {
-    margin-left: 0;
+    margin-left: 150px;
 }
 
 .sidebar {

@@ -12,7 +12,7 @@ const UserTablePage = () => {
   const [programs, setPrograms] = useState([]);
   const [roles, setRoles] = useState([]);
   const [institutions, setInstitutions] = useState([]); // State for institutions
-  const [isOpen, setIsOpen] = useState(false); // Sidebar state
+  const [isOpen, setIsOpen] = useState(true); // Sidebar state
   const [modalShow, setModalShow] = useState(false); // Modal visibility state
   const [userToEdit, setUserToEdit] = useState(null); // User data for editing
   const navigate = useNavigate();
@@ -166,7 +166,7 @@ const UserTablePage = () => {
 
   return (
     <div className={`user-table-wrapper ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-      <Sidebar toggleSidebar={toggleSidebar} />
+           <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} /> {/* Pass toggleSidebar and isOpen as props */}
       <div className="user-table-content">
         <h2>User Management</h2>
         <Button variant="success" onClick={handleAddUserRedirect}>Add User</Button>

@@ -7,10 +7,11 @@ const containerStyle = {
   display: 'flex', // Use flexbox for layout
   padding: '20px',
   fontFamily: 'Arial, sans-serif',
-  paddingLeft: '200px',
+  // Dynamically set paddingLeft based on sidebar state
+  paddingLeft: '20px', 
   marginLeft: '60px',
+  transition: 'margin-left 0.3s ease, padding-left 0.3s ease', // Add transition for sidebar toggle
 };
-
 const headerStyle = {
   fontSize: '2rem',
   color: '#333',
@@ -51,7 +52,7 @@ function ResearchList() {
   const [researches, setResearches] = useState([]);
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(true); // Loading state
-  const [isOpen, setIsOpen] = useState(false); // Sidebar visibility
+  const [isOpen, setIsOpen] = useState(true); // Sidebar visibility
   const [searchTerm, setSearchTerm] = useState(''); // Search term
   const [statusFilter, setStatusFilter] = useState(''); // Status filter
   const [currentPage, setCurrentPage] = useState(1); // Current page
@@ -97,9 +98,9 @@ function ResearchList() {
   };
 
   return (
-    <div style={containerStyle}>
-      <Sidebar toggleSidebar={toggleSidebar} />
-      <div style={{ flex: 1 }}> {/* Allow this div to take remaining space */}
+    <div style={{ ...containerStyle, paddingLeft: isOpen ? '55px' : '20px', marginLeft: isOpen ? '200px' : '60px' }}>
+    <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} /> {/* Pass toggleSidebar and isOpen as props */}
+    <div style={{ flex: 1 }}>
         <h1 style={headerStyle}>Research List</h1>
 
         {/* Search Bar */}
@@ -129,6 +130,7 @@ function ResearchList() {
               <option value="approved">Approved</option>
               <option value="pending">Pending</option>
               <option value="rejected">Rejected</option>
+              <option value="archived">Archived</option>
             </select>
           </label>
         </div>
@@ -154,7 +156,7 @@ function ResearchList() {
                 <td>
                   <span style={statusStyle[research.status] || {}}>{research.status}</span>
                 </td>
-                <td>{research.authors || 'No authors available'}</td>
+                <td>{research.authors && research.authors.length > 0 ? research.authors : 'No authors available'}</td>
                 <td>
                   <a href={`/research/${research.research_id}`} className="btn btn-primary btn-sm">
                     View Details

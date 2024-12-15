@@ -229,7 +229,7 @@ margin-top: 1rem;
   .title-bar h1 {
     font-size: 2rem; /* Adjust title size for mobile */
     align-items: center;
-    padding-left: 100px;
+    padding-left: 50px;
   }
   .subtitle {
     font-size: 1rem; /* Adjust subtitle size for mobile */

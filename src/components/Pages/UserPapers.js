@@ -173,7 +173,7 @@ const UserPaper = () => {
                       <td>{research.file_privacy || 'Not Set'}</td>
                       <td>{new Date(research.publish_date).toLocaleDateString()}</td>
                       <td>
-                        <Button variant="primary" onClick={() => openPrivacyModal(research)}>
+                        <Button variant="success" onClick={() => openPrivacyModal(research)}>
                           Set Privacy
                         </Button>
                       </td>

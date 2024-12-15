@@ -2,47 +2,41 @@
   padding: 20px;
 }
 
+
+
 .info-cards {
   display: flex;
-  justify-content:  flex-start;
-  flex-wrap: wrap; /* Allows cards to wrap in case of smaller screens */
-  gap: 3rem; /* Adds gap between cards */
+  gap: 10px; /* Space between cards */
+  flex-wrap: wrap; /* Allows wrapping if screen size is small */
+  justify-content: flex-start; /* Align cards to the left */
 }
 
 .info-card {
-  background-color: #f0f0f0; /* Default background color */
+  flex: 1; /* Ensure cards are evenly distributed */
+  min-width: 200px; /* Minimum width to maintain layout on smaller screens */
+  max-width: 250px; /* Maximum width for uniformity */
+  padding: 16px;
   border-radius: 8px;
-  padding: 15px; /* Increased padding for better card content spacing */
-  width: 220px;
-  height: 140px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* More subtle shadow for a cleaner look */
-  transition: transform 0.2s ease-in-out; /* Adds a smooth hover effect */
-  cursor: pointer;
-}
-
-.info-card:hover {
-  transform: scale(1.1); /* Slightly enlarges the card on hover */
-}
-
-.info-card.blue {
-  background-color: #ff6363; /* Specific background for downloads card */
-}
-
-.info-card.green {
-  background-color: #89f06c; /* Specific background for citations card */
-}
-
-.info-card.yellow {
-  background-color: #fed43a; /* Specific background for activity card */
-  text-decoration: none; /* Remove underline from link */
-  color: inherit; /* Inherit color from parent */
+  color: #fff;
 }
 
 .info-card.purple {
-  background-color: #ff39f2; /* Specific background for views card */
-  text-decoration: none; /* Remove underline from link */
-  color: inherit; /* Inherit color from parent */
+  background-color: #6a0dad; /* Purple */
+}
+
+.info-card.yellow {
+  background-color: #ffcc00; /* Yellow */
+  text-decoration: none; /* Removes underline from links */
+  
+}
+
+.info-card.green {
+  background-color: #4caf50; /* Green */
+}
+
+.info-card.blue {
+  background-color: #2196f3; /* Blue */
 }
 
 .icon {
@@ -66,6 +60,7 @@ p {
   flex-direction: column;
   gap: 2rem; /* Space between the charts */
 }
+
 
 .chart {
   padding: 20px;

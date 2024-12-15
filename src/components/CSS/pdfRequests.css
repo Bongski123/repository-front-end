@@ -1,23 +1,244 @@
-.container {
-    margin-top: 20px;
-  }
+/* Scoped styles for PdfRequests component */
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
+.pdf-requests-title {
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; /* Custom font */
+  font-size: 2rem;
+  font-weight: 600;
+  color: #09511c;
+  margin-bottom: 20px;
+  text-align: center;
+   padding-left: 50px;
+}
+
+
+/* Containers - Main wrapper */
+.pdf-requests-container {
+  display: flex;
+  height: 100vh;
+  background-color: #f5f5f5;
+}
+
+.pdf-requests-content {
+  flex: 1;
+  padding: 20px;
+  background-color: #fff;
+  transition: margin-left 0.3s ease;
+}
+
+.pdf-requests-with-sidebar {
+  margin-left: 250px;
+}
+
+.pdf-requests-full-width {
+  margin-left: 0;
+}
+
+.pdf-requests-header h1 {
+  font-size: 2rem;
+  color: #333;
+  margin-bottom: 20px;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; /* Custom font */
+}
+
+.pdf-requests-spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 200px;
+}
+
+.pdf-requests-spinner {
+  border: 4px solid #f3f3f3; /* Light gray */
+  border-top: 4px solid #3498db; /* Blue */
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: pdf-requests-spin 2s linear infinite;
+}
+
+@keyframes pdf-requests-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.pdf-requests-error {
+  color: red;
+  font-size: 1.2rem;
+  text-align: center;
+}
+
+.pdf-requests-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.pdf-requests-table th,
+.pdf-requests-table td {
+  padding: 10px 5px;
+ 
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.pdf-requests-table th {
+  background-color: #07491d;
+  color: #fff;
+  font-weight: bold;
+}
+
+.pdf-requests-table tr:nth-child(even) {
+  background-color: #f9f9f9;
+}
+
+.pdf-requests-table tr:hover {
+  background-color: #f1f1f1;
+  cursor: pointer;
+}
+
+.pdf-requests-table button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.pdf-requests-table button:focus {
+  outline: none;
+}
+
+.pdf-requests-table button:hover {
+  opacity: 0.8;
+}
+
+.pdf-requests-table button svg {
+  transition: transform 0.3s;
+}
+
+.pdf-requests-table button:hover svg {
+  transform: scale(1.1);
+}
+
+/* Modal */
+.pdf-requests-modal-content {
+  background-color: #fff;
+  border-radius: 8px;
+  padding: 20px;
+  border: 1px solid #ddd;
+}
+
+.pdf-requests-modal-header {
+  border-bottom: 1px solid #ddd;
+  padding-bottom: 10px;
+}
+
+.pdf-requests-modal-title {
+  font-size: 1.5rem;
+  color: #333;
+  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; /* Custom font */
+}
+
+.pdf-requests-modal-body {
+  font-size: 1.1rem;
+  color: #666;
+}
+
+.pdf-requests-modal-footer {
+  border-top: 1px solid #ddd;
+  padding-top: 10px;
+}
+
+/* Sidebar Styles */
+.pdf-requests-sidebar {
+  width: 250px;
+  background-color: #343a40;
+  color: #fff;
+  height: 100vh;
+  padding-top: 20px;
+  position: fixed;
+  top: 0;
+  left: 0;
+  transition: transform 0.3s ease;
   
-  h1 {
-    text-align: center;
-    margin-bottom: 20px;
+}
+
+.pdf-requests-sidebar.hide {
+  transform: translateX(-100%);
+}
+
+.pdf-requests-sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.pdf-requests-sidebar ul li {
+  padding: 15px;
+  border-bottom: 1px solid #444;
+}
+
+.pdf-requests-sidebar ul li a {
+  color: #fff;
+  text-decoration: none;
+  display: block;
+  font-size: 1.1rem;
+}
+
+.pdf-requests-sidebar ul li a:hover {
+  background-color: #495057;
+}
+
+.pdf-requests-sidebar-toggle {
+  position: absolute;
+  top: 20px;
+  left: 100px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+/* Small screen styles */
+@media (max-width: 768px) {
+  .pdf-requests-content {
+    padding: 10px;
   }
-  
-  table {
-    width: 100%;
-    border-collapse: collapse;
+
+  .pdf-requests-header h1 {
+    font-size: 1.5rem;
   }
-  
-  thead th {
-    background-color: #f8f9fa;
-    text-align: center;
+
+  .pdf-requests-table th,
+  .pdf-requests-table td {
+    padding: 10px;
   }
-  
-  tbody tr:hover {
-    background-color: #f1f1f1;
+}
+.plane-animation {
+  position: fixed;
+  top: 50%; /* Center vertically */
+  left: 50%; /* Center horizontally */
+  transform: translate(-50%, -50%); /* Adjust to the exact center */
+  z-index: 9999; /* Ensure it's above other content */
+}
+
+.plane {
+  width: 100px;
+  height: 100px;
+  background-image: url('/src/assets/paper-plane.png'); /* Replace with your uploaded image */
+  background-size: cover;
+  position: absolute;
+  animation: move-plane 3s ease-out infinite; /* Animate smoothly */
+}
+
+@keyframes move-plane {
+  0% {
+    transform: translate(0, 0); /* Start at the center */
+    opacity: 1; /* Fully visible */
   }
-  
+  50% {
+    transform: translate(50px, -30px); /* Move slightly right and up */
+    opacity: 0.8; /* Slight fade */
+  }
+  100% {
+    transform: translate(100px, -60px); /* Move further right and up */
+    opacity: 0.6; /* Fade out more */
+  }
+}

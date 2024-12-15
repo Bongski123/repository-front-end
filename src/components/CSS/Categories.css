@@ -42,3 +42,47 @@
         opacity: 1;
     }
 }
+/* ListGroup Styles */
+.list-group-item {
+    padding: 15px;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    margin-bottom: 10px;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+  
+  .list-group-item:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .list-group-item a {
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #495057;
+  }
+  
+  .list-group-item a:hover {
+    color: #007bff;
+  }
+  
+  /* Pagination Styles */
+  .pagination {
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  .pagination .page-item .page-link {
+    color: #007bff;
+    border: 1px solid #dee2e6;
+  }
+  
+  .pagination .page-item.active .page-link {
+    background-color: #007bff;
+    border-color: #007bff;
+    color: #ffffff;
+  }
+  
+  .pagination .page-item .page-link:hover {
+    background-color: #e9ecef;
+  }

@@ -7,7 +7,7 @@
 
 /* Sidebar and content adjustments for different screen sizes */
 .sidebar-open .user-table-content {
-  margin-left: 250px; /* Adjust based on sidebar width */
+  margin-left: 260px; /* Adjust based on sidebar width */
   transition: margin 0.3s ease;
 }
 
@@ -20,6 +20,7 @@
 table {
   width: 100%; /* Ensures the table takes up the full container width */
   border-collapse: collapse;
+  overflow-x: auto; /* Allow horizontal scrolling */
 }
 
 th, td {
@@ -41,24 +42,7 @@ button {
   font-size: 0.8rem; /* Smaller button text for a more compact layout */
   margin-right: 8px;
   padding: 5px 10px;
-}
-
-/* Table Container Adjustments */
-.user-table-container {
-  margin: 20px;
-  padding: 20px;
-  max-width: 100%; /* Ensures it takes up the available space */
-  overflow-x: auto; /* Makes the table scrollable horizontally if needed */
-  transition: padding-left 0.3s ease; /* Smooth transition for padding change */
-}
-
-/* Sidebar specific CSS */
-.sidebar-open .user-table-container {
-  padding-left: 250px; /* Adjust this based on the sidebar width when open */
-}
-
-.sidebar-closed .user-table-container {
-  padding-left: 50px; /* Adjust for collapsed sidebar */
+  cursor: pointer; /* Add cursor pointer to indicate clickable elements */
 }
 
 /* Responsive Adjustments */
@@ -76,45 +60,22 @@ button {
     margin-left: 0; /* Ensure no margin when sidebar is collapsed */
   }
 
+  /* Table container with horizontal scroll for small screens */
   .user-table-container {
     padding-left: 0; /* No padding for small screens */
+    overflow-x: auto; /* Ensure horizontal scroll on small screens */
   }
 
-  /* Sidebar styling for mobile */
-  .sidebar {
-    width: 100%; /* Make sidebar take full width for mobile */
-    position: fixed; /* Fixed positioning for better mobile handling */
-    top: 0;
-    left: 0;
-    bottom: 0;
-    z-index: 1000; /* Ensures it stays on top */
-    transition: transform 0.3s ease;
-    transform: translateX(-100%); /* Initially off-screen */
+  table {
+    font-size: 0.9rem; /* Slightly smaller text for smaller screens */
   }
 
-  .sidebar-open .sidebar {
-    transform: translateX(0); /* Slide in the sidebar */
+  th, td {
+    padding: 8px; /* Slightly reduced padding for small screens */
   }
 
-  .toggle-sidebar-button {
-    position: fixed; /* Button stays on top for mobile */
-    top: 15px;
-    left: 15px;
-    z-index: 1001; /* Ensure button stays above other content */
-  }
-}
-
-/* For tablets, adjust as needed */
-@media (max-width: 1024px) {
-  .user-table-wrapper {
-    flex-direction: row; /* Row layout for tablets */
-  }
-
-  .sidebar-open .user-table-content {
-    margin-left: 200px; /* Slightly reduced margin for tablets */
-  }
-
-  .sidebar-closed .user-table-content {
-    margin-left: 70px; /* Adjust for smaller collapsed sidebar */
+  button {
+    font-size: 0.75rem; /* Smaller button text for compact layout */
+    padding: 4px 8px;
   }
 }

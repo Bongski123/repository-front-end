@@ -1,71 +1,98 @@
 /* Sticky navbar styles */
 .navbar {
-    position: sticky;
-    top: 0;
-    z-index: 1000; /* Ensures it's always above other elements */
-    background-color: rgba(33, 61, 29, 1); /* Use rgba for opacity control */
-    box-shadow: 0 2px 2px -2px rgb(22, 66, 26); /* Subtle shadow for depth */
-    transition: background-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
+  position: sticky;
+  top: 0;
+  z-index: 1000; /* Ensures it's always above other elements */
+  background-color: rgba(33, 61, 29, 1); /* Use rgba for opacity control */
+  box-shadow: 0 2px 2px -2px rgb(22, 66, 26); /* Subtle shadow for depth */
+  transition: background-color 0.3s ease, box-shadow 0.3s ease, opacity 0.3s ease;
 }
 
-
-  /* Style for the navbar brand (logo) */
-  .navbar-brand {
-    cursor: pointer; /* Indicate the logo is clickable */
-  }
-  .button-navbar {
-    transition: none !important;
-    animation: none !important;
+/* Style for the navbar brand (logo) */
+.navbar-brand {
+  cursor: pointer; /* Indicate the logo is clickable */
 }
 
+.button-navbar {
+  transition: none !important;
+  animation: none !important;
+}
 
-  /* Adjust navbar link styles */
-  .navbar-nav .nav-link {
-    color: #333;
-    padding: 0.5rem 1rem;
-    font-size: 1rem;
-    transition: color 0.3s ease; /* Smooth transition for hover effect */
-  }
-  
-  /* Highlight the active navbar link */
-  .navbar-nav .nav-link.active {
-    color: #ffffff;
-    font-weight: bold;
-  }
-  
-  /* Dropdown styles */
-  .dropdown-toggle {
-    background-color: #094D1C; /* Match with button-navbar */
-    color: #ffffff;
-  }
-  
-  .dropdown-menu {
-    background-color: #f8f9fa;
-  }
-  
-  /* Mobile view adjustments */
-  @media (max-width: 768px) {
-    .navbar-nav {
+/* Adjust navbar link styles */
+.navbar-nav .nav-link {
+  color: #333;
+  padding: 0.5rem 1rem;
+  font-size: 1rem;
+  transition: color 0.3s ease; /* Smooth transition for hover effect */
+}
+
+/* Highlight the active navbar link */
+.navbar-nav .nav-link.active {
+  color: #ffffff;
+  font-weight: bold;
+}
+
+/* Dropdown styles */
+.dropdown-toggle {
+  background-color: #094D1C; /* Match with button-navbar */
+  color: #ffffff;
+}
+
+.dropdown-menu {
+  background-color: #f8f9fa;
+}
+
+/* Mobile view adjustments */
+@media (max-width: 768px) {
+  /* Center the navbar links and adjust padding for mobile */
+  .navbar-nav {
       text-align: center;
       padding-top: 1rem;
-    }
   }
-  .notification-link {
-    position: relative; /* Needed for absolute positioning of the badge */
-    color: white; /* Icon color */
-    text-decoration: none; /* No underline for the link */
+
+  /* Ensure navbar items stack vertically in burger menu */
+  .navbar-nav .nav-link {
+      width: 100%;
+      text-align: center;
+      margin: 5px 0;
+  }
+
+  .button-navbar {
+      width: 100%;
+      margin: 5px 0;
+      text-align: center;
+  }
+
+  /* Adjust the logo size in mobile */
+  .ncf-logo-navbar {
+      width: 150px;
+      height: auto;
+      margin-bottom: 10px;
+  }
+
+  /* Full width for the notification dropdown */
+  .notification-dropdown {
+      width: 100%;
+  }
+}
+
+/* Notification badge styles */
+.notification-link {
+  position: relative; /* Needed for absolute positioning of the badge */
+  color: white; /* Icon color */
+  text-decoration: none; /* No underline for the link */
 }
 
 .badge {
-    background-color: red; /* Background color of the badge */
-    color: white; /* Text color */
-    border-radius: 50%; /* Make it circular */
-    padding: 0.25em 0.5em; /* Padding for the badge */
-    position: absolute; /* Position it absolutely */
-    top: 0; /* Positioning from the top */
-    right: 0; /* Positioning from the right */
-    transform: translate(50%, -50%); /* Centering the badge */
-    font-size: 0.8em; /* Adjust font size as necessary */
+  background-color: red; /* Background color of the badge */
+  color: white; /* Text color */
+  border-radius: 50%; /* Make it circular */
+  padding: 0.25em 0.5em; /* Padding for the badge */
+  position: absolute; /* Position it absolutely */
+  top: 0; /* Positioning from the top */
+  right: 0; /* Positioning from the right */
+  transform: translate(50%, -50%); /* Centering the badge */
+  font-size: 0.8em; /* Adjust font size as necessary */
 }
 
 .notification-dropdown-toggle {
@@ -111,29 +138,7 @@
   background-color: #f8f9fa;
   cursor: pointer;
 }
-.me-3.button-navbar{
-  background-color: #0d4417;
-}
 
-/* Ensure navbar items stack vertically in burger menu */
-@media (max-width: 768px) {
-  .navbar-nav .nav-link {
-      width: 100%;
-      text-align: center;
-      margin: 5px 0;
-      
-  }
-  .button-navbar {
-      width: 100%;
-      margin: 5px 0;
-      text-align: center;
-  }
-  .ncf-logo-navbar {
-      width: 150px;
-      height: auto;
-      margin-bottom: 10px;
-  }
-  .notification-dropdown {
-      width: 100%;
-  }
+.me-3.button-navbar {
+  background-color: #0d4417;
 }

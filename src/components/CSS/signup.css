@@ -10,7 +10,7 @@
   background-size: cover;
   background-position: center;
   filter: blur(15px); /* Apply blur only to background */
-  z-index: -1; /* Place it behind the login form */
+  z-index: -1; /* Place it behind the sign-up form */
 }
 
 /* Container for the sign-up form */
@@ -29,7 +29,6 @@
   bottom: auto; /* Let the form grow downwards */
   flex-grow: 1; /* Allow the form to grow */
   transition: all 0.3s ease; /* Smooth transition for expanding */
-  
   align-items: flex-start; /* Align to the top so the form expands downward */
 }
 
@@ -109,7 +108,6 @@ button:disabled {
 
 .sign-up-footer a:hover {
   text-decoration: underline;
-  
 }
 
 /* Styling for logo */
@@ -118,4 +116,40 @@ button:disabled {
   height: auto; /* Maintains aspect ratio */
   max-height: 150px; /* Limit the max height of the logo */
   margin-bottom: 20px; /* Space below the logo */
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  /* Make sign-up container more flexible and ensure it fits on smaller screens */
+  .sign-up-container {
+    width: 90%; /* Ensure it's not too wide on small screens */
+    padding: 1.5rem; /* Reduced padding for smaller screens */
+    top: 5%; /* Less space from the top on mobile */
+  }
+
+  .sign-up-header {
+    font-size: 1.5rem; /* Adjust header font size */
+    margin-bottom: 1rem;
+  }
+
+  /* Make form fields and buttons fit better on mobile */
+  .form-control,
+  .sign-up-btn {
+    padding: 8px; /* Adjust padding */
+    margin: 6px 0; /* Reduced margin for compactness */
+  }
+
+  /* Adjust logo size for small screens */
+  .logo {
+    max-height: 120px; /* Reduced max height for mobile */
+    margin-bottom: 15px; /* Slightly smaller bottom margin */
+  }
+
+  .sign-up-footer {
+    font-size: 0.8rem; /* Adjust font size for footer text */
+  }
+
+  .password-input-container .form-control {
+    padding-right: 35px; /* Adjust padding for mobile devices */
+  }
 }

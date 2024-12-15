@@ -5,7 +5,7 @@ import { Modal, Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import UserSidebar from '../UserSidebar'; // Assuming you have the sidebar component
 import { jwtDecode } from 'jwt-decode';
-import '../CSS/UserPaper.css'; // Assuming you have custom styles for the page
+import '../CSS/pdfRequests.css'; // Assuming you have custom styles for the page
 
 const getCurrentUserId = () => localStorage.getItem('userId');
 const getToken = () => localStorage.getItem('token'); // Get token from localStorage
@@ -19,6 +19,7 @@ const PdfRequests = () => {
     show: false,
     selectedRequest: null,
   });
+  const [isPlaneFlying, setIsPlaneFlying] = useState(false); // For plane animation visibility
 
   const userId = getCurrentUserId();
   const token = getToken(); // Get the token from localStorage
@@ -75,6 +76,7 @@ const PdfRequests = () => {
 
   const sendEmail = async (request) => {
     try {
+      setIsPlaneFlying(true); // Start the plane animation
       const response = await axios.post(`https://ccsrepo.onrender.com/send-pdf/${request.research_id}`, {
         requester_email: request.requester_email,
         researchTitle: request.research_title,
@@ -88,6 +90,7 @@ const PdfRequests = () => {
           icon: 'success',
           confirmButtonText: 'Okay',
         });
+        setIsPlaneFlying(false); // Stop the plane animation after successful email
       } else {
         throw new Error('Email sending failed');
       }
@@ -98,6 +101,7 @@ const PdfRequests = () => {
         icon: 'error',
         confirmButtonText: 'Try Again',
       });
+      setIsPlaneFlying(false); // Stop the plane animation on error
     }
   };
 
@@ -109,24 +113,24 @@ const PdfRequests = () => {
   }
 
   return (
-    <div className="containers">
-      <UserSidebar isOpen={isSidebarVisible} toggleSidebar={toggleSidebar} roleId={roleId} /> {/* Sidebar included here */}
+    <div className="pdf-requests-container">
+      <UserSidebar isOpen={isSidebarVisible} toggleSidebar={toggleSidebar} roleId={roleId} /> 
 
-      <main className={`content ${isSidebarVisible ? 'with-sidebar' : 'full-width'}`}>
-        <header className="header">
-          <h1>PDF Requests</h1>
+      <main className={`pdf-requests-content ${isSidebarVisible ? 'pdf-requests-with-sidebar' : 'pdf-requests-full-width'}`}>
+        <header className="pdf-requests-header">
+          <div className="pdf-requests-title">PDF REQUESTS</div>
         </header>
 
         {loading ? (
-          <div className="spinner-container">
-            <div className="spinner"></div>
+          <div className="pdf-requests-spinner-container">
+            <div className="pdf-requests-spinner"></div>
           </div>
         ) : error ? (
-          <p className="error">{error}</p>
+          <p className="pdf-requests-error">{error}</p>
         ) : (
           <>
             {pdfRequests.length > 0 ? (
-              <table className="pdf-request-table">
+              <table className="pdf-requests-table">
                 <thead>
                   <tr>
                     <th>Title</th>
@@ -146,11 +150,7 @@ const PdfRequests = () => {
                       <td>{request.purpose}</td>
                       <td>{request.status}</td>
                       <td>
-                        <button
-                          onClick={() => sendEmail(request)}
-                          title="Send Email"
-                          style={{ backgroundColor: 'transparent', border: 'none', cursor: 'pointer' }}
-                        >
+                        <button onClick={() => sendEmail(request)} title="Send Email">
                           <FaPaperPlane color="blue" size={20} />
                         </button>
                       </td>
@@ -162,6 +162,14 @@ const PdfRequests = () => {
               <p>No PDF requests found.</p>
             )}
           </>
+        )}
+        
+        {/* Flying Plane Animation */}
+        {isPlaneFlying && (
+          <div className="plane-animation">
+            <div className="plane"></div>
+          
+          </div>
         )}
       </main>
     </div>
