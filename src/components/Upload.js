@@ -169,8 +169,8 @@ const Upload = () => {
                 </FloatingLabel>
 
                 {authors.map((author, index) => (
-                    <Row key={index} className="mb-3 align-items-center">
-                        <Col xs={4}>
+                    <Row key={index} className="mb-3 balign-items-center">
+                        <Col xs={5}>
                             <FloatingLabel controlId={`author-${index}`} label={`Author ${index + 1} Name`}>
                                 <Form.Control
                                     type="text"
@@ -182,7 +182,7 @@ const Upload = () => {
                                 />
                             </FloatingLabel>
                         </Col>
-                        <Col xs={4}>
+                        <Col xs={5}>
                             <FloatingLabel controlId={`author-email-${index}`} label={`Author ${index + 1} Email`}>
                                 <Form.Control
                                     type="email"
@@ -205,16 +205,17 @@ const Upload = () => {
                     </Row>
                 ))}
 
-                <FloatingLabel controlId="floatingTextarea2" label="Abstract of the Paper" className="mb-3">
-                    <Form.Control
-                        as="textarea"
-                        rows={3}
-                        placeholder="A brief overview of the research paper."
-                        value={abstract}
-                        onChange={(e) => setAbstract(e.target.value)}
-                        required
-                    />
-                </FloatingLabel>
+<FloatingLabel controlId="floatingTextarea2" label="Abstract of the Paper" className="mb-3">
+    <Form.Control
+        as="textarea"
+        placeholder="A brief overview of the research paper."
+        value={abstract}
+        onChange={(e) => setAbstract(e.target.value)}
+        required
+        style={{ height: '400px', resize: 'none' }}  // Fixed size for the textarea
+    />
+</FloatingLabel>
+
 
                 <FloatingLabel controlId="categoryDropdown" label="Category" className="mb-3">
                     <Form.Select value={category} onChange={(e) => setCategory(e.target.value)} required>
