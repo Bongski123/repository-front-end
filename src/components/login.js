@@ -45,8 +45,19 @@ const Login = () => {
 
       if (!response.ok) {
         const errorMessage = await response.json();
+    
+        // Handle unverified account error
+        if (response.status === 403) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Account Not Verified',
+                text: 'Please verify your account before logging in.',
+            });
+            return;
+        }
+    
         throw new Error(errorMessage.error || 'Login failed. Please try again.');
-      }
+    }
 
       const responseData = await response.json();
       const { token } = responseData;
@@ -54,6 +65,7 @@ const Login = () => {
       if (!email) {
         throw new Error('Missing email from server response');
       }
+      
 
       // Decode the token to extract roleId and other info
       const decodedToken = jwtDecode(token);
