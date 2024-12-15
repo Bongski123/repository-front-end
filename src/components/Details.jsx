@@ -219,7 +219,7 @@ function Details() {
                             ) : ( 
                                 <div className="pdf-container" style={{ height: "600px", overflowY: "auto" }}>
                                       {/* Download Button */}
-                                      <Button className="download-btn" onClick={handleDownload}>Download PDF</Button>
+                                      
                                     <Document
                                         file={pdfBlobUrl}
                                         onLoadSuccess={onDocumentLoadSuccess}
@@ -233,6 +233,7 @@ function Details() {
                                                 width={500}
                                             />
                                         ))}
+                                        <Button className="download-btn" onClick={handleDownload}>Download PDF</Button>
                                     </Document>
                         
                                   

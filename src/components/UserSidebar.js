@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import './CSS/sidebar.css';
-import { FaHome, FaBars, FaBook, FaBookmark } from 'react-icons/fa';
+import { FaHome, FaBars, FaBook, FaBookmark,FaPaperPlane } from 'react-icons/fa';
 import { BsFillCloudUploadFill } from 'react-icons/bs';
 
 const getCurrentUserId = () => localStorage.getItem('userId');
@@ -59,7 +59,7 @@ const UserSidebar = ({ isOpen, toggleSidebar, roleId }) => {
           {pdfRequestRoles.includes(roleId) && userId && (
             <li>
               <Link to={`/pdf-requests/${userId}`}>
-                <FaBookmark />
+                <FaPaperPlane />
                 <span>PDF Requests</span>
               </Link>
             </li>

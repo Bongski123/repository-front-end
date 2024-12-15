@@ -34,7 +34,8 @@ const SignUp = () => {
     institutionId: institutionId || '',  // Prefill institution if available
     roleId: roleId || '',  // Prefill role ID if available
     newInstitution: '',
-    newProgram: ''
+    newProgram: '',
+    verified: true,  // Set verified to true initially (or based on your condition)
   });
   const [formValidation, setFormValidation] = useState({
     passwordValid: false,
@@ -61,7 +62,7 @@ const SignUp = () => {
         setFormData((prev) => ({ ...prev, roleId: '2', institutionId: '16' }));
       } else if (formData.emailInput.endsWith('@ncf.edu.ph')) {
         setFormData((prev) => ({ ...prev, roleId: '3', institutionId: '16' }));
-      }else {
+      } else {
         setFormData((prev) => ({ ...prev, roleId: '4', institutionId: '', userType: 'non-ncf-user' })); // Defaults for non-NCF users
       }
     };
@@ -144,56 +145,58 @@ const SignUp = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (formData.password && formData.password !== formData.confirmPassword) {
-      Swal.fire({
-        icon: 'error',
-        title: 'Passwords do not match',
-        text: 'Please make sure your passwords match.'
-      });
-      return;
-    }
+  e.preventDefault();
+  if (formData.password && formData.password !== formData.confirmPassword) {
+    Swal.fire({
+      icon: 'error',
+      title: 'Passwords do not match',
+      text: 'Please make sure your passwords match.'
+    });
+    return;
+  }
 
-    const dataToSend = {
-      first_name: formData.firstName,
-      middle_name: formData.middleName || null,
-      last_name: formData.lastName,
-      suffix: formData.suffix || null,
-      email: formData.emailInput,
-      password: formData.password || null,
-      program_id: formData.programId || null,
-      institution_id: formData.institutionId,
-      role_id: formData.roleId,
-     
-      new_institution_name: formData.institutionId === 'new' ? formData.newInstitution : undefined,
-      new_program_name: formData.programId === 'new' ? formData.newProgram : undefined,
-    };
+  const dataToSend = {
+    first_name: formData.firstName,
+    middle_name: formData.middleName || null,
+    last_name: formData.lastName,
+    suffix: formData.suffix || null,
+    email: formData.emailInput,
+    password: formData.password || null,
+    program_id: formData.programId || null,
+    institution_id: formData.institutionId,
+    role_id: formData.roleId,
 
-    try {
-      const response = await axios.post('https://ccsrepo.onrender.com/register', dataToSend);
-      if (response.status === 201) {
-        Swal.fire({
-          icon: 'success',
-          title: 'Registration Successful',
-          text: response.data.message || 'You have been registered successfully.'
-        });
-        navigate('/login');
-      } else {
-        Swal.fire({
-          icon: 'error',
-          title: 'Registration Failed',
-          text: response.data.error || 'An error occurred during registration.'
-        });
-      }
-    } catch (error) {
-      console.error('Error registering user:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error',
-        text: error.response?.data?.error || 'An unexpected error occurred. Please try again later.'
-      });
-    }
+    new_institution_name: formData.institutionId === 'new' ? formData.newInstitution : undefined,
+    new_program_name: formData.programId === 'new' ? formData.newProgram : undefined,
   };
+
+  try {
+    const response = await axios.post('https://ccsrepo.onrender.com/register', dataToSend);
+    if (response.status === 201) {
+      Swal.fire({
+        icon: 'success',
+        title: 'Registration Successful',
+        text: response.data.message || 'You have been registered successfully.'
+      });
+      // After successful registration, navigate to the verification page with a token or necessary data
+      navigate(`/verify-email?token=${response.data.token}`);
+
+    } else {
+      Swal.fire({
+        icon: 'error',
+        title: 'Registration Failed',
+        text: response.data.error || 'An error occurred during registration.'
+      });
+    }
+  } catch (error) {
+    console.error('Error registering user:', error);
+    Swal.fire({
+      icon: 'error',
+      title: 'Error',
+      text: error.response?.data?.error || 'An unexpected error occurred. Please try again later.'
+    });
+  }
+};
 
   const isGboxEmail = formData.emailInput.endsWith('@gbox.ncf.edu.ph');
 

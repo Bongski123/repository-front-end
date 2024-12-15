@@ -35,6 +35,7 @@ import NotificationDetailsPage from "./components/Pages/NotificationDetailPage.j
 import EditUserPage from "./components/EditUserPage.js";
 import RequestPDFForm from "./components/Pages/RequestPdfForm.js";
 import UserPdfRequests from "./components/Pages/usersrequestpdf.js";
+import VerifyEmail from "./components/VerifyEmail.js";
 function App() {
   const [activeTab, setActiveTab] = useState('');
 
@@ -67,33 +68,33 @@ function App() {
             <Route path="/categories" element={<Categories />} />
             <Route path="/authors" element={<Authors />} />
             <Route path="/searchresult" element={<ResultsPage />} />
+            <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/authors/:authorId/researches" component={AuthorDetails} />
             <Route path="/user/researches/:userId" element={<MyPapers />} />
             <Route path = "/notification/:userId" element = {<NotificationsPage/>}/>
-            <Route path="/collections/:userId" element={<Collections />} /> {/* New route */}
+            <Route path="/collections/:userId" element={<Collections />} />
             <Route path="/pdf-requests/:userId" element={<UserPdfRequests />} />
         <Route path="/authors" exact element={<Authors/>} />
-        <Route path="/authors/:authorId" element={<AuthorPapers/>} /> {/* Add this route */}
-        <Route path="/user/researches/:userId" element={<MyPapers/>} /> {/* Add this route */}
-        {/* Add other routes */}
+        <Route path="/authors/:authorId" element={<AuthorPapers/>} />
+        <Route path="/user/researches/:userId" element={<MyPapers/>} /> 
+
 
         <Route path="/results" element={<SearchResultsPage />} />
   
     
             <Route path="/" element={<SearchResult />} />
-        <Route path="/details" element={<Details />} /> {/* Add this line */}
+        <Route path="/details" element={<Details />} />
        
-        <Route path="/admin/users" element={<UserTablePage />} /> {/* Add this line */}
+        <Route path="/admin/users" element={<UserTablePage />} />
         <Route path="/researchList" element={<ResearchList />} />
-        <Route path="/research/:research_id" element={<ResearchDetail />} /> {/* Route for individual research details */}
-        
+        <Route path="/research/:research_id" element={<ResearchDetail />} /> 
         <Route path="/category-list" element={<CategoryTable/>} />
         <Route path="/keyword-list" element={<KeywordTable/>} />
 
                 <Route path="/" exact component={Categories} />
                <Route path="/category/:categoryId" element={<CategoryDetail />} />
                <Route path="/notification-details/:notificationId" element={<NotificationDetailsPage />} />
-               <Route path="/edit-user/:userId" element={<EditUserPage />} /> {/* Dynamic route */}
+               <Route path="/edit-user/:userId" element={<EditUserPage />} /> 
  
           </Routes>
           
