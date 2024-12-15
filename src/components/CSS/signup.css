@@ -62,6 +62,7 @@
   padding: 10px; /* Add padding for better touch area */
   margin: 8px 0; /* Add margin for spacing between elements */
   border-color: #3cb300;
+  pointer-events: auto; /* Ensure button is clickable */
 }
 
 /* Adjust styles for the sign-up button */
@@ -72,6 +73,7 @@
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  pointer-events: auto; /* Ensure button is clickable */
 }
 
 /* Add hover effect to sign-up button */
