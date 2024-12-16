@@ -84,10 +84,33 @@ const UserTablePage = () => {
   };
 
   const handleEdit = (userId) => {
-    const user = users.find(u => u.user_id === userId); // Find user data by ID
-    setUserToEdit(user); // Set the user data for editing
-    setModalShow(true); // Open modal for editing
-  };
+  const user = users.find(u => u.user_id === userId); // Find user data by ID
+
+  // List of known suffixes to check for
+  const suffixes = ['Jr.', 'Sr.', 'III', 'II', 'IV'];
+  
+  // Split full_name into parts
+  const nameParts = user.full_name.split(' ');
+
+  // Check if the last part is a suffix
+  const possibleSuffix = nameParts[nameParts.length - 1];
+  const isSuffix = suffixes.includes(possibleSuffix);
+
+  // If the last part is a suffix, separate it from the last name
+  const [first_name, middle_name, ...lastNameParts] = nameParts;
+  const last_name = isSuffix ? lastNameParts.slice(0, -1).join(' ') : lastNameParts.join(' ');
+  const suffix = isSuffix ? possibleSuffix : '';
+
+  // Set the user data for editing, including the split full name and suffix
+  setUserToEdit({
+    ...user,
+    first_name,
+    middle_name: middle_name || '', // Ensure middle_name is set if it's empty
+    last_name,
+    suffix,
+  });
+  setModalShow(true); // Open modal for editing
+};
 
   const handleDelete = async (userId) => {
     const result = await Swal.fire({
@@ -182,20 +205,27 @@ const UserTablePage = () => {
             </tr>
           </thead>
           <tbody>
-            {users.map(user => (
-              <tr key={user.user_id}>
-                <td>{user.user_id}</td>
-                <td>{user.full_name}</td>
-                <td>{user.email}</td>
-                <td>{user.role_name}</td>
-                <td>{user.institution}</td>
-                <td>
-                  <Button variant="primary" onClick={() => handleEdit(user.user_id)}>Edit</Button>
-                  <Button variant="danger" onClick={() => handleDelete(user.user_id)}>Delete</Button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
+  {users.length > 0 ? (
+    users.map(user => (
+      <tr key={user.user_id}>
+        <td>{user.user_id}</td>
+        <td>{user.full_name}</td>
+        <td>{user.email}</td>
+        <td>{user.role_name}</td>
+        <td>{user.institution}</td>
+        <td>
+          <Button variant="primary" onClick={() => handleEdit(user.user_id)}>Edit</Button>
+          <Button variant="danger" onClick={() => handleDelete(user.user_id)}>Delete</Button>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="6">No users found</td>
+    </tr>
+  )}
+</tbody>
+
         </table>
       </div>
 

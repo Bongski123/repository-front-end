@@ -1,0 +1,21 @@
+.footer-fixed-right {
+    position: fixed;
+    right: 20px;
+    bottom: 20px;
+    z-index: 9999;
+    padding-left: 1400px;
+    height: 50px;
+    margin-bottom: 2px;
+  }
+  
+  #footer-icons {
+    width: 40px; /* Size of the circle */
+    height: 40px; /* Size of the circle */
+    border-radius: 50%; /* Make the button circular */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0; /* Remove padding for a perfect circle */
+    font-size: 20px; /* Adjust icon size */
+  }
+  

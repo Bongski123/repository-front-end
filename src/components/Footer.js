@@ -5,6 +5,7 @@ import Accordion from "react-bootstrap/Accordion";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import { useState } from "react";
+import './CSS/Footer.css';
 
 import { BiChat } from "react-icons/bi";
 import { BiHelpCircle } from "react-icons/bi";
@@ -27,7 +28,7 @@ function MyVerticallyCenteredModal(props) {
         <Tabs
           defaultActiveKey="home"
           id="fill-tab-example"
-          className="mb-3 equal-width-tabs"
+          className="mb-2 equal-width-tabs"
           fill
         >
           <Tab eventKey="home" title="Tutorial">
@@ -172,7 +173,7 @@ function ChatModal(props) {
   return (
     <Modal 
         {...props}
-        size="lg"
+        size="md"
         aria-labelledby="contained-modal-title-vcenter"
         centered
         >
@@ -202,33 +203,41 @@ function Footer() {
   const handleShowChat = () => setShowChat(true);
 
   return (
-    <section id="footer" className="footer-block">
-      <Container fluid className="footer-container">
-        <Button
-          variant="success"
-          size="lg"
-          className="me-3"
-          id="footer-icons"
-          onClick={handleShowHelp}
-        >
-          <BiHelpCircle />
-        </Button>
-        <Button variant="success" size="lg" className="me-3" id="footer-icons" onClick={handleShowChat}>
-          <BiChat />
-        </Button>
-      </Container>
+<div>
+  <Container fluid className="footer-container footer-fixed-right">
+    <Button
+      variant="success"
+      size="lg"
+      className="me-3"
+      id="footer-icons"
+      onClick={handleShowHelp}
+    >
+      <BiHelpCircle />
+    </Button>
+    <Button
+      variant="success"
+      size="lg"
+      className="me-3"
+      id="footer-icons"
+      onClick={handleShowChat}
+    >
+      <BiChat />
+    </Button>
+  </Container>
 
-      <MyVerticallyCenteredModal
-        show={showHelp}
-        onHide={() => handleCloseHelp(true)}
-      />
-      
-      <ChatModal
-        show={showChat}
-        onHide={() => handleCloseChat(true)}
-      />
-      
-    </section>
+  <MyVerticallyCenteredModal
+    show={showHelp}
+    onHide={() => handleCloseHelp(true)}
+  />
+
+  <ChatModal
+    show={showChat}
+    onHide={() => handleCloseChat(true)}
+  />
+</div>
+
+
+
   );
 }
 

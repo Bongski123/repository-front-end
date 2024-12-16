@@ -71,6 +71,11 @@
   transform: scale(1.05); /* Slightly enlarges the chart on hover */
 }
 
+
+.chart:hover {
+  transform: scale(1.05); /* Slightly enlarges the chart on hover */
+}
+
 /* Media Queries for Mobile and Smaller Screens */
 @media (max-width: 768px) {
   /* Stacking cards vertically on smaller screens */

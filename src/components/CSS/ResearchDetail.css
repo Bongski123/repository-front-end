@@ -1,0 +1,175 @@
+/* ResearchDetail Component Styles */
+.research-detail-container {
+    margin-left: 0;
+    padding: 30px;
+    transition: margin-left 0.3s ease;
+  }
+  
+  .research-detail-header {
+    font-size: 32px;
+    margin-bottom: 20px;
+    color: #333;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .research-section {
+    margin-bottom: 30px;
+  }
+  
+  .research-section h3 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    color: #444;
+  }
+  
+  .research-section p {
+    font-size: 18px;
+    color: #555;
+    line-height: 1.6;
+  }
+  
+  .research-button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .research-button {
+    padding: 12px 25px;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .research-approve-btn {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .research-reject-btn {
+    background-color: #f44336;
+    color: white;
+  }
+  
+  .research-delete-btn {
+    background-color: #d32f2f;
+    color: white;
+  }
+  
+  .research-button:hover {
+    opacity: 0.85;
+  }
+  
+  /* Modal Styles for Rejection */
+  .research-rejection-modal-content {
+    padding: 20px;
+    max-width: 700px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    margin: auto;
+  }
+  
+  .research-rejection-select {
+    width: 100%;
+    padding: 14px;
+    font-size: 16px;
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+  }
+  
+  .research-rejection-button {
+    padding: 12px 25px;
+    font-size: 16px;
+    background-color: #f44336;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .research-rejection-button:hover {
+    background-color: #d32f2f;
+  }
+  
+  /* PDF Zoom Styles */
+  .research-pdf-zoom-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+  }
+  
+  .research-pdf-zoom-button {
+    padding: 8px 20px;
+    font-size: 16px;
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .research-pdf-zoom-button:hover {
+    background-color: #45a049;
+  }
+  
+  /* Sidebar Styles */
+  .research-sidebar {
+    width: 250px;
+    transition: width 0.3s ease;
+    background-color: #2c3e50;
+    color: white;
+    position: fixed;
+    height: 100%;
+    padding: 20px;
+  }
+  
+  .research-sidebar-hidden {
+    width: 0;
+  }
+  
+  .research-sidebar ul {
+    list-style-type: none;
+    padding: 0;
+  }
+  
+  .research-sidebar ul li {
+    margin: 20px 0;
+    font-size: 18px;
+  }
+  
+  .research-sidebar ul li a {
+    color: white;
+    text-decoration: none;
+    padding: 12px;
+    display: block;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .research-sidebar ul li a:hover {
+    background-color: #34495e;
+  }
+  
+  /* Sidebar Toggle Button */
+  .research-sidebar-toggle-btn {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 30px;
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    z-index: 1000;
+  }
+  
+  .research-sidebar-toggle-btn:hover {
+    opacity: 0.7;
+  }
+  
