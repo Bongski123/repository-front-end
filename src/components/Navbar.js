@@ -56,14 +56,14 @@ function NavigationBar({ activeTab }) {
         }, 30 * 60 * 1000); // 30 minutes
     };
 
-  const isLoggedIn = () => {
-    const token = localStorage.getItem('token');
-    if (token) {
-        const decodedToken = jwtDecode(token);
-        return !!decodedToken && decodedToken.roleId !== 4; // Hide for roleId 4 or non-NCF users
-    }
-    return false;
-};
+    const isLoggedIn = () => {
+        const token = localStorage.getItem('token');
+        if (token) {
+            const decodedToken = jwtDecode(token);
+            return !!decodedToken;
+        }
+        return false;
+    };
 
     const fetchNotifications = async () => {
         setLoadingNotifications(true);

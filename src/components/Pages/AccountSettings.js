@@ -46,7 +46,9 @@ const [userInfo, setUserInfo] = useState({
       try {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId;
+        const email = decodedToken.email; // Extract email from the token
         console.log("Decoded User ID:", userId); // Debugging line
+        console.log("Decoded Email:", email); // Debugging line
         if (userId) {
           fetchUserData(userId);
           fetchProfilePicture(userId);
@@ -58,6 +60,7 @@ const [userInfo, setUserInfo] = useState({
       console.log('No token found in localStorage.');
     }
   }, []);
+  
   
   const fetchUserData = async (userId) => {
   try {
@@ -142,6 +145,22 @@ const [userInfo, setUserInfo] = useState({
 
   const handleSendCode = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
+    let email = '';
+    
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        email = decodedToken.email; // Extract email from token
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return;
+      }
+    } else {
+      console.log('No token found in localStorage.');
+      return;
+    }
+  
     try {
       const response = await fetch('https://ccsrepo.onrender.com/request-password-reset', {
         method: 'POST',
@@ -159,9 +178,25 @@ const [userInfo, setUserInfo] = useState({
       Swal.fire('Error', 'An unexpected error occurred. Please try again later.', 'error');
     }
   };
-
+  
   const handleVerifyCode = async (e) => {
     e.preventDefault();
+    const token = localStorage.getItem('token');
+    let email = '';
+  
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        email = decodedToken.email; // Extract email from token
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return;
+      }
+    } else {
+      console.log('No token found in localStorage.');
+      return;
+    }
+  
     try {
       const response = await fetch('https://ccsrepo.onrender.com/verify-code', {
         method: 'POST',
@@ -169,7 +204,7 @@ const [userInfo, setUserInfo] = useState({
         body: JSON.stringify({ code }),
       });
       const data = await response.json();
-
+  
       if (response.ok) {
         Swal.fire('Success', 'Your verification code is correct!', 'success');
         setStep(3);
@@ -180,27 +215,42 @@ const [userInfo, setUserInfo] = useState({
       Swal.fire('Error', 'An unexpected error occurred. Please try again later.', 'error');
     }
   };
-
+  
   const handleResetPassword = async (e) => {
     e.preventDefault();
-
+    const token = localStorage.getItem('token');
+    let email = '';
+  
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        email = decodedToken.email; // Extract email from token
+      } catch (error) {
+        console.error('Error decoding token:', error);
+        return;
+      }
+    } else {
+      console.log('No token found in localStorage.');
+      return;
+    }
+  
     if (!passwordRegex.test(newPassword)) {
       Swal.fire('Error', 'Password must be at least 8 characters long, contain a capital letter, and a special character.', 'error');
       return;
     }
-
+  
     if (newPassword !== retypedPassword) {
       setPasswordMatch(false);
       return;
     }
-
+  
     try {
       const response = await fetch('https://ccsrepo.onrender.com/reset-password', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code, newPassword }),
       });
-
+  
       const data = await response.json();
       if (response.ok) {
         Swal.fire('Success', 'Your password has been reset successfully!', 'success');
@@ -214,6 +264,7 @@ const [userInfo, setUserInfo] = useState({
       Swal.fire('Error', 'An unexpected error occurred. Please try again later.', 'error');
     }
   };
+  
 
   // Real-time validation for password
   const handlePasswordChange = (e) => {
@@ -387,7 +438,7 @@ const [userInfo, setUserInfo] = useState({
                         className="mb-2"
                       />
                     </Form.Group>
-                    <Button variant="sucess" type="submit" className="w-100 py-2">
+                    <Button variant="success" type="submit" className="w-100 py-2">
                       Verify Code
                     </Button>
                   </Form>
