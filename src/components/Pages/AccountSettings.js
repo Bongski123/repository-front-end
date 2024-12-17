@@ -345,7 +345,7 @@ const AccountSettings = () => {
                       />
                     </Form.Group>
                     <Button variant="success" type="submit" className="mt-2 w-100 py-2">
-                      Send Verification Code
+                      Change Password
                     </Button>
                   </Form>
                 )}
