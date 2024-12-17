@@ -23,12 +23,13 @@
 
 .info-card.purple {
   background-color: #6a0dad; /* Purple */
+  cursor: pointer;
 }
 
 .info-card.yellow {
   background-color: #ffcc00; /* Yellow */
   text-decoration: none; /* Removes underline from links */
-  
+  cursor: pointer;
 }
 
 .info-card.green {
@@ -89,4 +90,66 @@ p {
   .charts {
     gap: 1.5rem; /* Reduced gap between charts on smaller screens */
   }
+}
+/* General container for the pie chart */
+.pie-chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  width: 300px; /* Chart width */
+  height: 300px; /* Chart height */
+  margin: 20px auto;
+  background-color: #f9f9f9; /* Light gray background */
+  border: 2px solid #ddd; /* Border around the container */
+  border-radius: 50%; /* Make it circular */
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+}
+
+/* Center text inside the pie chart (optional) */
+.pie-chart-container .chart-text {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 18px;
+  font-weight: bold;
+  color: #333;
+  text-align: center;
+}
+
+/* Legend styling */
+.pie-chart-legend {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 10px;
+}
+
+.pie-chart-legend .legend-item {
+  display: flex;
+  align-items: center;
+  margin: 5px 10px;
+}
+
+.pie-chart-legend .legend-color {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  border-radius: 50%;
+}
+
+.pie-chart-legend .legend-text {
+  font-size: 14px;
+  color: #555;
+}
+.sidebar {
+  position: fixed; /* Ensure it's positioned relative to the viewport */
+  top: 80px; /* Adjust this value to move it up or down */
+  left: 0;
+  width: 250px; /* Example width */
+  height: calc(100% - 40px); /* Adjust for slight spacing if needed */
+  background-color: #f4f4f4; /* Sidebar background color */
+  padding: 10px; /* Add some padding if needed */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
 }

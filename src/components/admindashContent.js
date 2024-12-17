@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { FaUser } from "react-icons/fa";
 import { FaQuoteRight } from "react-icons/fa";
 import { IoMdCloudDownload } from "react-icons/io";
-import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend } from 'chart.js';
+import { Line, Pie } from 'react-chartjs-2';  // Import Pie chart from chart.js
+import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend, ArcElement } from 'chart.js';
 import { useNavigate } from 'react-router-dom'; // Import useNavigate for navigation
 import './CSS/UserDashContent.css';
 
 // Register necessary components
-ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend);
+ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend, ArcElement);
 
 const DashboardContent = () => {
   const navigate = useNavigate(); // Initialize useNavigate
@@ -18,6 +18,7 @@ const DashboardContent = () => {
   const [totalResearches, setTotalResearches] = useState(0);
   const [dailyDownloads, setDailyDownloads] = useState([]);
   const [dailyCitations, setDailyCitations] = useState([]);
+  const [uploaderStats, setUploaderStats] = useState([]);
 
   useEffect(() => {
     const fetchDashboardData = async () => {
@@ -68,6 +69,12 @@ const DashboardContent = () => {
           labels: daysLabels,
           data: citationsByDay,
         });
+
+        // Fetching uploader stats data
+        const uploaderStatsResponse = await fetch('https://ccsrepo.onrender.com/admin/uploader-stats-by-role');
+        const uploaderStatsData = await uploaderStatsResponse.json();
+        setUploaderStats(uploaderStatsData);
+        
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       }
@@ -104,6 +111,20 @@ const DashboardContent = () => {
     ],
   };
 
+  const uploaderChartData = uploaderStats && uploaderStats.length > 0 ? {
+    labels: uploaderStats.map(item => `${item.role_name}`),
+    datasets: [
+      {
+        label: 'Uploads per User',
+        data: uploaderStats.map(item => item.uploads),
+        backgroundColor: ['#FF5733', '#33FF57', '#3357FF', '#F4A300', '#900C3F'], // Customize colors
+        borderColor: '#FFFFFF',
+        borderWidth: 1,
+        
+      },
+    ],
+  } : {};  // Empty object when there are no uploader stats
+
   const options = {
     responsive: true,
     plugins: {
@@ -136,27 +157,27 @@ const DashboardContent = () => {
   return (
     <div className="dashboard-content">
       <div className="info-cards">
-      <div className="info-card blue">
-    <IoMdCloudDownload className="download-icon" />
-    <p>Total Downloads</p>
-    <h3>{downloads}</h3>
-  </div>
-  <div className="info-card green">
-    <FaQuoteRight className="cite-icon" />
-    <p>Total Citations</p>
-    <h3>{citations}</h3>
-  </div>
-  <div className="info-card purple" onClick={() => navigate('/researchList')}>
-    <FaUser className="research-icon" />
-    <p>Total Researches</p>
-    <h3>{totalResearches}</h3>
-  </div>
-  <div className="info-card yellow" onClick={() => navigate('/admin/users')}>
-    <FaUser className="user-icon" />
-    <div className="info-text">
-      <p>Total Users</p>
-      <h3>{totalResearches}</h3>
-    </div>
+        <div className="info-card blue">
+          <IoMdCloudDownload className="download-icon" />
+          <p>Total Downloads</p>
+          <h3>{downloads}</h3>
+        </div>
+        <div className="info-card green">
+          <FaQuoteRight className="cite-icon" />
+          <p>Total Citations</p>
+          <h3>{citations}</h3>
+        </div>
+        <div className="info-card purple" onClick={() => navigate('/researchList')}>
+          <FaUser className="research-icon" />
+          <p>Total Researches</p>
+          <h3>{totalResearches}</h3>
+        </div>
+        <div className="info-card yellow" onClick={() => navigate('/admin/users')}>
+          <FaUser className="user-icon" />
+          <div className="info-text">
+            <p>Total Users</p>
+            <h3>{totalUsers}</h3>
+          </div>
         </div>
       </div>
 
@@ -169,6 +190,16 @@ const DashboardContent = () => {
           <h3>Daily Citations</h3>
           <Line data={citationsChartData} options={options} />
         </div>
+
+        {/* Add the Pie Chart for uploader stats */}
+        <h3>Uploads per User</h3>
+        {uploaderStats && uploaderStats.length > 0 && (
+  <div className="uploader-stats-chart" style={{ width: '600px', height: '600px', margin: 'auto' }}>
+    
+    <Pie data={uploaderChartData} options={{ maintainAspectRatio: false }} />
+  </div>
+)}
+
       </div>
     </div>
   );

@@ -8,6 +8,7 @@
   justify-content:  flex-start;
   flex-wrap: wrap; /* Allows cards to wrap in case of smaller screens */
   gap: 3rem; /* Adds gap between cards */
+  cursor: pointer;
 }
 
 .info-card {
@@ -38,6 +39,7 @@
   background-color: #fed43a; /* Specific background for activity card */
   text-decoration: none; /* Remove underline from link */
   color: inherit; /* Inherit color from parent */
+  
 }
 
 .info-card.purple {

@@ -36,6 +36,7 @@ import EditUserPage from "./components/EditUserPage.js";
 import RequestPDFForm from "./components/Pages/RequestPdfForm.js";
 import UserPdfRequests from "./components/Pages/usersrequestpdf.js";
 import VerifyEmail from "./components/VerifyEmail.js";
+import AccountSettings from "./components/Pages/AccountSettings.js";
 function App() {
   const [activeTab, setActiveTab] = useState('');
 
@@ -90,11 +91,13 @@ function App() {
         <Route path="/research/:research_id" element={<ResearchDetail />} /> 
         <Route path="/category-list" element={<CategoryTable/>} />
         <Route path="/keyword-list" element={<KeywordTable/>} />
+        <Route path="/settings/account" element={<AccountSettings/>}/>
 
                 <Route path="/" exact component={Categories} />
                <Route path="/category/:categoryId" element={<CategoryDetail />} />
                <Route path="/notification-details/:notificationId" element={<NotificationDetailsPage />} />
                <Route path="/edit-user/:userId" element={<EditUserPage />} /> 
+             
  
           </Routes>
           

@@ -6,7 +6,7 @@ import Image from "react-bootstrap/Image";
 import Button from "react-bootstrap/Button";
 import Dropdown from 'react-bootstrap/Dropdown';
 import { Link, useNavigate } from 'react-router-dom';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import { SearchBar } from "./SearchBar";
 import { FaGlobe } from 'react-icons/fa';
 import axios from 'axios';
@@ -17,21 +17,19 @@ function NavigationBar({ activeTab }) {
     const [notificationCount, setNotificationCount] = useState(0);
     const [notifications, setNotifications] = useState([]);
     const [loadingNotifications, setLoadingNotifications] = useState(false);
-    const [profilePic, setProfilePic] = useState(
-        localStorage.getItem('picture') || '/src/assets/person-icon.jpg'
-    );
-
+    const [profilePic, setProfilePic] = useState('/src/assets/person-icon.jpg');
     const logoutTimer = useRef(null);
 
     useEffect(() => {
-        // Load profile picture from localStorage
-        const storedProfilePic = localStorage.getItem('picture');
-        setProfilePic(storedProfilePic ? storedProfilePic : '/src/assets/person-icon.jpg');
+        // Load profile picture from the backend if the user is logged in
+        const userId = localStorage.getItem('userId');
+        if (userId) {
+            fetchProfilePicture(userId);
+        }
 
         // Setup auto-logout timer
         resetLogoutTimer();
         const events = ['mousemove', 'keydown', 'click', 'scroll'];
-
         const resetActivity = () => resetLogoutTimer();
         events.forEach(event => window.addEventListener(event, resetActivity));
 
@@ -39,13 +37,20 @@ function NavigationBar({ activeTab }) {
             clearTimeout(logoutTimer.current);
             events.forEach(event => window.removeEventListener(event, resetActivity));
         };
-    }, []);
+    }, []); // Only run once on mount
+
+    useEffect(() => {
+        // Refresh the profile picture when it is updated
+        const storedProfilePic = localStorage.getItem('picture');
+        if (storedProfilePic) {
+            setProfilePic(storedProfilePic);
+        }
+    }, [localStorage.getItem('picture')]); // Trigger when profile picture changes in localStorage
 
     const resetLogoutTimer = () => {
         if (logoutTimer.current) {
             clearTimeout(logoutTimer.current);
         }
-
         logoutTimer.current = setTimeout(() => {
             handleLogout();
         }, 30 * 60 * 1000); // 30 minutes
@@ -98,7 +103,7 @@ function NavigationBar({ activeTab }) {
         if (isLoggedIn()) {
             fetchNotifications();
         }
-    }, []);
+    }, []); // Trigger notifications fetch if logged in
 
     const isAdmin = () => {
         const token = localStorage.getItem('token');
@@ -143,6 +148,24 @@ function NavigationBar({ activeTab }) {
             } catch (error) {
                 console.error('Error marking notifications as read:', error);
             }
+        }
+    };
+
+    const fetchProfilePicture = async (userId) => {
+        try {
+            const response = await axios.get(`https://ccsrepo.onrender.com/profile-picture/${userId}`, {
+                responseType: 'blob', // Retrieve the file as a blob
+            });
+
+            if (response.status === 200) {
+                const imageUrl = URL.createObjectURL(response.data);
+                setProfilePic(imageUrl);
+                localStorage.setItem('picture', imageUrl); // Store the picture URL in localStorage
+            } else {
+                console.error('Profile picture not found');
+            }
+        } catch (error) {
+            console.error('Error fetching profile picture:', error);
         }
     };
 
@@ -206,7 +229,9 @@ function NavigationBar({ activeTab }) {
                                     />
                                 </Dropdown.Toggle>
                                 <Dropdown.Menu>
-                                    <Dropdown.Item href="/forgot-password">Reset Password</Dropdown.Item>
+                                    
+                                    <Dropdown.Item href="/settings/account">Account Settings</Dropdown.Item>
+                                    
                                     <Dropdown.Item onClick={handleLogout}>Logout</Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
