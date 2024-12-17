@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { FaPaperPlane } from 'react-icons/fa';
+
 import { Modal, Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
+import { FaPaperPlane, FaTimes } from 'react-icons/fa';
+
 import UserSidebar from '../UserSidebar'; // Assuming you have the sidebar component
 import { jwtDecode } from 'jwt-decode';
 import '../CSS/pdfRequests.css'; // Assuming you have custom styles for the page
@@ -105,6 +107,38 @@ const PdfRequests = () => {
     }
   };
 
+  const rejectRequest = async (request) => {
+    try {
+      // Make POST request to backend with only the request_id
+      const response = await axios.post(
+        `https://ccsrepo.onrender.com/reject-pdf-request/${request.request_id}`
+      );
+  
+      if (response.status === 200) {
+        // Success: Show success message and refresh the list
+        Swal.fire({
+          title: 'Request Rejected',
+          text: 'The PDF request has been rejected and the requester has been notified.',
+          icon: 'success',
+          confirmButtonText: 'Okay',
+        });
+        fetchPdfRequests(); // Refresh the request list after rejection
+      } else {
+        throw new Error('Rejection failed');
+      }
+    } catch (error) {
+      // Error: Show error message
+      Swal.fire({
+        title: 'Error!',
+        text: 'Failed to reject the request and send the email.',
+        icon: 'error',
+        confirmButtonText: 'Try Again',
+      });
+    }
+  };
+  
+  
+
   const toggleSidebar = () => setIsSidebarVisible((prev) => !prev);
 
   // Ensure roleId is valid before rendering sidebar
@@ -134,8 +168,8 @@ const PdfRequests = () => {
                 <thead>
                   <tr>
                     <th>Title</th>
-                    <th>Requester</th>
-                    <th>Email</th>
+                    <th> Name</th>
+                    <th> Email</th>
                     <th>Purpose</th>
                     <th>Status</th>
                     <th>Action</th>
@@ -150,9 +184,15 @@ const PdfRequests = () => {
                       <td>{request.purpose}</td>
                       <td>{request.status}</td>
                       <td>
-                        <button onClick={() => sendEmail(request)} title="Send Email">
-                          <FaPaperPlane color="blue" size={20} />
-                        </button>
+                      <td>
+  <button onClick={() => sendEmail(request)} title="Send Email">
+    <FaPaperPlane color="blue" size={20} />
+  </button>
+  <button onClick={() => rejectRequest(request)} title="Reject Request" style={{ marginLeft: '10px' }}>
+    <FaTimes color="red" size={20} />
+  </button>
+</td>
+
                       </td>
                     </tr>
                   ))}

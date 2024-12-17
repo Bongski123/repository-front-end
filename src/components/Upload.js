@@ -195,7 +195,13 @@ const Upload = () => {
                         </Col>
                         <Col xs="auto">
                             {index === 0 ? (
-                                <Button variant="outline-secondary" onClick={handleAddAuthor}>+</Button>
+                                <Button 
+                                variant="outline-secondary" 
+                                onClick={handleAddAuthor} 
+                                style={{ marginTop: '15px' }}>
+                                +
+                              </Button>
+                              
                             ) : (
                                 <Button variant="outline-danger" onClick={() => handleRemoveAuthor(index)}>
                                     Remove
@@ -243,7 +249,7 @@ const Upload = () => {
                             onChange={(e) => setNewKeyword(e.target.value)}
                             placeholder="New Keyword"
                         />
-                        <Button variant="outline-primary" onClick={handleAddKeyword} className="ms-2">Add</Button>
+                        <Button variant="outline-success" onClick={handleAddKeyword} className="ms-2">Add</Button>
                     </div>
                 </div>
 
@@ -258,7 +264,10 @@ const Upload = () => {
                     )}
                 </div>
 
-                <Button type="submit" className="upload-button">Upload</Button>
+                <Button type="submit" className="upload-button" style={{ backgroundColor: '#185519', color: 'white' }}>
+  Upload
+</Button>
+
             </Form>
         </Container>
     );

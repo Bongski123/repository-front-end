@@ -1,9 +1,8 @@
 .user-dashboard-content {
   padding: 20px;
+  background-color: #f4f7fc;
+  min-height: 100vh;
 }
-
-
-
 .info-cards {
   display: flex;
   gap: 10px; /* Space between cards */
@@ -62,7 +61,6 @@ p {
   gap: 2rem; /* Space between the charts */
 }
 
-
 .chart {
   padding: 20px;
   text-align: center;
@@ -91,6 +89,7 @@ p {
     gap: 1.5rem; /* Reduced gap between charts on smaller screens */
   }
 }
+
 /* General container for the pie chart */
 .pie-chart-container {
   display: flex;
@@ -143,6 +142,7 @@ p {
   font-size: 14px;
   color: #555;
 }
+
 .sidebar {
   position: fixed; /* Ensure it's positioned relative to the viewport */
   top: 80px; /* Adjust this value to move it up or down */

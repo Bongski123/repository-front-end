@@ -66,3 +66,14 @@
 .burger-menu:focus {
   outline: none;
 }
+
+/* sidebar.css */
+
+.green-icon {
+  color: rgb(4, 65, 4);
+}
+
+/* Optional: you can change the color on hover */
+.green-icon:hover {
+  color: #09de09; /* Darker green */
+}

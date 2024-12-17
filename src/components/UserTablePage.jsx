@@ -5,7 +5,7 @@ import Button from 'react-bootstrap/Button';
 import { useNavigate } from 'react-router-dom';
 import Swal from 'sweetalert2';
 import { Modal, Form } from 'react-bootstrap';
-
+import { FaPen, FaTrashAlt } from 'react-icons/fa';  // Importing icons from react-icons
 
 const UserTablePage = () => {
   const [users, setUsers] = useState([]);
@@ -28,9 +28,10 @@ const UserTablePage = () => {
     fetchInstitutions(); // Fetch institutions
   }, []);
 
+
   const fetchUsers = async () => {
     try {
-      const response = await fetch('https://ccsrepo.onrender.com/users/all');
+      const response = await fetch('https://ccsrepo.onrender.com/admin/users/all');
       if (!response.ok) {
         throw new Error('Failed to fetch users');
       }
@@ -84,33 +85,22 @@ const UserTablePage = () => {
   };
 
   const handleEdit = (userId) => {
-  const user = users.find(u => u.user_id === userId); // Find user data by ID
-
-  // List of known suffixes to check for
-  const suffixes = ['Jr.', 'Sr.', 'III', 'II', 'IV'];
-  
-  // Split full_name into parts
-  const nameParts = user.full_name.split(' ');
-
-  // Check if the last part is a suffix
-  const possibleSuffix = nameParts[nameParts.length - 1];
-  const isSuffix = suffixes.includes(possibleSuffix);
-
-  // If the last part is a suffix, separate it from the last name
-  const [first_name, middle_name, ...lastNameParts] = nameParts;
-  const last_name = isSuffix ? lastNameParts.slice(0, -1).join(' ') : lastNameParts.join(' ');
-  const suffix = isSuffix ? possibleSuffix : '';
-
-  // Set the user data for editing, including the split full name and suffix
-  setUserToEdit({
-    ...user,
-    first_name,
-    middle_name: middle_name || '', // Ensure middle_name is set if it's empty
-    last_name,
-    suffix,
-  });
-  setModalShow(true); // Open modal for editing
-};
+    const user = users.find(u => u.user_id === userId); // Find user data by ID
+    
+    // Set the user data for editing
+    setUserToEdit({
+      ...user,
+      first_name: user.first_name || '',
+      middle_name: user.middle_name || '', // Handle middle_name being empty
+      last_name: user.last_name || '',
+      suffix: user.suffix || '',  // Handle suffix being empty
+      email: user.email || '',  // Handle email being empty
+      role_id: user.role_id || '',  // Handle role_id being empty
+      institution_id: user.institution_id || '',  // Handle institution_id being empty
+      program_id: user.program_id || '',  // Handle program_id being empty
+    });
+    setModalShow(true); // Open modal for editing
+  };
 
   const handleDelete = async (userId) => {
     const result = await Swal.fire({
@@ -147,37 +137,43 @@ const UserTablePage = () => {
 
   const handleUpdateUser = async (e) => {
     e.preventDefault();
-    const { first_name,middle_name, last_name, role_id, institution_id, program_id } = userToEdit;
   
-    if (!first_name ||!middle_name|| !last_name ||  !role_id || !institution_id || !program_id) {
-      Swal.fire('Error', 'Please fill all the required fields', 'error');
-      return;
-    }
+    const { first_name, middle_name, last_name, email, role_id, institution_id, program_id, user_id } = userToEdit;
+    const updatedUser = {
+      first_name: first_name || null,
+      middle_name: middle_name || null,
+      last_name: last_name || null,
+      email: email || null,
+      role_id: role_id || null,
+      institution_id: institution_id || null,
+      program_id: program_id || null,
+      user_id,
+    };
   
     try {
-      const response = await fetch(`https://ccsrepo.onrender.com/users/update/${userToEdit.userId}`, {
+      const response = await fetch(`https://ccsrepo.onrender.com/admin/update/${user_id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(userToEdit),
+        body: JSON.stringify(updatedUser),
       });
   
       if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Error from backend:', errorData); // Log the backend response
-        throw new Error('Failed to update user');
+        const text = await response.text();
+        throw new Error(`Error: ${text}`);
       }
   
+      const data = await response.json();
+      console.log('User updated successfully:', data);
       Swal.fire('Success', 'User updated successfully', 'success');
-      setModalShow(false); // Close the modal
-      fetchUsers(); // Refresh the user list
+      setModalShow(false);
+      fetchUsers();  // Refresh the user list after update
     } catch (error) {
       console.error('Error updating user:', error.message);
-      Swal.fire('Error', 'Failed to update user data', 'error');
+      Swal.fire('Error', `Failed to update user data: ${error.message}`, 'error');
     }
   };
-  
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -189,7 +185,7 @@ const UserTablePage = () => {
 
   return (
     <div className={`user-table-wrapper ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-           <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} /> {/* Pass toggleSidebar and isOpen as props */}
+      <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} /> {/* Pass toggleSidebar and isOpen as props */}
       <div className="user-table-content">
         <h2>User Management</h2>
         <Button variant="success" onClick={handleAddUserRedirect}>Add User</Button>
@@ -205,27 +201,30 @@ const UserTablePage = () => {
             </tr>
           </thead>
           <tbody>
-  {users.length > 0 ? (
-    users.map(user => (
-      <tr key={user.user_id}>
-        <td>{user.user_id}</td>
-        <td>{user.full_name}</td>
-        <td>{user.email}</td>
-        <td>{user.role_name}</td>
-        <td>{user.institution}</td>
-        <td>
-          <Button variant="primary" onClick={() => handleEdit(user.user_id)}>Edit</Button>
-          <Button variant="danger" onClick={() => handleDelete(user.user_id)}>Delete</Button>
-        </td>
-      </tr>
-    ))
-  ) : (
-    <tr>
-      <td colSpan="6">No users found</td>
-    </tr>
-  )}
-</tbody>
-
+            {users.length > 0 ? (
+              users.map(user => (
+                <tr key={user.user_id}>
+                  <td>{user.user_id}</td>
+                  <td>{`${user.first_name || ''} ${user.middle_name || ''} ${user.last_name || ''} ${user.suffix || ''}`.trim()}</td>
+                  <td>{user.email}</td>
+                  <td>{user.role_name}</td>
+                  <td>{user.institution}</td>
+                  <td>
+                    <Button variant="primary" onClick={() => handleEdit(user.user_id)}>
+                      <FaPen /> {/* Pen icon for Edit */}
+                    </Button>
+                    <Button variant="danger" onClick={() => handleDelete(user.user_id)}>
+                      <FaTrashAlt /> {/* Trash icon for Delete */}
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="6">No users found</td>
+              </tr>
+            )}
+          </tbody>
         </table>
       </div>
 
@@ -242,9 +241,8 @@ const UserTablePage = () => {
                 <Form.Control
                   type="text"
                   name="first_name"
-                  value={userToEdit.first_name}
+                  value={userToEdit.first_name || ''}  // Ensure this field is always populated
                   onChange={handleInputChange}
-                  required
                 />
               </Form.Group>
               <Form.Group>
@@ -252,7 +250,7 @@ const UserTablePage = () => {
                 <Form.Control
                   type="text"
                   name="middle_name"
-                  value={userToEdit.middle_name || ''}
+                  value={userToEdit.middle_name || ''}  // Handle empty or null middle name
                   onChange={handleInputChange}
                 />
               </Form.Group>
@@ -261,9 +259,17 @@ const UserTablePage = () => {
                 <Form.Control
                   type="text"
                   name="last_name"
-                  value={userToEdit.last_name}
+                  value={userToEdit.last_name || ''}  // Ensure this field is always populated
                   onChange={handleInputChange}
-                  required
+                />
+              </Form.Group>
+              <Form.Group>
+                <Form.Label>Suffix</Form.Label>
+                <Form.Control
+                  type="text"
+                  name="suffix"
+                  value={userToEdit.suffix || ''}  // Handle empty or null suffix
+                  onChange={handleInputChange}
                 />
               </Form.Group>
               <Form.Group>
@@ -271,9 +277,8 @@ const UserTablePage = () => {
                 <Form.Control
                   type="email"
                   name="email"
-                  value={userToEdit.email}
+                  value={userToEdit.email || ''}  // Ensure this field is always populated
                   onChange={handleInputChange}
-                  required
                 />
               </Form.Group>
               <Form.Group>
@@ -281,9 +286,8 @@ const UserTablePage = () => {
                 <Form.Control
                   as="select"
                   name="role_id"
-                  value={userToEdit.role_id}
+                  value={userToEdit.role_id || ''}  // Ensure this field is always populated
                   onChange={handleInputChange}
-                  required
                 >
                   {roles.map(role => (
                     <option key={role.role_id} value={role.role_id}>
@@ -297,9 +301,8 @@ const UserTablePage = () => {
                 <Form.Control
                   as="select"
                   name="institution_id"
-                  value={userToEdit.institution_id}
+                  value={userToEdit.institution_id || ''}  // Ensure this field is always populated
                   onChange={handleInputChange}
-                  required
                 >
                   {institutions.map(institution => (
                     <option key={institution.institution_id} value={institution.institution_id}>
@@ -313,9 +316,8 @@ const UserTablePage = () => {
                 <Form.Control
                   as="select"
                   name="program_id"
-                  value={userToEdit.program_id}
+                  value={userToEdit.program_id || ''}  // Ensure this field is always populated
                   onChange={handleInputChange}
-                  required
                 >
                   {programs.map(program => (
                     <option key={program.program_id} value={program.program_id}>
@@ -324,6 +326,7 @@ const UserTablePage = () => {
                   ))}
                 </Form.Control>
               </Form.Group>
+
               <Button type="submit" variant="primary">Save Changes</Button>
             </Form>
           )}

@@ -25,12 +25,20 @@ const AccountSettings = () => {
 
 
 
-  const [userInfo, setUserInfo] = useState({
-    first_name: '',
-    middle_name: '' || null,
-    last_name: '',
-    suffix: '' || null,
-  });
+const [userInfo, setUserInfo] = useState({
+  first_name: '',
+  middle_name: '',
+  last_name: '',
+  suffix: '',
+});
+
+  console.log("After setting state:", userInfo); 
+  
+  useEffect(() => {
+    console.log("UserInfo in render:", userInfo);
+  }, [userInfo]);
+  
+  
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -38,35 +46,50 @@ const AccountSettings = () => {
       try {
         const decodedToken = jwtDecode(token);
         const userId = decodedToken.userId;
+        console.log("Decoded User ID:", userId); // Debugging line
         if (userId) {
           fetchUserData(userId);
-          fetchProfilePicture(userId); // Optionally, fetch profile picture as well
+          fetchProfilePicture(userId);
         }
       } catch (error) {
         console.error('Error decoding token:', error);
       }
+    } else {
+      console.log('No token found in localStorage.');
     }
   }, []);
   
   const fetchUserData = async (userId) => {
-    try {
-      const response = await axios.get(`https://ccsrepo.onrender.com/users/${userId}`);
-      if (response.status === 200) {
-        const userData = response.data;
-        console.log("Fetched User Data:", userData);  // Debugging line
-        setUserInfo({
-          first_name: userData.first_name || '',
-          middle_name: userData.middle_name || '',
-          last_name: userData.last_name || '',
-          suffix: userData.suffix || '',
-        });
-      } else {
-        console.error('Error fetching user data');
-      }
-    } catch (error) {
-      console.error('Error fetching user data:', error);
+  try {
+    const response = await axios.get(`https://ccsrepo.onrender.com/users/${userId}`);
+    console.log("API Response:", response);  // Check if the response is correct
+
+    if (response.status === 200) {
+      const userData = response.data;
+      console.log("Fetched User Data:", userData);
+
+      // Update state with fetched data
+      setUserInfo({
+        first_name: userData.first_name || '',
+        middle_name: userData.middle_name || '',
+        last_name: userData.last_name || '',
+        suffix: userData.suffix || '',
+      });
+    } else {
+      console.error('Error fetching user data:', response.status);
     }
-  };
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+  }
+};
+
+  
+
+  useEffect(() => {
+    console.log("Updated userInfo:", userInfo); // Debugging line
+  }, [userInfo]);
+  
+
 
   const fetchProfilePicture = async (userId) => {
     try {
@@ -282,52 +305,53 @@ const AccountSettings = () => {
               {/* Form for Editing Information */}
               {editingInfo && (
                 <Form onSubmit={handleUpdateUserInfo} className="mb-4">
-                  <Form.Group>
-                    <Form.Label>First Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={userInfo.first_name || ''}  // Ensure this is binding properly
-                      onChange={(e) =>
-                        setUserInfo({ ...userInfo, first_name: e.target.value })
-                      }
-                      required
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Middle Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={userInfo.middle_name || ''}  // Ensure this is binding properly
-                      onChange={(e) =>
-                        setUserInfo({ ...userInfo, middle_name: e.target.value })
-                      }
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Last Name</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={userInfo.last_name || ''}  // Ensure this is binding properly
-                      onChange={(e) =>
-                        setUserInfo({ ...userInfo, last_name: e.target.value })
-                      }
-                      required
-                    />
-                  </Form.Group>
-                  <Form.Group>
-                    <Form.Label>Suffix</Form.Label>
-                    <Form.Control
-                      type="text"
-                      value={userInfo.suffix || ''}  // Ensure this is binding properly
-                      onChange={(e) =>
-                        setUserInfo({ ...userInfo, suffix: e.target.value })
-                      }
-                    />
-                  </Form.Group>
-                  <Button variant="success" type="submit" className="mt-2 w-100 py-2">
-                    Update Personal Information
-                  </Button>
-                </Form>
+                <Form.Group>
+                  <Form.Label>First Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={userInfo.first_name} // Automatically populated from state
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, first_name: e.target.value })
+                    }
+                    required
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Middle Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={userInfo.middle_name} // Automatically populated from state
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, middle_name: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Last Name</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={userInfo.last_name} // Automatically populated from state
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, last_name: e.target.value })
+                    }
+                    required
+                  />
+                </Form.Group>
+                <Form.Group>
+                  <Form.Label>Suffix</Form.Label>
+                  <Form.Control
+                    type="text"
+                    value={userInfo.suffix} // Automatically populated from state
+                    onChange={(e) =>
+                      setUserInfo({ ...userInfo, suffix: e.target.value })
+                    }
+                  />
+                </Form.Group>
+                <Button variant="success" type="submit" className="mt-2 w-100 py-2">
+                  Update Personal Information
+                </Button>
+              </Form>
+              
               )}
 
               <div className="verification-section mb-4">
