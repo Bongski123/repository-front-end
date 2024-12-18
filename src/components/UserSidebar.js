@@ -60,7 +60,7 @@ const UserSidebar = ({ isOpen, toggleSidebar, roleId }) => {
             <li>
               <Link to={`/pdf-requests/${userId}`}>
                 <FaPaperPlane />
-                <span>PDF Requests</span>
+                <span>Requests</span>
               </Link>
             </li>
           )}

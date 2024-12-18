@@ -197,7 +197,7 @@ const Login = () => {
             />
           </Form.Group>
 
-          <Button variant="secondary" type="submit" className="login-btn" disabled={loading}>
+          <Button variant="secondary" type="submit" className="login-btn" >
             {loading ? 'Logging in...' : 'Login'}
           </Button>
         </Form>

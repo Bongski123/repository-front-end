@@ -412,9 +412,10 @@ const ValidationMessage = ({ isValid, message }) => (
 </Form.Group>
 
 
-          <Button className='sign-up-btn'  type="submit" >
-            Register
-          </Button>
+<Button className="btn btn-success sign-up-btn" type="submit">
+  Register
+</Button>
+
         </Form>
       </div>
     </div>

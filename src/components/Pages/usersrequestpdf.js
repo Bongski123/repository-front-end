@@ -152,7 +152,7 @@ const PdfRequests = () => {
 
       <main className={`pdf-requests-content ${isSidebarVisible ? 'pdf-requests-with-sidebar' : 'pdf-requests-full-width'}`}>
         <header className="pdf-requests-header">
-          <div className="pdf-requests-title">PDF REQUESTS</div>
+          <div className="pdf-requests-title">Document Requests</div>
         </header>
 
         {loading ? (

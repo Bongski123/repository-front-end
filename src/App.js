@@ -37,6 +37,8 @@ import RequestPDFForm from "./components/Pages/RequestPdfForm.js";
 import UserPdfRequests from "./components/Pages/usersrequestpdf.js";
 import VerifyEmail from "./components/VerifyEmail.js";
 import AccountSettings from "./components/Pages/AccountSettings.js";
+
+import Heartbeat from "./components/Admin/HeartBeat.js";
 function App() {
   const [activeTab, setActiveTab] = useState('');
 
@@ -46,6 +48,9 @@ function App() {
     setActiveTab(tabName);
   };
 
+  const userId = localStorage.getItem('userId') || 1; // Replace with real logic
+
+  
   return (
     <div className="App" id="body">
       <Router>
@@ -54,6 +59,8 @@ function App() {
         
         </header>
         <main>
+
+         <Heartbeat userId={userId} />
           <Routes>
             <Route path="/" element={<PageTitle />} />
          
@@ -97,7 +104,7 @@ function App() {
                <Route path="/category/:categoryId" element={<CategoryDetail />} />
                <Route path="/notification-details/:notificationId" element={<NotificationDetailsPage />} />
                <Route path="/edit-user/:userId" element={<EditUserPage />} /> 
-             
+          
  
           </Routes>
           
