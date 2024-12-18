@@ -37,6 +37,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     return () => clearInterval(intervalId);
   }, []);
 
+  
+
   return (
     <>
       <button className="burger-menu" onClick={toggleSidebar}>

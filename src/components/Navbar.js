@@ -122,10 +122,25 @@ function NavigationBar({ activeTab }) {
         }
     };
 
-    const handleLogout = () => {
+    const handleLogout = async () => {
         try {
-            localStorage.clear();
-            navigate('/login');
+            const userId = localStorage.getItem('userId');
+            const token = localStorage.getItem('token');
+    
+            if (userId && token) {
+                // Send request to mark user as offline
+                await axios.post(`https://ccsrepo.onrender.com/admin/logout/${userId}`, {}, {
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                    },
+                });
+    
+                // Clear local storage and logout
+                localStorage.clear();
+    
+                // Navigate to login page
+                navigate('/login');
+            }
         } catch (error) {
             console.error('Logout failed', error);
         }

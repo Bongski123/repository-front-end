@@ -4,7 +4,7 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Swal from 'sweetalert2';
 import { GoogleOAuthProvider, GoogleLogin } from '@react-oauth/google';
-import { jwtDecode } from 'jwt-decode'; // Import jwt-decode
+import { jwtDecode } from 'jwt-decode';
 import bg1 from './../assets/bg1.jpg';
 import bg2 from './../assets/bg2.jpg';
 import bg3 from './../assets/bg3.jpg';
@@ -32,6 +32,24 @@ const Login = () => {
     return () => clearInterval(interval);
   }, []);
 
+  // Function to send heartbeat data
+  const sendHeartbeat = (userId, token) => {
+    fetch(`https://ccsrepo.onrender.com/heartbeat/${userId}`, {
+      method: 'POST',
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    })
+    .then(response => {
+      if (!response.ok) {
+        console.error('Failed to send heartbeat');
+      }
+    })
+    .catch(error => {
+      console.error('Error sending heartbeat:', error);
+    });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -45,7 +63,7 @@ const Login = () => {
 
       if (!response.ok) {
         const errorMessage = await response.json();
-    
+
         // Handle unverified account error
         if (response.status === 403) {
             Swal.fire({
@@ -55,9 +73,9 @@ const Login = () => {
             });
             return;
         }
-    
+
         throw new Error(errorMessage.error || 'Login failed. Please try again.');
-    }
+      }
 
       const responseData = await response.json();
       const { token } = responseData;
@@ -65,7 +83,6 @@ const Login = () => {
       if (!email) {
         throw new Error('Missing email from server response');
       }
-      
 
       // Decode the token to extract roleId and other info
       const decodedToken = jwtDecode(token);
@@ -75,6 +92,14 @@ const Login = () => {
       localStorage.setItem('token', token);
       localStorage.setItem('roleId', roleId);
       localStorage.setItem('userId', userId);
+
+      // Send heartbeat data after login
+      sendHeartbeat(userId, token);
+
+      // Set up interval to send heartbeat every 60 seconds
+      setInterval(() => {
+        sendHeartbeat(userId, token);
+      }, 60000); // Every 60 seconds
 
       // Navigate based on roleId
       if (roleId === 1) {
@@ -93,22 +118,23 @@ const Login = () => {
       setLoading(false);
     }
   };
+
   const handleGoogleLogin = async (response) => {
     try {
       const res = await fetch('https://ccsrepo.onrender.com/google-login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ id_token: response.credential }) // Use id_token
+        body: JSON.stringify({ id_token: response.credential })
       });
-  
+
       if (!res.ok) {
         const errorMessage = await res.json();
         throw new Error(errorMessage.error || 'Google login failed');
       }
-  
+
       const data = await res.json();
       const { token, userExists, email, name } = data;
-  
+
       // Ensure that `name` is defined before attempting to split
       let first_name = '';
       let last_name = '';
@@ -117,23 +143,31 @@ const Login = () => {
         first_name = nameParts[0];
         last_name = nameParts.slice(1).join(' ');
       }
-  
+
       // If user is already registered, log them in directly
       if (userExists) {
         // Decode the token to extract user information
         const decodedToken = jwtDecode(token);
-        const { roleId, userId,picture } = decodedToken;
-  
+        const { roleId, userId, picture } = decodedToken;
+
         // Store token and roleId in localStorage
         localStorage.setItem('token', token);
         localStorage.setItem('roleId', roleId);
         localStorage.setItem('userId', userId);
         localStorage.setItem('picture', picture);
-  
+
         // Store name if available
         localStorage.setItem('firstName', first_name || ''); // Default to empty string if undefined
         localStorage.setItem('lastName', last_name || '');
-  
+
+        // Send heartbeat data after login
+        sendHeartbeat(userId, token);
+
+        // Set up interval to send heartbeat every 60 seconds
+        setInterval(() => {
+          sendHeartbeat(userId, token);
+        }, 60000); // Every 60 seconds
+
         // Redirect based on role
         if (roleId === 1) {
           navigate('/admin/dashboard'); // Admin dashboard
@@ -146,13 +180,13 @@ const Login = () => {
         const isGboxEmail = email.endsWith('@gbox.ncf.edu.ph');
         const roleId = isGboxEmail ? 2 : undefined;
         const institutionId = isGboxEmail ? 16 : undefined;
-  
+
         // Redirect to sign-up page with additional info (including firstName and lastName if available)
         navigate('/signup', {
           state: { email, roleId, institutionId, first_name, last_name }
         });
       }
-  
+
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -161,9 +195,7 @@ const Login = () => {
       });
     }
   };
-  
-  
-  
+
   return (
     <div>
       <div
@@ -197,7 +229,7 @@ const Login = () => {
             />
           </Form.Group>
 
-          <Button variant="secondary" type="submit" className="login-btn" >
+          <Button variant="secondary" type="submit" className="login-btn">
             {loading ? 'Logging in...' : 'Login'}
           </Button>
         </Form>
@@ -212,7 +244,7 @@ const Login = () => {
         </div>
 
         <p>Don't have an account? <Link to="/signup" className="no-underline">Register</Link></p>
-        <p><Link to="/forgot-password" className="no-underline">Forgot your Password?</Link></p>
+        <p><Link to="/forgot-password" className="no-underline">Forgot Password?</Link></p>
       </div>
     </div>
   );
