@@ -77,3 +77,25 @@
 .green-icon:hover {
   color: #09de09; /* Darker green */
 }
+.online-users {
+  margin-top: 20px;
+}
+
+.online-users ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.online-user-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 5px;
+}
+
+.online-dot {
+  width: 8px;
+  height: 8px;
+  background-color: green;
+  border-radius: 50%;
+  margin-right: 10px;
+}

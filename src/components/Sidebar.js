@@ -114,7 +114,8 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
           <ul>
             {onlineUsers.length > 0 ? (
               onlineUsers.map((user) => (
-                <li key={user.user_id}>
+                <li key={user.user_id} className="online-user-item">
+                  <span className="online-dot"></span>
                   {user.first_name} {user.last_name}
                 </li>
               ))
