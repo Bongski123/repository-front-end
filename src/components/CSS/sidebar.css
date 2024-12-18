@@ -78,24 +78,40 @@
   color: #09de09; /* Darker green */
 }
 .online-users {
-  margin-top: 20px;
+  max-height: 200px; /* Container max height */
+  overflow-y: auto; /* Scrollable list when it exceeds max height */
 }
 
-.online-users ul {
-  list-style-type: none;
+.online-user-list {
   padding: 0;
+  margin: 0;
+  list-style-type: none;
 }
 
 .online-user-item {
   display: flex;
   align-items: center;
-  margin-bottom: 5px;
+  padding: 5px 0;
 }
 
 .online-dot {
   width: 8px;
   height: 8px;
-  background-color: green;
   border-radius: 50%;
+  background-color: green;
   margin-right: 10px;
+}
+
+/* Styling for the search bar */
+.search-bar {
+  width: 100%;
+  padding: 8px;
+  margin-bottom: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 14px;
+}
+
+.search-bar::placeholder {
+  color: #888;
 }

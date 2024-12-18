@@ -99,7 +99,7 @@ const Login = () => {
       // Set up interval to send heartbeat every 60 seconds
       setInterval(() => {
         sendHeartbeat(userId, token);
-      }, 60000); // Every 60 seconds
+      }, 10000); // Every 60 seconds
 
       // Navigate based on roleId
       if (roleId === 1) {
