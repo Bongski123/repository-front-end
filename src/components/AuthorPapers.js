@@ -85,7 +85,7 @@ export default function AuthorPapers() {
         </div>
         <div className="author-details">
           <h1>{authorName}</h1>
-          <p>{authorAffiliation}</p> {/* Display program_name as affiliation */}
+      
         </div>
       </div>
       <ListGroup>
