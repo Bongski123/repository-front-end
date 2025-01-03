@@ -1,49 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-
 import { Modal, Button } from 'react-bootstrap';
 import Swal from 'sweetalert2';
-import { FaPaperPlane, FaTimes } from 'react-icons/fa';
-
-import UserSidebar from '../UserSidebar'; // Assuming you have the sidebar component
+import { FaInfoCircle } from 'react-icons/fa';
+import UserSidebar from '../UserSidebar';
 import { jwtDecode } from 'jwt-decode';
-import '../CSS/pdfRequests.css'; // Assuming you have custom styles for the page
+import '../CSS/pdfRequests.css';
 
 const getCurrentUserId = () => localStorage.getItem('userId');
-const getToken = () => localStorage.getItem('token'); // Get token from localStorage
+const getToken = () => localStorage.getItem('token');
 
 const PdfRequests = () => {
   const [pdfRequests, setPdfRequests] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [isSidebarVisible, setIsSidebarVisible] = useState(true); // Sidebar state
+  const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const [privacyModal, setPrivacyModal] = useState({
     show: false,
     selectedRequest: null,
   });
-  const [isPlaneFlying, setIsPlaneFlying] = useState(false); // For plane animation visibility
+  const [isPlaneFlying, setIsPlaneFlying] = useState(false);
+  const [isActionLoading, setIsActionLoading] = useState(false);
 
   const userId = getCurrentUserId();
-  const token = getToken(); // Get the token from localStorage
+  const token = getToken();
 
   const [roleId, setRoleId] = useState(null);
 
-  // Decode the token to get the roleId
   useEffect(() => {
     if (token) {
       try {
         const decodedToken = jwtDecode(token);
-        setRoleId(decodedToken.roleId); // Extract role_id from the decoded token
+        setRoleId(decodedToken.roleId);
       } catch (err) {
         console.error('Failed to decode token', err);
       }
     }
   }, [token]);
 
-  // Fetch PDF requests when the component mounts
   useEffect(() => {
     if (roleId !== 1 && roleId !== 2) {
-      // Check if the role is not allowed (assuming 1 and 2 are the allowed roles)
       setError('You do not have permission to access PDF requests.');
       setLoading(false);
     } else {
@@ -76,9 +72,23 @@ const PdfRequests = () => {
     }
   };
 
+  const showModal = (request) => {
+    setPrivacyModal({
+      show: true,
+      selectedRequest: request,
+    });
+  };
+
+  const closeModal = () => {
+    setPrivacyModal({
+      show: false,
+      selectedRequest: null,
+    });
+  };
+
   const sendEmail = async (request) => {
     try {
-      setIsPlaneFlying(true); // Start the plane animation
+      setIsActionLoading(true);
       const response = await axios.post(`https://ccsrepo.onrender.com/send-pdf/${request.research_id}`, {
         requester_email: request.requester_email,
         researchTitle: request.research_title,
@@ -92,7 +102,8 @@ const PdfRequests = () => {
           icon: 'success',
           confirmButtonText: 'Okay',
         });
-        setIsPlaneFlying(false); // Stop the plane animation after successful email
+        fetchPdfRequests(); // Refresh list after action
+        closeModal(); // Auto-close modal
       } else {
         throw new Error('Email sending failed');
       }
@@ -103,52 +114,48 @@ const PdfRequests = () => {
         icon: 'error',
         confirmButtonText: 'Try Again',
       });
-      setIsPlaneFlying(false); // Stop the plane animation on error
+    } finally {
+      setIsActionLoading(false);
     }
   };
 
   const rejectRequest = async (request) => {
     try {
-      // Make POST request to backend with only the request_id
-      const response = await axios.post(
-        `https://ccsrepo.onrender.com/reject-pdf-request/${request.request_id}`
-      );
-  
+      setIsActionLoading(true);
+      const response = await axios.post(`https://ccsrepo.onrender.com/reject-pdf-request/${request.request_id}`);
       if (response.status === 200) {
-        // Success: Show success message and refresh the list
         Swal.fire({
-          title: 'Request Rejected',
-          text: 'The PDF request has been rejected and the requester has been notified.',
+          title: 'Rejected!',
+          text: 'The request has been rejected successfully.',
           icon: 'success',
           confirmButtonText: 'Okay',
         });
-        fetchPdfRequests(); // Refresh the request list after rejection
+        fetchPdfRequests(); // Refresh list after rejection
+        closeModal(); // Auto-close modal
       } else {
         throw new Error('Rejection failed');
       }
     } catch (error) {
-      // Error: Show error message
       Swal.fire({
         title: 'Error!',
-        text: 'Failed to reject the request and send the email.',
+        text: 'Failed to reject the request.',
         icon: 'error',
         confirmButtonText: 'Try Again',
       });
+    } finally {
+      setIsActionLoading(false);
     }
   };
-  
-  
 
   const toggleSidebar = () => setIsSidebarVisible((prev) => !prev);
 
-  // Ensure roleId is valid before rendering sidebar
   if (roleId === null) {
-    return <div>Loading...</div>; // You can return a loading state or spinner while roleId is loading
+    return <div>Loading...</div>;
   }
 
   return (
     <div className="pdf-requests-container">
-      <UserSidebar isOpen={isSidebarVisible} toggleSidebar={toggleSidebar} roleId={roleId} /> 
+      <UserSidebar isOpen={isSidebarVisible} toggleSidebar={toggleSidebar} roleId={roleId} />
 
       <main className={`pdf-requests-content ${isSidebarVisible ? 'pdf-requests-with-sidebar' : 'pdf-requests-full-width'}`}>
         <header className="pdf-requests-header">
@@ -168,11 +175,8 @@ const PdfRequests = () => {
                 <thead>
                   <tr>
                     <th>Title</th>
-                    <th> Name</th>
-                    <th> Email</th>
-                    <th>Purpose</th>
-                    <th>Status</th>
-                    <th>Action</th>
+                    <th>Requester's Name</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -180,35 +184,55 @@ const PdfRequests = () => {
                     <tr key={request.request_id}>
                       <td>{request.research_title}</td>
                       <td>{request.requester_name}</td>
-                      <td>{request.requester_email}</td>
-                      <td>{request.purpose}</td>
-                      <td>{request.status}</td>
                       <td>
-                      <td>
-  <button onClick={() => sendEmail(request)} title="Send Email">
-    <FaPaperPlane color="blue" size={20} />
-  </button>
-  <button onClick={() => rejectRequest(request)} title="Reject Request" style={{ marginLeft: '10px' }}>
-    <FaTimes color="red" size={20} />
-  </button>
-</td>
-
+                        <Button variant="info" onClick={() => showModal(request)}>
+                          <FaInfoCircle /> View Details
+                        </Button>
                       </td>
                     </tr>
                   ))}
                 </tbody>
               </table>
             ) : (
+              <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
               <p>No PDF requests found.</p>
+          </div>
             )}
           </>
         )}
-        
-        {/* Flying Plane Animation */}
+
+        {/* Enhanced Modal Design */}
+        <Modal show={privacyModal.show} onHide={closeModal} centered>
+          <Modal.Header closeButton>
+            <Modal.Title className="modal-title">Request Details</Modal.Title>
+          </Modal.Header>
+          <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }} className="modal-body">
+            {privacyModal.selectedRequest && (
+              <div>
+                <p><strong>Name:</strong> {privacyModal.selectedRequest.requester_name}</p>
+                <p><strong>Email:</strong> {privacyModal.selectedRequest.requester_email}</p>
+                <p><strong>Title:</strong> {privacyModal.selectedRequest.research_title}</p>
+                <p><strong>Purpose:</strong> {privacyModal.selectedRequest.purpose}</p>
+              </div>
+            )}
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="success" onClick={() => sendEmail(privacyModal.selectedRequest)} disabled={isActionLoading} className="modal-btn">
+              {isActionLoading ? 'Sending...' : 'Send PDF'}
+            </Button>
+            <Button variant="danger" onClick={() => rejectRequest(privacyModal.selectedRequest)} disabled={isActionLoading} className="modal-btn">
+              {isActionLoading ? 'Rejecting...' : 'Reject'}
+            </Button>
+            <Button variant="secondary" onClick={closeModal} className="modal-btn">
+              Close
+            </Button>
+          </Modal.Footer>
+        </Modal>
+
+        {/* Plane animation */}
         {isPlaneFlying && (
           <div className="plane-animation">
             <div className="plane"></div>
-          
           </div>
         )}
       </main>

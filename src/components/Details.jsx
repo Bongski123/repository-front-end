@@ -66,22 +66,29 @@ function Details() {
     useEffect(() => {
         const token = localStorage.getItem('token');
         setIsLoggedIn(!!token);
-
-        const viewedKey = `viewed_${result?.research_id}`;
-        if (result?.research_id && !hasIncremented.current && !sessionStorage.getItem(viewedKey)) {
-            incrementViewCount(viewedKey);
-            hasIncremented.current = true;
+    
+        const incrementView = async () => {
+            const viewedKey = `viewed_${result?.research_id}`;
+            if (result?.research_id && !hasIncremented.current && !sessionStorage.getItem(viewedKey)) {
+                try {
+                    await axios.post(`https://ccsrepo.onrender.com/research/view/${result.research_id}`);
+                    sessionStorage.setItem(viewedKey, "true");
+                    hasIncremented.current = true;
+                    console.log("View count incremented for:", result.research_id);
+                } catch (error) {
+                    console.error("Error incrementing view count:", error);
+                }
+            }
+        };
+    
+        if (result) {
+            incrementView();
         }
     }, [result]);
 
-    const incrementViewCount = async (viewedKey) => {
-        try {
-            await axios.post(`https://ccsrepo.onrender.com/research/view/${result.research_id}`);
-            sessionStorage.setItem(viewedKey, "true");
-        } catch (error) {
-            console.error("Error incrementing view count:", error);
-        }
-    };
+ 
+
+    
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);

@@ -2,27 +2,45 @@
   padding: 20px;
   background-color: #f4f7fc;
   min-height: 100vh;
+  display: flex; /* Use flex for layout */
+  flex-direction: column; /* Column layout for consistent stacking */
+  align-items: center; /* Center the content horizontally */
 }
+.dashboard-content {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+
 .info-cards {
   display: flex;
-  gap: 10px; /* Space between cards */
-  flex-wrap: wrap; /* Allows wrapping if screen size is small */
-  justify-content: flex-start; /* Align cards to the left */
+  gap: 20px; /* Space between cards */
+  justify-content: center; /* Center the cards */
+  flex-wrap: wrap; /* Allow wrapping on smaller screens */
 }
 
 .info-card {
-  flex: 1; /* Ensure cards are evenly distributed */
-  min-width: 200px; /* Minimum width to maintain layout on smaller screens */
-  max-width: 250px; /* Maximum width for uniformity */
+  flex: 1; /* Flexible size for cards */
+  min-width: 200px; /* Minimum width */
+  max-width: 250px; /* Maximum width */
+  aspect-ratio: 1; /* Makes the card square */
   padding: 16px;
   border-radius: 8px;
   text-align: center;
   color: #fff;
+  display: flex; /* Align content within the card */
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: space-around; /* Space out the content */
 }
 
-.info-card.purple {
-  background-color: #6a0dad; /* Purple */
+
+.info-card.red {
+  background-color: #ff2929; /* Purple */
   cursor: pointer;
+  
 }
 
 .info-card.yellow {
@@ -33,25 +51,33 @@
 
 .info-card.green {
   background-color: #4caf50; /* Green */
+  cursor: pointer;
 }
 
 .info-card.blue {
   background-color: #2196f3; /* Blue */
+  cursor: pointer;
 }
 
-.icon {
-  font-size: 24px; /* Adjust icon size */
-  margin-bottom: 5px; /* Space between icon and text */
+
+.info-card.purple {
+  background-color: #f217b4; /* Blue */
+  cursor: pointer;
+}
+.info-card .icon {
+  font-size: 3rem; /* Adjust icon size */
+  margin-top: 10px; /* Add some space above the icon */
+}
+.info-card h3 {
+  font-size: 2.5rem; /* Larger font size for the number */
+  font-weight: bold; /* Make the number bold */
+  margin-bottom: 10px; /* Add some space below the number */
 }
 
-h3 {
-  margin: 0;
-  font-size: 18px; /* Adjust font size for card titles */
-}
 
-p {
+.info-card p {
   margin: 5px 0;
-  font-size: 16px; /* Adjust font size for card descriptions */
+  font-size: 25px; /* Adjust font size for card descriptions */
 }
 
 .charts {
@@ -152,4 +178,46 @@ p {
   background-color: #f4f4f4; /* Sidebar background color */
   padding: 10px; /* Add some padding if needed */
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1); /* Optional shadow */
+}
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+
+.modal-content {
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 600px;
+  width: 80%;
+}
+
+.modal-close {
+  margin-top: 20px;
+  padding: 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  cursor: pointer;
+  border-radius: 5px;
+}
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Adjust based on your layout */
+  background-color: #f8f9fa; /* Optional: light background */
+}
+.error {
+  color: red;
+  text-align: center;
+  font-size: 1.2rem;
 }

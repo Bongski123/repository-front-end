@@ -97,12 +97,14 @@ function Collections() {
                 showAllItems={userRoleId !== 4}  // Pass role condition to UserSidebar
             />
             <div className={`content ${isSidebarVisible ? 'with-sidebar' : 'full-width'}`}>
-                <header className="d-flex justify-content-between align-items-center">
+                <header className="d-flex justify-content-center align-items-center" style={{ height: '20vh' }}>
                     <h1>Your Research Collections</h1>
                 </header>
                 {error && <p style={{ color: 'red' }}>{error}</p>}
                 {researches.length === 0 && !error ? (
-                    <p>No collections found.</p>
+                  <div className="d-flex justify-content-center align-items-center" style={{ height: '40vh' }}>
+                  <p>No Collection found.</p>
+              </div>
                 ) : (
                     <Table striped bordered hover>
                         <thead>

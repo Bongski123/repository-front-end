@@ -90,11 +90,18 @@ const RequestPdfForm = () => {
     try {
       // Send the request to the backend
       const response = await axios.post('https://ccsrepo.onrender.com/request-pdf', formData);
+      
+      // Show success message
       Swal.fire('Success!', 'Your request has been sent successfully.', 'success');
+
+      window.history.back();
+  
     } catch (err) {
       Swal.fire('Error!', err.response?.data?.error || 'Something went wrong.', 'error');
     }
   };
+  
+  
 
   if (!isAuthorized) return null;
 
@@ -102,29 +109,60 @@ const RequestPdfForm = () => {
     <div className="container">
       <h1>Request PDF</h1>
       <Form onSubmit={handleSubmit}>
-        <Form.Group controlId="researchId">
-          <Form.Label>Research ID</Form.Label>
-          <Form.Control type="text" name="researchId" value={formData.researchId} disabled />
-        </Form.Group>
-        <Form.Group controlId="researchTitle">
-          <Form.Label>Research Title</Form.Label>
-          <Form.Control type="text" name="researchTitle" value={formData.researchTitle} disabled />
-        </Form.Group>
+  <Form.Group controlId="researchId">
+  
+    <Form.Control
+      type="text"
+      name="researchId"
+      value={formData.researchId}
+      disabled
+      style={{ display: 'none' }}  // Hide the field visually
+    />
+  </Form.Group>
+  <Form.Group controlId="researchTitle">
+    <Form.Label>Research Title</Form.Label>
+    <Form.Control
+      type="text"
+      name="researchTitle"
+      value={formData.researchTitle}
+      disabled
+    />
+  </Form.Group>
 
-        <Form.Group controlId="requesterName">
-          <Form.Label>Your Name</Form.Label>
-          <Form.Control type="text" name="requesterName" value={formData.requesterName} onChange={handleChange} required />
-        </Form.Group>
-        <Form.Group controlId="requesterEmail">
-          <Form.Label>Your Email</Form.Label>
-          <Form.Control type="email" name="requesterEmail" value={formData.requesterEmail} disabled />
-        </Form.Group>
-        <Form.Group controlId="purpose">
-          <Form.Label>Purpose</Form.Label>
-          <Form.Control as="textarea" name="purpose" value={formData.purpose} onChange={handleChange} rows={3} required />
-        </Form.Group>
-        <Button variant="primary" type="submit">Request PDF</Button>
-      </Form>
+  <Form.Group controlId="requesterName">
+    <Form.Label>Your Name</Form.Label>
+    <Form.Control
+      type="text"
+      name="requesterName"
+      value={formData.requesterName}
+      onChange={handleChange}
+      required
+    />
+  </Form.Group>
+  <Form.Group controlId="requesterEmail">
+
+    <Form.Control
+      type="email"
+      name="requesterEmail"
+      value={formData.requesterEmail}
+      disabled
+      style={{ display: 'none' }}  // Hide the field visually
+    />
+  </Form.Group>
+  <Form.Group controlId="purpose">
+    <Form.Label>Purpose</Form.Label>
+    <Form.Control
+      as="textarea"
+      name="purpose"
+      value={formData.purpose}
+      onChange={handleChange}
+      rows={3}
+      required
+    />
+  </Form.Group>
+  <Button variant="primary" type="submit">Request PDF</Button>
+</Form>
+
     </div>
   );
 };

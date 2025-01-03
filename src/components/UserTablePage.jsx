@@ -9,12 +9,18 @@ import { FaPen, FaTrashAlt } from 'react-icons/fa';  // Importing icons from rea
 
 const UserTablePage = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]);
   const [programs, setPrograms] = useState([]);
   const [roles, setRoles] = useState([]);
-  const [institutions, setInstitutions] = useState([]); // State for institutions
-  const [isOpen, setIsOpen] = useState(true); // Sidebar state
-  const [modalShow, setModalShow] = useState(false); // Modal visibility state
-  const [userToEdit, setUserToEdit] = useState(null); // User data for editing
+  const [institutions, setInstitutions] = useState([]); 
+  const [isOpen, setIsOpen] = useState(true); 
+  const [range, setRange] = useState(50);  // Default range is 50
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [modalShow, setModalShow] = useState(false); 
+  const [userToEdit, setUserToEdit] = useState(null);
+  const [searchTerm, setSearchTerm] = useState('');  // State for search term
+  const [selectedRole, setSelectedRole] = useState(''); // State for selected role filter
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -25,9 +31,12 @@ const UserTablePage = () => {
     fetchUsers();
     fetchPrograms();
     fetchRoles();
-    fetchInstitutions(); // Fetch institutions
+    fetchInstitutions();
   }, []);
 
+  useEffect(() => {
+    filterUsers();
+  }, [searchTerm, selectedRole, users]);  // Re-filter users when search or role changes
 
   const fetchUsers = async () => {
     try {
@@ -41,6 +50,27 @@ const UserTablePage = () => {
       console.error('Error fetching users:', error.message);
     }
   };
+
+  const filterUsers = () => {
+    let filtered = users;
+
+    // Filter by search term
+    if (searchTerm) {
+      filtered = filtered.filter(user =>
+        `${user.first_name} ${user.middle_name} ${user.last_name} ${user.suffix}`.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    // Filter by selected role
+    if (selectedRole) {
+      filtered = filtered.filter(user => user.role_name === selectedRole);
+    }
+
+    setFilteredUsers(filtered);
+  };
+
+
 
   const fetchPrograms = async () => {
     try {
@@ -85,21 +115,19 @@ const UserTablePage = () => {
   };
 
   const handleEdit = (userId) => {
-    const user = users.find(u => u.user_id === userId); // Find user data by ID
-    
-    // Set the user data for editing
+    const user = users.find(u => u.user_id === userId); 
     setUserToEdit({
       ...user,
       first_name: user.first_name || '',
-      middle_name: user.middle_name || '', // Handle middle_name being empty
+      middle_name: user.middle_name || '', 
       last_name: user.last_name || '',
-      suffix: user.suffix || '',  // Handle suffix being empty
-      email: user.email || '',  // Handle email being empty
-      role_id: user.role_id || '',  // Handle role_id being empty
-      institution_id: user.institution_id || '',  // Handle institution_id being empty
-      program_id: user.program_id || '',  // Handle program_id being empty
+      suffix: user.suffix || '',  
+      email: user.email || '',  
+      role_id: user.role_id || '',  
+      institution_id: user.institution_id || '',  
+      program_id: user.program_id || '',  
     });
-    setModalShow(true); // Open modal for editing
+    setModalShow(true); 
   };
 
   const handleDelete = async (userId) => {
@@ -168,7 +196,7 @@ const UserTablePage = () => {
       console.log('User updated successfully:', data);
       Swal.fire('Success', 'User updated successfully', 'success');
       setModalShow(false);
-      fetchUsers();  // Refresh the user list after update
+      fetchUsers();
     } catch (error) {
       console.error('Error updating user:', error.message);
       Swal.fire('Error', `Failed to update user data: ${error.message}`, 'error');
@@ -185,9 +213,32 @@ const UserTablePage = () => {
 
   return (
     <div className={`user-table-wrapper ${isOpen ? 'sidebar-open' : 'sidebar-closed'}`}>
-      <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} /> {/* Pass toggleSidebar and isOpen as props */}
+      <Sidebar toggleSidebar={toggleSidebar} isOpen={isOpen} />
       <div className="user-table-content">
         <h2>User Management</h2>
+
+       
+        
+        {/* Search bar */}
+        <input 
+  type="text" 
+  placeholder="Search by name or email" 
+  value={searchTerm}
+  onChange={(e) => setSearchTerm(e.target.value)} 
+  className="search-bar-usertable" // Add this class
+/>
+
+        
+        {/* Role sorter */}
+        <select onChange={(e) => setSelectedRole(e.target.value)} value={selectedRole}>
+          <option value="">Filter by Role</option>
+          {roles.map(role => (
+            <option key={role.role_id} value={role.role_name}>
+              {role.role_name}
+            </option>
+          ))}
+        </select>
+        
         <Button variant="success" onClick={handleAddUserRedirect}>Add User</Button>
         <table>
           <thead>
@@ -201,8 +252,8 @@ const UserTablePage = () => {
             </tr>
           </thead>
           <tbody>
-            {users.length > 0 ? (
-              users.map(user => (
+            {filteredUsers.length > 0 ? (
+              filteredUsers.map(user => (
                 <tr key={user.user_id}>
                   <td>{user.user_id}</td>
                   <td>{`${user.first_name || ''} ${user.middle_name || ''} ${user.last_name || ''} ${user.suffix || ''}`.trim()}</td>
@@ -211,125 +262,135 @@ const UserTablePage = () => {
                   <td>{user.institution}</td>
                   <td>
                     <Button variant="primary" onClick={() => handleEdit(user.user_id)}>
-                      <FaPen /> {/* Pen icon for Edit */}
+                      <FaPen />
                     </Button>
                     <Button variant="danger" onClick={() => handleDelete(user.user_id)}>
-                      <FaTrashAlt /> {/* Trash icon for Delete */}
+                      <FaTrashAlt />
                     </Button>
                   </td>
                 </tr>
               ))
             ) : (
               <tr>
-                <td colSpan="6">No users found</td>
+                <td colSpan="6">No users found.</td>
               </tr>
             )}
           </tbody>
         </table>
+        <div className="pagination">
+          <Button 
+            disabled={currentPage === 1} 
+            onClick={() => setCurrentPage(currentPage - 1)}
+          >
+            Previous
+          </Button>
+          <span>Page {currentPage} of {totalPages}</span>
+          <Button 
+            disabled={currentPage === totalPages} 
+            onClick={() => setCurrentPage(currentPage + 1)}
+          >
+            Next
+          </Button>
+        </div>
       </div>
 
-      {/* Modal for editing user */}
+      {/* User Edit Modal */}
       <Modal show={modalShow} onHide={() => setModalShow(false)}>
         <Modal.Header closeButton>
           <Modal.Title>Edit User</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {userToEdit && (
-            <Form onSubmit={handleUpdateUser}>
-              <Form.Group>
-                <Form.Label>First Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="first_name"
-                  value={userToEdit.first_name || ''}  // Ensure this field is always populated
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Middle Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="middle_name"
-                  value={userToEdit.middle_name || ''}  // Handle empty or null middle name
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Last Name</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="last_name"
-                  value={userToEdit.last_name || ''}  // Ensure this field is always populated
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Suffix</Form.Label>
-                <Form.Control
-                  type="text"
-                  name="suffix"
-                  value={userToEdit.suffix || ''}  // Handle empty or null suffix
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Email</Form.Label>
-                <Form.Control
-                  type="email"
-                  name="email"
-                  value={userToEdit.email || ''}  // Ensure this field is always populated
-                  onChange={handleInputChange}
-                />
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Role</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="role_id"
-                  value={userToEdit.role_id || ''}  // Ensure this field is always populated
-                  onChange={handleInputChange}
-                >
-                  {roles.map(role => (
-                    <option key={role.role_id} value={role.role_id}>
-                      {role.role_name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Institution</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="institution_id"
-                  value={userToEdit.institution_id || ''}  // Ensure this field is always populated
-                  onChange={handleInputChange}
-                >
-                  {institutions.map(institution => (
-                    <option key={institution.institution_id} value={institution.institution_id}>
-                      {institution.institution_name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
-              <Form.Group>
-                <Form.Label>Program</Form.Label>
-                <Form.Control
-                  as="select"
-                  name="program_id"
-                  value={userToEdit.program_id || ''}  // Ensure this field is always populated
-                  onChange={handleInputChange}
-                >
-                  {programs.map(program => (
-                    <option key={program.program_id} value={program.program_id}>
-                      {program.program_name}
-                    </option>
-                  ))}
-                </Form.Control>
-              </Form.Group>
+          <Form onSubmit={handleUpdateUser}>
+            <Form.Group controlId="firstName">
+              <Form.Label>First Name</Form.Label>
+              <Form.Control 
+  type="text" 
+  name="first_name" 
+  value={userToEdit?.first_name || ''}  // Use optional chaining and default value
+  onChange={handleInputChange}
+/>
 
-              <Button type="submit" variant="primary">Save Changes</Button>
-            </Form>
-          )}
+<Form.Control 
+  type="text" 
+  name="middle_name" 
+  value={userToEdit?.middle_name || ''}  // Use optional chaining and default value
+  onChange={handleInputChange}
+/>
+
+<Form.Control 
+  type="text" 
+  name="last_name" 
+  value={userToEdit?.last_name || ''}  // Use optional chaining and default value
+  onChange={handleInputChange}
+/>
+
+<Form.Control 
+  type="text" 
+  name="suffix" 
+  value={userToEdit?.suffix || ''}  // Use optional chaining and default value
+  onChange={handleInputChange}
+/>
+            </Form.Group>
+            <Form.Group controlId="email">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+  type="email"
+  name="email"
+  value={userToEdit?.email || ''}  // Use optional chaining and default to an empty string
+  onChange={handleInputChange}
+/>
+
+            </Form.Group>
+            <Form.Group controlId="roleId">
+  <Form.Label>Role</Form.Label>
+  <Form.Control
+    as="select"
+    name="role_id"
+    value={userToEdit?.role_id || ''}  // Safe fallback for role_id
+    onChange={handleInputChange}
+  >
+    {roles.map(role => (
+      <option key={role.role_id} value={role.role_id}>
+        {role.role_name}
+      </option>
+    ))}
+  </Form.Control>
+</Form.Group>
+
+<Form.Group controlId="institutionId">
+  <Form.Label>Institution</Form.Label>
+  <Form.Control
+    as="select"
+    name="institution_id"
+    value={userToEdit?.institution_id || ''}  // Safe fallback for institution_id
+    onChange={handleInputChange}
+  >
+    {institutions.map(institution => (
+      <option key={institution.institution_id} value={institution.institution_id}>
+        {institution.institution_name}
+      </option>
+    ))}
+  </Form.Control>
+</Form.Group>
+
+<Form.Group controlId="programId">
+  <Form.Label>Program</Form.Label>
+  <Form.Control
+    as="select"
+    name="program_id"
+    value={userToEdit?.program_id || ''}  // Safe fallback for program_id
+    onChange={handleInputChange}
+  >
+    {programs.map(program => (
+      <option key={program.program_id} value={program.program_id}>
+        {program.program_name}
+      </option>
+    ))}
+  </Form.Control>
+</Form.Group>
+
+            <Button variant="primary" type="submit">Update User</Button>
+          </Form>
         </Modal.Body>
       </Modal>
     </div>

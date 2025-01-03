@@ -11,7 +11,7 @@
   text-transform: uppercase; /* Makes the title more distinct */
   letter-spacing: 1px; /* Improves readability and aesthetics */
 }
-
+  
 
 @media (max-width: 768px) { /* Small screens, like portrait tablets */
   .authors-card-title {

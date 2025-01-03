@@ -1,11 +1,11 @@
 /* Scoped styles for PdfRequests component */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@600&display=swap');
+
 
 .pdf-requests-title {
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; /* Custom font */
-  font-size: 2rem;
-  font-weight: 600;
-  color: #09511c;
+
+  font-size: 3rem;
+  font-weight: 400;
+  color: #000000;
   margin-bottom: 20px;
   text-align: center;
    padding-left: 50px;
@@ -27,19 +27,13 @@
 }
 
 .pdf-requests-with-sidebar {
-  margin-left: 250px;
+  margin-left: 100px;
 }
 
 .pdf-requests-full-width {
   margin-left: 0;
 }
 
-.pdf-requests-header h1 {
-  font-size: 2rem;
-  color: #333;
-  margin-bottom: 20px;
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; /* Custom font */
-}
 
 .pdf-requests-spinner-container {
   display: flex;

@@ -2,7 +2,7 @@
 .sidebar {
   position: fixed;
   left: -250px; /* Hide sidebar initially */
-  width: 250px;
+  width: 230px;
   height: 100%;
   background-color: #fff;
   box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);

@@ -2,6 +2,7 @@
 table {
   width: 100%;
   border-collapse: collapse;
+ 
 }
 
 th, td {
@@ -43,7 +44,7 @@ tr:hover {
 
 /* Sidebar adjustments for responsive layout */
 .keyword-table.with-sidebar {
-  margin-left: 250px;
+  margin-left: 270px;
   transition: margin-left 0.3s ease;
 }
 

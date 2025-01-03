@@ -1,98 +1,166 @@
-/* DashboardContent.css */
-
 .dashboard-content {
   padding: 20px;
-}
-.info-cards {
   display: flex;
-  justify-content:  flex-start;
-  flex-wrap: wrap; /* Allows cards to wrap in case of smaller screens */
-  gap: 3rem; /* Adds gap between cards */
-  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
 }
 
-.info-card {
-  background-color: #f0f0f0; /* Default background color */
+
+
+.info-cards {
+  flex: 1; /* Flexible size for cards */
+  min-width: 200px; /* Minimum width */
+  max-width: 250px; /* Maximum width */
+  aspect-ratio: 1; /* Makes the card square */
+  padding: 16px;
   border-radius: 8px;
-  padding: 15px; /* Increased padding for better card content spacing */
-  width: 220px;
-  height: 140px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* More subtle shadow for a cleaner look */
-  transition: transform 0.2s ease-in-out; /* Adds a smooth hover effect */
-  cursor: pointer;
+  color: #fff;
+  display: flex; /* Align content within the card */
+  flex-direction: column; /* Stack items vertically */
+  align-items: center; /* Center items horizontally */
+  justify-content: space-around; /* Space out the content */
 }
 
-.info-card:hover {
-  transform: scale(1.1); /* Slightly enlarges the card on hover */
+.info-card p {
+  margin: 0;
+}
+
+.info-card h3 {
+  font-size: 24px;
+  font-weight: bold;
 }
 
 .info-card.blue {
-  background-color: #ff6363; /* Specific background for downloads card */
+  background-color: #007bff;
 }
 
 .info-card.green {
-  background-color: #89f06c; /* Specific background for citations card */
-}
-
-.info-card.yellow {
-  background-color: #fed43a; /* Specific background for activity card */
-  text-decoration: none; /* Remove underline from link */
-  color: inherit; /* Inherit color from parent */
-  
+  background-color: #28a745;
 }
 
 .info-card.purple {
-  background-color: #ff39f2; /* Specific background for views card */
-  text-decoration: none; /* Remove underline from link */
-  color: inherit; /* Inherit color from parent */
+  background-color: #33146c;
+  
 }
 
-.icon {
-  font-size: 24px; /* Adjust icon size */
-  margin-bottom: 5px; /* Space between icon and text */
+.info-card.yellow {
+  background-color: #ffc107;
 }
 
-
-
-/* Peak Downloads Chart */
-.peak-downloads-chart {
-  width: 100%; /* Full width for responsiveness */
-  height: 200px; /* Adjust the height as needed */
-  margin-bottom: 20px; /* Space below the chart */
+.modal-header {
+  background-color: #f1f1f1;
+  padding: 15px;
 }
 
-.charts {
-  margin: 20px 0; /* Space above and below each chart */
+.modal-body {
+  padding: 20px;
+}
+
+.date-picker-container {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.date-picker {
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  padding: 8px 12px;
+  font-size: 14px;
+  width: 150px;
   text-align: center;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Adjust shadow for consistency */
-  transition: transform 0.2s ease-in-out; /* Smooth hover effect */
 }
 
-.charts:hover {
-  transform: scale(1.05); /* Slightly enlarges the chart on hover */
+.date-picker-container p {
+  margin: 0;
 }
 
-
-.chart:hover {
-  transform: scale(1.05); /* Slightly enlarges the chart on hover */
+.date-picker-container span {
+  font-weight: bold;
 }
 
-/* Media Queries for Mobile and Smaller Screens */
-@media (max-width: 768px) {
-  /* Stacking cards vertically on smaller screens */
-  .info-cards {
-    flex-direction: column;
-    align-items: center; /* Centers cards when stacked */
-    gap: 1.5rem; /* More space between vertically stacked cards */
-  }
+.chart-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
 
-  .info-card {
-    width: 80%; /* Make the cards take up more width on small screens */
-    height: auto; /* Allow height to adjust based on content */
-  }
+.uploader-stats-chart {
+  width: 100%;
+  padding: 20px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
 
-  .charts {
-    gap: 1.5rem; /* Reduced gap between charts on smaller screens */
-  }
+.uploader-stats-chart h3 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.dropdown-toggle {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  font-size: 14px;
+  padding: 8px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+}
+
+.dropdown-menu {
+  border-radius: 5px;
+}
+
+button {
+  font-size: 14px;
+}
+.daterangepicker {
+  border-radius: 10px;
+  font-family: 'Arial', sans-serif;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.daterangepicker .calendar {
+  background-color: #f9f9f9;
+  border-radius: 10px;
+}
+
+.daterangepicker .calendar table {
+  width: 100%;
+}
+
+.daterangepicker .calendar th,
+.daterangepicker .calendar td {
+  padding: 10px;
+  text-align: center;
+  border-radius: 5px;
+}
+
+.daterangepicker .calendar td.available:hover {
+  background-color: #007bff;
+  color: white;
+}
+
+.daterangepicker .ranges li:hover {
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+}
+
+.daterangepicker .applyBtn {
+  background-color: #007bff;
+  border: none;
+  color: white;
+  border-radius: 5px;
+  padding: 10px 20px;
+}
+
+.daterangepicker .cancelBtn {
+  background-color: #ccc;
+  border: none;
+  border-radius: 5px;
+  padding: 10px 20px;
 }

@@ -1,127 +1,139 @@
-/* Container */
+.research-list {
+  list-style-type: none;
+  padding: 0;
+}
 
- 
-  /* Research List */
-  .research-list {
-    list-style-type: none;
-    padding: 0;
-    
-  }
-  
-  /* Individual Research Item */
-  .research-item {
-    padding: 10px;
-    border-bottom: 1px solid #ddd;
-    cursor: pointer;
- 
-  }
+/* Individual Research Item */
+.research-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
 
-  .research-list :hover{
-    color: #000000;
-  }
-  
-  .research-item h2 {
-    font-size: 1.9rem;
-    color: #062606;
-    margin: 0;
-  }
-  
-  /* Research Details */
-  .research-details {
-    margin-top: 10px;
-    padding: 10px;
-    background-color: #85c58f;
-    border: 2px solid #ddd;
-  }
-  
-  .research-details p {
-    margin: 5px 0;
-  }
-  
-  .research-details strong {
-    color: #164717;
-  }
-  
-  /* Error Message */
-  .error {
-    color: red;
-  }
-  
-  /* Loading */
-  .loading {
-    font-style: italic;
-  }
+.research-list :hover {
+  color: #000000;
+}
 
-  .sidebar.open {
-    width: 250px;
-    transition: width 0.3s ease;
-  }
-  
-  .sidebar {
-    width: 0;
-    overflow: hidden;
-    transition: width 0.3s ease;
-  }
-  
-  .content.with-sidebar {
-    margin-left: 250px;
-    transition: margin-left 0.3s ease;
-  }
-  
-  .content.full-width {
-    margin-left: 0;
-    transition: margin-left 0.3s ease;
-  }
-  
-  .toggle-sidebar-button {
-    margin-right: 10px;
-  }
-  /* Spinner Styles */
-  .spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh; /* Full height of the viewport */
-  }
-  
-  .spinner {
-    width: 40px;
-    height: 40px;
-    border: 4px solid #f3f3f3;
-    border-top: 4px solid #008000; /* Green color */
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-  }
-  
-  @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-  }
-  .research-table {
-    width: 100%;
-    border-collapse: collapse;
-  }
-  
-  .research-table th,
-  .research-table td {
-    padding: 12px;
-    text-align: left;
-    border: 1px solid #ddd;
-  }
-  
-  .research-table th {
-    background-color: #f4f4f4;
-  }
-  
-  .research-table tr:hover {
-    background-color: #f1f1f1;
-  }
-  
-  .research-table td {
-    cursor: pointer;
-  }
-  
-  .research-table td:hover {
-    background-color: #f9f9f9;
-  }
-  
+.research-item h2 {
+  font-size: 1.9rem;
+  color: #062606;
+  margin: 0;
+}
+
+/* Research Details */
+.research-details {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #85c58f;
+  border: 2px solid #ddd;
+}
+
+.research-details p {
+  margin: 5px 0;
+}
+
+.research-details strong {
+  color: #164717;
+}
+
+/* Error Message */
+.error {
+  color: red;
+}
+
+/* Loading */
+.loading {
+  font-style: italic;
+}
+
+.sidebar.open {
+  width: 250px;
+  transition: width 0.3s ease;
+}
+
+.sidebar {
+  width: 0;
+  overflow: hidden;
+  transition: width 0.3s ease;
+}
+
+/* Update the content container class */
+.content.with-sidebar {
+  margin-left: 250px;  /* Adjust according to your sidebar width */
+  transition: margin-left 0.3s ease;
+}
+
+/* Apply right margin to ensure content moves to the right */
+.content.full-width {
+  margin-left: 0;
+  transition: margin-left 0.3s ease;
+}
+
+/* For better control of overall right positioning */
+.main-content-right {
+  margin-left: 20px; /* Adjust if needed */
+}
+
+
+.toggle-sidebar-button {
+  margin-right: 10px;
+}
+
+/* Spinner Styles */
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* Full height of the viewport */
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #008000; /* Green color */
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Centering the Research Table */
+.research-table-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-top: 20px; /* Optional, adds spacing above the table */
+}
+
+.research-table {
+  width: 80%; /* Adjust width as needed */
+  max-width: 1200px; /* Max width to prevent it from becoming too wide */
+  border-collapse: collapse;
+}
+
+.research-table th,
+.research-table td {
+  padding: 12px;
+  text-align: left;
+  border: 1px solid #ddd;
+}
+
+.research-table th {
+  background-color: #f4f4f4;
+}
+
+.research-table tr:hover {
+  background-color: #f1f1f1;
+}
+
+.research-table td {
+  cursor: pointer;
+}
+
+.research-table td:hover {
+  background-color: #f9f9f9;
+}

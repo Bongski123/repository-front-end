@@ -1,0 +1,78 @@
+/* TopContent.module.css */
+
+/* Section title */
+.sectionTitle {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 20px;
+}
+
+/* List container and cards */
+.listContainer {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.card {
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+/* Hover effect */
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+}
+
+/* Card header */
+.cardHeader {
+    margin-bottom: 15px;
+}
+
+.cardTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+}
+
+/* Update to remove underline from title */
+.cardTitle {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #333;
+    text-decoration: none; /* Removes underline from title */
+}
+
+.cardLink:hover {
+    color: #218838; /* Darker green on hover */
+}
+
+
+/* Card body */
+.cardBody {
+    font-size: 0.9rem;
+    color: #555;
+}
+
+.fas.fa-download {
+    color: #28a745;
+    margin-right: 5px;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .sectionTitle {
+        font-size: 1.3rem;
+    }
+    .listContainer {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    }
+}

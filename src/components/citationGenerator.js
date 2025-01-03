@@ -87,7 +87,7 @@ function CitationGeneratorDropdown({ result }) {
           <option value="MLA">MLA</option>
           <option value="Harvard">Harvard</option>
         </select>
-        <button onClick={handleCopyCitation} aria-label="Copy citation">Cite</button>
+        <button onClick={handleCopyCitation} aria-label="Copy citation">Copy Citation</button>
         {generatedCitation && <p className="generated-citation">{generatedCitation}</p>}
       </div>
     </div>

@@ -1,0 +1,59 @@
+/* Styling for the citation modal */
+.citation-modal {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Background overlay */
+    z-index: 1050; /* Ensure it's above other content */
+  }
+  
+  .citation-modal-content {
+    background-color: #fff;
+    padding: 30px;
+    border-radius: 8px;
+    width: 80%; /* Adjust the width to make it larger */
+    max-width: 700px; /* Limit the maximum width */
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .citation-modal-content h2 {
+    margin-bottom: 20px;
+    font-size: 1.5rem; /* Increase the font size of the title */
+    text-align: center;
+  }
+  
+  .citation-modal-content select,
+  .citation-modal-content button {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 10px 0;
+    font-size: 1.1rem; /* Increase font size */
+    border-radius: 5px;
+    border: 1px solid #ddd;
+  }
+  
+  .citation-modal-content button {
+    background-color: #007bff;
+    color: white;
+    cursor: pointer;
+  }
+  
+  .citation-modal-content button:hover {
+    background-color: #0056b3;
+  }
+  
+  .generated-citation {
+    font-size: 1.2rem; /* Increase citation text size */
+    white-space: pre-wrap; /* Ensure long citation text wraps correctly */
+    margin-top: 20px;
+    word-break: break-word;
+    text-align: center; /* Center align citation text */
+  }
+  

@@ -1,12 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { FaUser, FaQuoteRight, FaEye } from "react-icons/fa"; // Importing necessary icons
+import { FaUser, FaQuoteRight, FaEye } from "react-icons/fa";
 import { IoMdCloudDownload } from "react-icons/io";
 import { Line } from 'react-chartjs-2';
-import { Chart as ChartJS, LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend } from 'chart.js';
-import { Link } from 'react-router-dom'; // Import Link
+import { Dropdown, Modal, Button } from 'react-bootstrap';
+import { Spinner } from 'react-bootstrap'; // Import Spinner
+import { useNavigate } from 'react-router-dom';  // Import useNavigate
 import '../CSS/UserDashContent.css';
+import '../CSS/TopContent.Module.css'
+import {
+  Chart as ChartJS,
+  LineElement,
+  PointElement,
+  LinearScale,
+  CategoryScale,
+  Title,
+  Tooltip,
+  Legend
+} from 'chart.js';
 
-// Register necessary components
+// Register Chart.js components
 ChartJS.register(LineElement, PointElement, LinearScale, CategoryScale, Title, Tooltip, Legend);
 
 const UserDashContent = () => {
@@ -14,9 +26,29 @@ const UserDashContent = () => {
   const [userDownloads, setUserDownloads] = useState(0);
   const [userCitations, setUserCitations] = useState(0);
   const [userActivity, setUserActivity] = useState(0);
-  const [userViews, setUserViews] = useState(0); // New state for total views
-  const [dailyUserDownloads, setDailyUserDownloads] = useState({ labels: [], data: [] });
-  const [dailyUserCitations, setDailyUserCitations] = useState({ labels: [], data: [] });
+  const [userViews, setUserViews] = useState(0);
+
+  const [dailyDownloads, setDailyDownloads] = useState([]);
+  const [weeklyDownloads, setWeeklyDownloads] = useState([]);
+  const [monthlyDownloads, setMonthlyDownloads] = useState([]);
+
+  const [dailyCitations, setDailyCitations] = useState([]);
+  const [weeklyCitations, setWeeklyCitations] = useState([]);
+  const [monthlyCitations, setMonthlyCitations] = useState([]);
+
+  const [dailyViews, setDailyViews] = useState([]);
+  const [weeklyViews, setWeeklyViews] = useState([]);
+  const [monthlyViews, setMonthlyViews] = useState([]);
+
+  const [chartData, setChartData] = useState({ labels: [], datasets: [] });
+  const [timeRange, setTimeRange] = useState('daily');
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  // Modal state management
+  const [modalData, setModalData] = useState({ title: '', type: '', show: false });
+
+  const navigate = useNavigate(); // Initialize the navigate function
 
   useEffect(() => {
     const storedUserId = localStorage.getItem('userId');
@@ -27,149 +59,193 @@ const UserDashContent = () => {
 
   useEffect(() => {
     if (userId) {
-      const fetchUserDashboardData = async () => {
+      const fetchData = async () => {
         try {
-          // Fetch user dashboard data
-          const dashboardResponse = await fetch(`https://ccsrepo.onrender.com/user/dashboard?user_id=${userId}`);
-          if (!dashboardResponse.ok) {
-            throw new Error(`HTTP error! status: ${dashboardResponse.status}`);
-          }
+          setIsLoading(true);
+          setError(null);
 
+          const dashboardResponse = await fetch(`https://ccsrepo.onrender.com/user/dashboard?user_id=${userId}`);
           const dashboardData = await dashboardResponse.json();
           setUserDownloads(dashboardData.total_downloads);
           setUserCitations(dashboardData.total_citations);
           setUserActivity(dashboardData.total_researches);
-          setUserViews(dashboardData.total_views); // Set total views
+          setUserViews(dashboardData.total_views);
 
-          // Fetch daily downloads and citations for the individual uploader
           const dailyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/user/daily/downloads?userId=${userId}`);
-          const dailyDownloadsData = await dailyDownloadsResponse.json();
+          setDailyDownloads(await dailyDownloadsResponse.json());
+
+          const weeklyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/user/weekly/downloads?userId=${userId}`);
+          setWeeklyDownloads(await weeklyDownloadsResponse.json());
+
+          const monthlyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/user/monthly/downloads?userId=${userId}`);
+          setMonthlyDownloads(await monthlyDownloadsResponse.json());
 
           const dailyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/user/daily/citations?userId=${userId}`);
-          const dailyCitationsData = await dailyCitationsResponse.json();
+          setDailyCitations(await dailyCitationsResponse.json());
 
-          const downloadsByDay = Array(7).fill(0);
-          dailyDownloadsData.forEach(({ date, downloads }) => {
-            const dayOfWeek = new Date(date).getDay();
-            downloadsByDay[dayOfWeek] += downloads;
-          });
+          const weeklyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/user/weekly/citations?userId=${userId}`);
+          setWeeklyCitations(await weeklyCitationsResponse.json());
 
-          const citationsByDay = Array(7).fill(0);
-          dailyCitationsData.forEach(({ date, citations }) => {
-            const dayOfWeek = new Date(date).getDay();
-            citationsByDay[dayOfWeek] += citations;
-          });
+          const monthlyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/user/monthly/citations?userId=${userId}`);
+          setMonthlyCitations(await monthlyCitationsResponse.json());
 
-          const daysLabels = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+          const dailyViewsResponse = await fetch(`https://ccsrepo.onrender.com/user/daily/views?userId=${userId}`);
+          setDailyViews(await dailyViewsResponse.json());
 
-          setDailyUserDownloads({
-            labels: daysLabels,
-            data: downloadsByDay,
-          });
-          setDailyUserCitations({
-            labels: daysLabels,
-            data: citationsByDay,
-          });
+          const weeklyViewsResponse = await fetch(`https://ccsrepo.onrender.com/user/weekly/views?userId=${userId}`);
+          setWeeklyViews(await weeklyViewsResponse.json());
+
+          const monthlyViewsResponse = await fetch(`https://ccsrepo.onrender.com/user/monthly/views?userId=${userId}`);
+          setMonthlyViews(await monthlyViewsResponse.json());
+
         } catch (error) {
-          console.error('Error fetching user dashboard data:', error);
+          setError('Failed to fetch data. Please try again later.');
+        } finally {
+          setIsLoading(false);
         }
       };
-
-      fetchUserDashboardData();
+      fetchData();
     }
   }, [userId]);
 
-  const downloadsChartData = {
-    labels: dailyUserDownloads.labels,
-    datasets: [
-      {
-        label: 'Your Daily Downloads',
-        data: dailyUserDownloads.data,
-        fill: false,
-        backgroundColor: 'rgba(75,192,192,0.4)',
-        borderColor: 'rgba(75,192,192,1)',
-        tension: 0.1,
-      },
-    ],
+  
+  const formatChartData = (data, title) => {
+    let labels = [];
+    let values = [];
+  
+    if (timeRange === 'daily') {
+      labels = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      values = data.map((item) => item.views || item.downloads || item.citations);
+    } else if (timeRange === 'weekly') {
+      labels = data.map((item) => `Week ${item.week}`);
+      values = data.map((item) => item.views || item.downloads || item.citations);
+    } else if (timeRange === 'monthly') {
+      // Map numeric month (1-12) to month names
+      labels = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+  
+      // Map the data to values for the respective months
+      values = labels.map((month, index) => {
+        const monthData = data.find(item => item.month === index + 1); // +1 to match month (1-12)
+        return monthData ? monthData.views : 0; // Default to 0 if no data
+      });
+    }
+  
+    return {
+      labels,
+      datasets: [
+        {
+          label: title,
+          data: values,
+          borderColor: 'rgba(75,192,192,1)',
+          backgroundColor: 'rgba(75,192,192,0.2)',
+          fill: true,
+        },
+      ],
+    };
+  };
+  
+
+  const handleTimeRangeChange = (range) => {
+    setTimeRange(range);  // Change time range when dropdown value is selected
+  };
+  
+  useEffect(() => {
+    // Check if modalData.type is set and timeRange has been changed
+    if (modalData.type && timeRange) {
+      updateChartData(timeRange, modalData.type);  // Update the chart data when timeRange or type changes
+    }
+  }, [timeRange, modalData.type]);  // This effect runs when either timeRange or modalData.type changes
+  
+  const openModal = (type) => {
+    setModalData({ title: `${timeRange.charAt(0).toUpperCase() + timeRange.slice(1)} ${type}`, type, show: true });
+    // Update chart immediately when modal opens
+    updateChartData(timeRange, type);
+  };
+  
+  const updateChartData = (range, type) => {
+    let data = [];
+    let title = `${range.charAt(0).toUpperCase() + range.slice(1)} ${type}`;
+  
+    if (range === 'daily') {
+      data = type === 'downloads' ? dailyDownloads : type === 'citations' ? dailyCitations : dailyViews;
+    } else if (range === 'weekly') {
+      data = type === 'downloads' ? weeklyDownloads : type === 'citations' ? weeklyCitations : weeklyViews;
+    } else if (range === 'monthly') {
+      data = type === 'downloads' ? monthlyDownloads : type === 'citations' ? monthlyCitations : monthlyViews;
+    }
+  
+    setChartData(formatChartData(data, title));  // Update chart data with the selected range and type
+  };
+  
+  
+
+  const closeModal = () => {
+    setModalData({ ...modalData, show: false });
   };
 
-  const citationsChartData = {
-    labels: dailyUserCitations.labels,
-    datasets: [
-      {
-        label: 'Your Daily Citations',
-        data: dailyUserCitations.data,
-        fill: false,
-        backgroundColor: 'rgba(255,99,132,0.4)',
-        borderColor: 'rgba(255,99,132,1)',
-        tension: 0.1,
-      },
-    ],
+  // Navigate to the research page using the userId
+  const handleResearchPageNavigation = () => {
+    navigate(`/user/researches/${userId}`);  // Replace with the actual route of your research page
   };
-
-  const options = {
-    responsive: true,
-    plugins: {
-      legend: {
-        display: true,
-        position: 'top',
-      },
-      tooltip: {
-        mode: 'index',
-        intersect: false,
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: 'Day of the Week',
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: 'Count',
-        },
-        beginAtZero: true,
-      },
-    },
-  };
+  
+  if (isLoading) {
+    return (
+      <div className="loading-container">
+        <Spinner animation="border" variant="success" />
+      </div>
+    );
+  }
+  
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
 
   return (
-    <div className="user-dashboard-content">
+    <div className="dashboard-content">
       <div className="info-cards">
-        <div className="info-card blue">
+        <div className="info-card blue" onClick={() => openModal('downloads')}>
           <IoMdCloudDownload className="icon" />
-          <p>Total Downloads</p>
+          <p>Downloads</p>
           <h3>{userDownloads}</h3>
         </div>
-        <div className="info-card green">
+        <div className="info-card green" onClick={() => openModal('citations')}>
           <FaQuoteRight className="icon" />
-          <p>Total Citations</p>
+          <p>Citations</p>
           <h3>{userCitations}</h3>
         </div>
-        <Link to={`/user/researches/${userId}`} className="info-card yellow">
-          <FaUser className="icon" />
-          <p>Total Researches</p>
-          <h3>{userActivity}</h3>
-        </Link>
-        <div className="info-card purple"> {/* New card for Total Views */}
+        <div className="info-card yellow" onClick={handleResearchPageNavigation}>
           <FaEye className="icon" />
-          <p>Total Views</p>
+          <p> Researches</p>
+          <h3>{userActivity}</h3>
+        </div>
+        <div className="info-card red" onClick={() => openModal('views')}>
+          <FaUser className="icon" />
+          <p>Views</p>
           <h3>{userViews}</h3>
         </div>
       </div>
-      <div className="charts">
-        <div className="chart">
-          <h3>Your Daily Downloads</h3>
-          <Line data={downloadsChartData} options={options} />
-        </div>
-        <div className="chart">
-          <h3>Your Daily Citations</h3>
-          <Line data={citationsChartData} options={options} />
-        </div>
-      </div>
+
+      <Modal show={modalData.show} onHide={closeModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>{modalData.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Dropdown onSelect={handleTimeRangeChange}>
+            <Dropdown.Toggle variant="success" id="dropdown-custom-components">
+              {timeRange.charAt(0).toUpperCase() + timeRange.slice(1)}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item eventKey="daily">Daily</Dropdown.Item>
+              <Dropdown.Item eventKey="weekly">Weekly</Dropdown.Item>
+              <Dropdown.Item eventKey="monthly">Monthly</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Line data={chartData} />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };

@@ -4,6 +4,7 @@ import Container from "react-bootstrap/Container";
 import ListGroup from "react-bootstrap/ListGroup";
 import Pagination from "react-bootstrap/Pagination";
 import axios from "axios";
+import Spinner from 'react-bootstrap/Spinner';  // Import Spinner component
 import './CSS/AuthorsPapers.css'; // Import custom styles
 import personIcon from '../assets/icon-person.jpg'; // Default person icon
 
@@ -73,7 +74,11 @@ export default function AuthorPapers() {
     currentPage * itemsPerPage
   );
 
-  if (loading) return <p>Loading papers...</p>;
+  if (loading) return (
+    <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+            <Spinner animation="border" style={{ color: 'green' }} /> {/* Green spinner */}
+        </div>
+  );
   if (error) return <p>Error loading papers: {error.message}</p>;
   if (!filteredPapers.length) return <p>No papers found for this author.</p>;
 
@@ -85,7 +90,6 @@ export default function AuthorPapers() {
         </div>
         <div className="author-details">
           <h1>{authorName}</h1>
-      
         </div>
       </div>
       <ListGroup>

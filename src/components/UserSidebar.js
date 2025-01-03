@@ -22,7 +22,7 @@ const UserSidebar = ({ isOpen, toggleSidebar, roleId }) => {
       <nav className={`sidebar ${isOpen ? 'open' : ''}`}>
         <ul>
           <li>
-            <Link to="/">
+            <Link to="/user/dashboard">
               <FaHome />
               <span>Home</span>
             </Link>

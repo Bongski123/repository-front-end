@@ -1,58 +1,59 @@
+/* Container and Flex Layout */
 .container-fluid {
-    display: flex;
+  display: flex; /* Flex container for the layout */
 }
 
 .table-responsive {
-    flex: 1; /* Allow the table to grow and shrink */
+  flex: 1; /* Allow the table to grow and shrink */
 }
 
-
-  
-  .content.with-sidebar {
-    margin-left: 250px;
-    transition: margin-left 0.3s ease;
-  }
-  
-  .content.full-width {
-    margin-left: 0;
-    transition: margin-left 0.3s ease;
-  }
-  
-  .sidebar.open {
-    width: 250px;
-  }
-  
-  .sidebar {
-    width: 0;
-    overflow: hidden;
-    transition: width 0.3s ease;
-  }
-  .collections-container {
-    display: flex;
-    flex-direction: row;
-}
-
+/* Adjust the content slightly to the left */
 .content {
-    flex-grow: 1;
-    padding: 20px;
-    transition: margin-left 0.3s ease;
+  margin-left: 1px; /* Slight left margin, adjust as needed */
+  flex-grow: 1; /* Allow content to take available space */
+  padding: 20px; /* Padding inside content */
+  transition: margin-left 0.3s ease;
 }
 
+/* When sidebar is visible, adjust content margin */
 .content.with-sidebar {
-    margin-left: 300px; /* Width of your sidebar */
+  margin-left: 270px; /* Adjust for sidebar width */
 }
 
+/* For full-width content (when sidebar is hidden) */
 .content.full-width {
-    margin-left: 150px;
+  margin-left: 20px; /* Adjust for slight left shift */
 }
 
+/* Sidebar styles */
 .sidebar {
-    width: 250px; /* Width of your sidebar */
-    transition: width 0.3s ease;
+  width: 250px; /* Sidebar width */
+  transition: width 0.3s ease;
 }
 
-/* Optional: Hide sidebar when collapsed */
-.sidebar.closed {
-    width: 0;
-    overflow: hidden;
+.sidebar.open {
+  width: 250px; /* Ensure sidebar width when open */
 }
+
+.sidebar.closed {
+  width: 0;
+  overflow: hidden; /* Hide content when collapsed */
+}
+
+/* Collections-specific container */
+.collections-container {
+  display: flex; /* Flex layout for content */
+  flex-direction: row; /* Ensure items align in a row */
+}
+
+/* Optional: Add space to the table (or content) to shift it */
+.table-responsive {
+  margin-left: 10px; /* Optional: Adjust left margin */
+}
+
+/* If you need to center or adjust alignment, use flex properties */
+.content .table {
+  width: 100%;
+  margin-left: 0; /* Reset if needed */
+}
+

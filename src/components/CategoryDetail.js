@@ -5,6 +5,7 @@ import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import Form from "react-bootstrap/Form";
 import Pagination from 'react-bootstrap/Pagination';
+import Spinner from 'react-bootstrap/Spinner'; // Import Spinner component
 
 export default function CategoryDetail() {
     const { categoryId } = useParams();
@@ -40,7 +41,11 @@ export default function CategoryDetail() {
     }, [categoryId]);
 
     // Loading and error handling
-    if (loading) return <p>Loading research items...</p>;
+    if (loading) return (
+        <div className="d-flex justify-content-center align-items-center" style={{ height: '100vh' }}>
+            <Spinner animation="border" style={{ color: 'green' }} /> {/* Green spinner */}
+        </div>
+    );
     if (error) return <p>Error: {error}</p>;
 
     // Filtered items based on search input
@@ -59,7 +64,7 @@ export default function CategoryDetail() {
 
     return (
         <Container>
-<h1>{category_name}</h1>
+            <h1>{category_name}</h1>
 
             {/* Search bar */}
             <Form className="mb-3">
@@ -78,16 +83,15 @@ export default function CategoryDetail() {
                         <Col key={item.research_id} xs={12} className="mb-3">
                             {/* Make each item clickable and pass data to /details route */}
                             <Link
-    to="/details"
-    state={{ result: item, category_name }}
-    style={{ textDecoration: 'none' }}
->
-    <div className="p-3 border rounded shadow-sm hover-shadow" style={{ backgroundColor: '#f9f9f9' }}>
-        <h5 className="mb-1">{item.title}</h5>
-        <p className="mb-0 text-muted">Authors: {item.authors}</p>
-    </div>
-</Link>
-
+                                to="/details"
+                                state={{ result: item, category_name }}
+                                style={{ textDecoration: 'none' }}
+                            >
+                                <div className="p-3 border rounded shadow-sm hover-shadow" style={{ backgroundColor: '#f9f9f9' }}>
+                                    <h5 className="mb-1">{item.title}</h5>
+                                    <p className="mb-0 text-muted">Authors: {item.authors}</p>
+                                </div>
+                            </Link>
                         </Col>
                     ))
                 ) : (
