@@ -8,7 +8,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./CSS/details.css";
 import CitationGeneratorDropdown from './citationGenerator';
 import Swal from 'sweetalert2';
-import pdficon from '../assets/pdf-icon.png'
+import pdficon from '../assets/pdf-icon.png';
 pdfjs.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjs.version}/pdf.worker.js`;
 
 function Details() {
@@ -66,7 +66,7 @@ function Details() {
     useEffect(() => {
         const token = localStorage.getItem('token');
         setIsLoggedIn(!!token);
-    
+
         const incrementView = async () => {
             const viewedKey = `viewed_${result?.research_id}`;
             if (result?.research_id && !hasIncremented.current && !sessionStorage.getItem(viewedKey)) {
@@ -80,15 +80,11 @@ function Details() {
                 }
             }
         };
-    
+
         if (result) {
             incrementView();
         }
     }, [result]);
-
- 
-
-    
 
     const onDocumentLoadSuccess = ({ numPages }) => {
         setNumPages(numPages);
@@ -209,15 +205,16 @@ function Details() {
                                 <strong>Keywords:</strong> <span>{result.keywords}</span>
                             </p>
                         </div>
-                        <div className="button-group">
-                            <Button variant="info" onClick={handleCite} className="cite-button">Cite</Button>
-                            <Button variant="success" onClick={handleAddToCollection} className="add-to-collection-button">Add to Collection</Button>
-                        </div>
+                        {isLoggedIn && (
+                            <div className="button-group">
+                                <Button variant="info" onClick={handleCite} className="cite-button">Cite</Button>
+                                <Button variant="success" onClick={handleAddToCollection} className="add-to-collection-button">Add to Collection</Button>
+                            </div>
+                        )}
                     </div>
                 </Col>
                 <Col md={6}>
                     <div className="pdf-section">
-                        
                         {result.file_privacy === "public" ? (
                             loading ? (
                                 <div className="loader"></div>
@@ -225,8 +222,6 @@ function Details() {
                                 <p>{error}</p>
                             ) : ( 
                                 <div className="pdf-container" style={{ height: "600px", overflowY: "auto" }}>
-                                      {/* Download Button */}
-                                      
                                     <Document
                                         file={pdfBlobUrl}
                                         onLoadSuccess={onDocumentLoadSuccess}
@@ -242,10 +237,6 @@ function Details() {
                                         ))}
                                         <Button className="download-btn" onClick={handleDownload}>Download PDF</Button>
                                     </Document>
-                        
-                                  
-
-                                    
                                 </div>
                             )
                         ) : (

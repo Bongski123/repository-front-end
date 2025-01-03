@@ -5,12 +5,14 @@
   display: flex; /* Use flex for layout */
   flex-direction: column; /* Column layout for consistent stacking */
   align-items: center; /* Center the content horizontally */
+  
 }
 .dashboard-content {
   padding: 20px;
   display: flex;
   flex-direction: column;
   align-items: center;
+  
 }
 
 
@@ -19,6 +21,10 @@
   gap: 20px; /* Space between cards */
   justify-content: center; /* Center the cards */
   flex-wrap: wrap; /* Allow wrapping on smaller screens */
+  display: flex; /* Align content within the card */
+  padding-right: 220px;
+  align-items: center; /* Center items horizontally */
+  justify-content: space-around; /* Space out the content */
 }
 
 .info-card {
@@ -26,7 +32,7 @@
   min-width: 200px; /* Minimum width */
   max-width: 250px; /* Maximum width */
   aspect-ratio: 1; /* Makes the card square */
-  padding: 16px;
+  padding: 20px;
   border-radius: 8px;
   text-align: center;
   color: #fff;
@@ -34,6 +40,7 @@
   flex-direction: column; /* Stack items vertically */
   align-items: center; /* Center items horizontally */
   justify-content: space-around; /* Space out the content */
+  
 }
 
 

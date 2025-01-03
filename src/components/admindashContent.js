@@ -28,6 +28,7 @@ const DashboardContent = () => {
   const [monthlyDownloads, setMonthlyDownloads] = useState([]);
   const [monthlyCitations, setMonthlyCitations] = useState([]);
   const [timeRange, setTimeRange] = useState('daily');
+  const [year, setYear] = useState(new Date().getFullYear()); // Track the selected year
   const [chartData, setChartData] = useState({ labels: [], data: [] });
   const [modalData, setModalData] = useState({
     title: '',
@@ -39,44 +40,44 @@ const DashboardContent = () => {
     const fetchDashboardData = async () => {
       try {
         // Fetch general stats and chart data
-        const downloadsResponse = await fetch('https://ccsrepo.onrender.com/total/downloads');
+        const downloadsResponse = await fetch(`https://ccsrepo.onrender.com/total/downloads?year=${year}`);
         const downloadsData = await downloadsResponse.json();
         setDownloads(downloadsData.total_downloads || 0);
 
-        const citationsResponse = await fetch('https://ccsrepo.onrender.com/total/citations');
+        const citationsResponse = await fetch(`https://ccsrepo.onrender.com/total/citations?year=${year}`);
         const citationsData = await citationsResponse.json();
         setCitations(citationsData.total_citations || 0);
 
-        const usersResponse = await fetch('https://ccsrepo.onrender.com/all/users');
+        const usersResponse = await fetch(`https://ccsrepo.onrender.com/all/users?year=${year}`);
         const usersData = await usersResponse.json();
         setTotalUsers(usersData.total_users || 0);
 
-        const researchesResponse = await fetch('https://ccsrepo.onrender.com/total/researches');
+        const researchesResponse = await fetch(`https://ccsrepo.onrender.com/total/researches?year=${year}`);
         const researchesData = await researchesResponse.json();
         setTotalResearches(researchesData.total_researches || 0);
 
         // Fetch daily, weekly, and monthly data
-        const dailyDownloadsResponse = await fetch('https://ccsrepo.onrender.com/daily/downloads');
+        const dailyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/daily/downloads?year=${year}`);
         const dailyDownloadsData = await dailyDownloadsResponse.json();
         setDailyDownloads(dailyDownloadsData);
 
-        const dailyCitationsResponse = await fetch('https://ccsrepo.onrender.com/daily/citations');
+        const dailyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/daily/citations?year=${year}`);
         const dailyCitationsData = await dailyCitationsResponse.json();
         setDailyCitations(dailyCitationsData);
 
-        const weeklyDownloadsResponse = await fetch('https://ccsrepo.onrender.com/weekly/downloads');
+        const weeklyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/weekly/downloads?year=${year}`);
         const weeklyDownloadsData = await weeklyDownloadsResponse.json();
         setWeeklyDownloads(weeklyDownloadsData);
 
-        const weeklyCitationsResponse = await fetch('https://ccsrepo.onrender.com/weekly/citations');
+        const weeklyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/weekly/citations?year=${year}`);
         const weeklyCitationsData = await weeklyCitationsResponse.json();
         setWeeklyCitations(weeklyCitationsData);
 
-        const monthlyDownloadsResponse = await fetch('https://ccsrepo.onrender.com/monthly/downloads');
+        const monthlyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/monthly/downloads?year=${year}`);
         const monthlyDownloadsData = await monthlyDownloadsResponse.json();
         setMonthlyDownloads(monthlyDownloadsData);
 
-        const monthlyCitationsResponse = await fetch('https://ccsrepo.onrender.com/monthly/citations');
+        const monthlyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/monthly/citations?year=${year}`);
         const monthlyCitationsData = await monthlyCitationsResponse.json();
         setMonthlyCitations(monthlyCitationsData);
       } catch (error) {
@@ -85,7 +86,7 @@ const DashboardContent = () => {
     };
 
     fetchDashboardData();
-  }, []);
+  }, [year]); // Re-fetch data when the year changes
 
   useEffect(() => {
     if (modalData.show) {
@@ -146,6 +147,10 @@ const DashboardContent = () => {
     setTimeRange(range);  // Automatically triggers chart update
   };
 
+  const handleYearChange = (selectedYear) => {
+    setYear(selectedYear); // Change year and fetch data for that year
+  };
+
   return (
     <div className="dashboard-content">
       <div className="info-cards">
@@ -160,10 +165,10 @@ const DashboardContent = () => {
           <h3>{citations}</h3>
         </div>
         <div className="info-card purple" onClick={() => navigate('/researchList')}>
-  <FaFileAlt className="icon" /> {/* Changed icon */}
-  <p>Researches</p>
-  <h3>{totalResearches}</h3>
-</div>
+          <FaFileAlt className="icon" />
+          <p>Researches</p>
+          <h3>{totalResearches}</h3>
+        </div>
 
         <div className="info-card yellow" onClick={() => navigate('/admin/users')}>
           <FaUser className="icon" />
@@ -173,46 +178,56 @@ const DashboardContent = () => {
       </div>
 
       <Modal show={modalData.show} onHide={closeModal} centered size="lg">
-  <Modal.Header closeButton>
-    <Modal.Title>{modalData.title}</Modal.Title>
-  </Modal.Header>
-  <Modal.Body>
-    <Dropdown>
-      <Dropdown.Toggle variant="success" id="dropdown-custom-components">
-        {timeRange.charAt(0).toUpperCase() + timeRange.slice(1)} Data
-      </Dropdown.Toggle>
-      <Dropdown.Menu>
-        <Dropdown.Item onClick={() => handleTimeRangeChange('daily')}>Daily</Dropdown.Item>
-        <Dropdown.Item onClick={() => handleTimeRangeChange('weekly')}>Weekly</Dropdown.Item>
-        <Dropdown.Item onClick={() => handleTimeRangeChange('monthly')}>Monthly</Dropdown.Item>
-      </Dropdown.Menu>
-    </Dropdown>
-    <Line
-      data={{
-        labels: chartData.labels,
-        datasets: [
-          {
-            label: modalData.title,
-            data: chartData.data,
-            borderColor: '#ff7300',
-            backgroundColor: 'rgba(255, 115, 0, 0.3)',
-            fill: true,
-          },
-        ],
-      }}
-      options={{
-        responsive: true,
-        plugins: {
-          title: {
-            display: true,
-            text: modalData.title,
-          },
-        },
-      }}
-    />
-  </Modal.Body>
-</Modal>
-
+        <Modal.Header closeButton>
+          <Modal.Title>{modalData.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Dropdown>
+            <Dropdown.Toggle variant="success" id="dropdown-custom-components">
+              {timeRange.charAt(0).toUpperCase() + timeRange.slice(1)} Data
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => handleTimeRangeChange('daily')}>Daily</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleTimeRangeChange('weekly')}>Weekly</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleTimeRangeChange('monthly')}>Monthly</Dropdown.Item>
+            </Dropdown.Menu>
+          </Dropdown>
+          <Dropdown>
+            <Dropdown.Toggle variant="secondary" id="dropdown-year">
+              Year: {year}
+            </Dropdown.Toggle>
+            <Dropdown.Menu>
+              <Dropdown.Item onClick={() => handleYearChange(2025)}>2025</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleYearChange(2024)}>2024</Dropdown.Item>
+              <Dropdown.Item onClick={() => handleYearChange(2023)}>2023</Dropdown.Item>
+              {/* Add more years as needed */}
+            </Dropdown.Menu>
+          </Dropdown>
+          <Line
+            data={{
+              labels: chartData.labels,
+              datasets: [
+                {
+                  label: modalData.title,
+                  data: chartData.data,
+                  borderColor: '#ff7300',
+                  backgroundColor: 'rgba(255, 115, 0, 0.3)',
+                  fill: true,
+                },
+              ],
+            }}
+            options={{
+              responsive: true,
+              plugins: {
+                title: {
+                  display: true,
+                  text: modalData.title,
+                },
+              },
+            }}
+          />
+        </Modal.Body>
+      </Modal>
     </div>
   );
 };
