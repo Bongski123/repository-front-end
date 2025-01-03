@@ -228,7 +228,7 @@ const UserDashContent = () => {
         </div>
       </div>
 
-      <Modal show={modalData.show} onHide={closeModal}>
+      <Modal show={modalData.show} onHide={closeModal} centered size="lg">
         <Modal.Header closeButton>
           <Modal.Title>{modalData.title}</Modal.Title>
         </Modal.Header>

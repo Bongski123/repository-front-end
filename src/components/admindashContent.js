@@ -172,46 +172,47 @@ const DashboardContent = () => {
         </div>
       </div>
 
-      <Modal show={modalData.show} onHide={closeModal} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>{modalData.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Dropdown>
-            <Dropdown.Toggle variant="success" id="dropdown-custom-components">
-              {timeRange.charAt(0).toUpperCase() + timeRange.slice(1)} Data
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleTimeRangeChange('daily')}>Daily</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleTimeRangeChange('weekly')}>Weekly</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleTimeRangeChange('monthly')}>Monthly</Dropdown.Item>
-            </Dropdown.Menu>
-          </Dropdown>
-          <Line
-            data={{
-              labels: chartData.labels,
-              datasets: [
-                {
-                  label: modalData.title,
-                  data: chartData.data,
-                  borderColor: '#ff7300',
-                  backgroundColor: 'rgba(255, 115, 0, 0.3)',
-                  fill: true,
-                },
-              ],
-            }}
-            options={{
-              responsive: true,
-              plugins: {
-                title: {
-                  display: true,
-                  text: modalData.title,
-                },
-              },
-            }}
-          />
-        </Modal.Body>
-      </Modal>
+      <Modal show={modalData.show} onHide={closeModal} centered size="lg">
+  <Modal.Header closeButton>
+    <Modal.Title>{modalData.title}</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Dropdown>
+      <Dropdown.Toggle variant="success" id="dropdown-custom-components">
+        {timeRange.charAt(0).toUpperCase() + timeRange.slice(1)} Data
+      </Dropdown.Toggle>
+      <Dropdown.Menu>
+        <Dropdown.Item onClick={() => handleTimeRangeChange('daily')}>Daily</Dropdown.Item>
+        <Dropdown.Item onClick={() => handleTimeRangeChange('weekly')}>Weekly</Dropdown.Item>
+        <Dropdown.Item onClick={() => handleTimeRangeChange('monthly')}>Monthly</Dropdown.Item>
+      </Dropdown.Menu>
+    </Dropdown>
+    <Line
+      data={{
+        labels: chartData.labels,
+        datasets: [
+          {
+            label: modalData.title,
+            data: chartData.data,
+            borderColor: '#ff7300',
+            backgroundColor: 'rgba(255, 115, 0, 0.3)',
+            fill: true,
+          },
+        ],
+      }}
+      options={{
+        responsive: true,
+        plugins: {
+          title: {
+            display: true,
+            text: modalData.title,
+          },
+        },
+      }}
+    />
+  </Modal.Body>
+</Modal>
+
     </div>
   );
 };
