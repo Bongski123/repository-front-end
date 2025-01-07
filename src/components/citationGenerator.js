@@ -75,9 +75,10 @@ function CitationGeneratorDropdown({ result }) {
   }, [generateCitation, result]);
 
   return (
-    <div className="citation-modal" role="dialog" aria-modal="true">
+    <div className="citation-modal" role="dialog" aria-modal="true" aria-labelledby="citation-modal-title" aria-describedby="citation-modal-description">
       <div className="citation-modal-content">
-        <h2>Citation</h2>
+        <h2 id="citation-modal-title">Citation</h2>
+        <p id="citation-modal-description">Select a citation format and copy the generated citation.</p>
         <select 
           value={selectedFormat} 
           onChange={handleFormatChange} 

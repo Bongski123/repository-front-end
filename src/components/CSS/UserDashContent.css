@@ -33,8 +33,8 @@
 
 .info-card {
   flex:auto; /* Flexible size for cards */
-  min-width: 300px; /* Minimum width */
-
+  min-width: 270px; /* Minimum width */
+ 
   aspect-ratio: 1; /* Makes the card square */
   padding: 20x  px;
   border-radius: 8px;
