@@ -1,5 +1,5 @@
 .user-dashboard-content {
-  padding: 20px;
+  padding: 2px;
   background-color: #f4f7fc;
   min-height: 100vh;
   display: flex; /* Use flex for layout */
@@ -108,6 +108,10 @@
   font-weight: 600;
 }
 
+
+.info.main-content{
+  background-color: transparent;
+}
 .charts {
   margin-top: 25px; /* Space above charts */
   display: flex;
