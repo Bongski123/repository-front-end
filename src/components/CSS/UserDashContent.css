@@ -32,9 +32,9 @@
 }
 
 .info-card {
-  flex: 1; /* Flexible size for cards */
-  min-width: 280px; /* Minimum width */
-  max-width: 280px; /* Maximum width */
+  flex:auto; /* Flexible size for cards */
+  min-width: 300px; /* Minimum width */
+
   aspect-ratio: 1; /* Makes the card square */
   padding: 20x  px;
   border-radius: 8px;
@@ -127,22 +127,30 @@
 }
 
 @media (max-width: 768px) {
-  /* Stacking cards vertically on smaller screens */
+  /* Adjust the layout of info-cards */
   .info-cards {
-    flex-direction: column;
-    align-items: center; /* Centers cards when stacked */
-    gap: 1.5rem; /* More space between vertically stacked cards */
+    flex-direction: row; /* Keep cards in a row */
+    align-items: center; /* Center cards vertically if they wrap */
+    gap: 1.5rem; /* Adjust the gap between cards */
+    justify-content: center; /* Ensure the cards are centered horizontally */
   }
 
+  /* Make each card smaller */
   .info-card {
-    width: 80%; /* Make the cards take up more width on small screens */
-    height: auto; /* Allow height to adjust based on content */
+    width: 90%; /* Cards take up 45% of the width */
+    max-width: 220px; /* Set a max width for smaller cards */
+    height: auto; /* Adjust the height based on content */
+    padding: 10px; /* Adjust padding to make the card content more compact */
+    margin: 10px; /* Adjust margin for smaller spacing between cards */
   }
 
+  /* Reduce the gap between charts on smaller screens */
   .charts {
-    gap: 1.5rem; /* Reduced gap between charts on smaller screens */
+    gap: 1.5rem;
   }
 }
+
+
 
 /* General container for the pie chart */
 .pie-chart-container {
