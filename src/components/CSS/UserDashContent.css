@@ -12,7 +12,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 30px; /* Adjust the gap between cards */
-  margin-top: -60px; /* Adjust this to move up the whole section */
+  margin-top: -30px; /* Adjust this to move up the whole section */
   padding-left: 20px;
 }
 

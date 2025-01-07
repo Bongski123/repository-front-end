@@ -130,9 +130,9 @@ const UserDashboard = () => {
         roleId={roleId}
       />
       <main className={`main-content ${isSidebarVisible ? 'with-sidebar' : 'full-width'}`}>
-        <header className="dashboard-header">
+
       
-        </header>
+   
 
         {/* Only render the content for users with specific roleId */}
         {roleId !== 1 && roleId !== 4 && <UserDashContent />}
