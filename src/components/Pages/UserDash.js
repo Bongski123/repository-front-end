@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
 import { jwtDecode } from 'jwt-decode';
+import Swal from 'sweetalert2';
 import UserSidebar from '../UserSidebar';
 import '../CSS/userdash.css';
 import UserDashContent from './UserDashContent';
@@ -89,6 +89,7 @@ const TopContent = ({ roleId }) => {
 const UserDashboard = () => {
   const [roleId, setRoleId] = useState(null);
   const [email, setEmail] = useState('');
+  const [firstName, setFirstName] = useState('');
   const [isSidebarVisible, setIsSidebarVisible] = useState(true);
   const navigate = useNavigate();
 
@@ -99,6 +100,7 @@ const UserDashboard = () => {
       try {
         const decodedToken = jwtDecode(token); // Decode the token to get the user info
         setEmail(decodedToken.email);
+        setFirstName(decodedToken.firstName || 'User'); // Set firstName if available
         const role = decodedToken.roleId || localStorage.getItem('roleId'); // Get the roleId from localStorage or token
         setRoleId(role);
 
@@ -129,7 +131,7 @@ const UserDashboard = () => {
       />
       <main className={`main-content ${isSidebarVisible ? 'with-sidebar' : 'full-width'}`}>
         <header className="dashboard-header">
-          <h1>Welcome, {email || 'User'}!</h1>
+      
         </header>
 
         {/* Only render the content for users with specific roleId */}

@@ -205,12 +205,12 @@ function Details() {
                                 <strong>Keywords:</strong> <span>{result.keywords}</span>
                             </p>
                         </div>
-                        {isLoggedIn && (
+                        
                             <div className="button-group">
                                 <Button variant="info" onClick={handleCite} className="cite-button">Cite</Button>
                                 <Button variant="success" onClick={handleAddToCollection} className="add-to-collection-button">Add to Collection</Button>
                             </div>
-                        )}
+                     
                     </div>
                 </Col>
                 <Col md={6}>

@@ -93,13 +93,27 @@ const UserPaper = () => {
 
   const updatePrivacy = async (privacy) => {
     const { selectedResearch } = privacyModal;
-
+  
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: `Do you want to set this research to ${privacy} privacy?`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, update it!',
+    });
+  
+    if (!result.isConfirmed) {
+      return; // Exit if the user cancels the action
+    }
+  
     try {
       const response = await axios.put(
         `https://ccsrepo.onrender.com/research/${selectedResearch.research_id}/privacy`,
         { privacy }
       );
-
+  
       if (response.status === 202) {
         Swal.fire({
           icon: 'success',
@@ -120,7 +134,7 @@ const UserPaper = () => {
       closePrivacyModal();
     }
   };
-
+  
   // Ensure roleId is valid before rendering content
   if (roleId === null) {
     return <div>Loading...</div>; // Show loading while roleId is decoding

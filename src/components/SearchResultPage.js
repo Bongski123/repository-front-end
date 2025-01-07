@@ -51,7 +51,11 @@ function SearchResultsPage() {
   }, [query]);
 
   if (loading) {
-    return <Container>Loading...</Container>; // Loading state
+    return (
+      <Container className="loading-container">
+        <div className="spinner"></div>
+      </Container>
+    ); // Loading state with spinner
   }
 
   return (

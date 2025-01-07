@@ -23,10 +23,13 @@ const DashboardContent = () => {
   const [totalResearches, setTotalResearches] = useState(0);
   const [dailyDownloads, setDailyDownloads] = useState([]);
   const [dailyCitations, setDailyCitations] = useState([]);
+  const [dailyViews, setDailyViews] = useState([]);
   const [weeklyDownloads, setWeeklyDownloads] = useState([]);
   const [weeklyCitations, setWeeklyCitations] = useState([]);
+  const [weeklyViews, setWeeklyViews] = useState([]);
   const [monthlyDownloads, setMonthlyDownloads] = useState([]);
   const [monthlyCitations, setMonthlyCitations] = useState([]);
+  const [monthlyViews, setMonthlyViews] = useState([]);
   const [timeRange, setTimeRange] = useState('daily');
   const [year, setYear] = useState(new Date().getFullYear()); // Track the selected year
   const [chartData, setChartData] = useState({ labels: [], data: [] });
@@ -39,7 +42,7 @@ const DashboardContent = () => {
   useEffect(() => {
     const fetchDashboardData = async () => {
       try {
-        // Fetch general stats and chart data
+        // Fetch general stats
         const downloadsResponse = await fetch(`https://ccsrepo.onrender.com/total/downloads?year=${year}`);
         const downloadsData = await downloadsResponse.json();
         setDownloads(downloadsData.total_downloads || 0);
@@ -57,29 +60,42 @@ const DashboardContent = () => {
         setTotalResearches(researchesData.total_researches || 0);
 
         // Fetch daily, weekly, and monthly data
-        const dailyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/daily/downloads?year=${year}`);
-        const dailyDownloadsData = await dailyDownloadsResponse.json();
-        setDailyDownloads(dailyDownloadsData);
+        const dailyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/daily/downloads`);
+const dailyDownloadsData = await dailyDownloadsResponse.json();
+console.log("Daily Downloads API Response:", dailyDownloadsData);
+setDailyDownloads(dailyDownloadsData);
 
-        const dailyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/daily/citations?year=${year}`);
+        const dailyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/daily/citations`);
         const dailyCitationsData = await dailyCitationsResponse.json();
         setDailyCitations(dailyCitationsData);
 
-        const weeklyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/weekly/downloads?year=${year}`);
+        const dailyViewsResponse = await fetch(`https://ccsrepo.onrender.com/daily/views`);
+        const dailyViewsData = await dailyViewsResponse.json();
+        setDailyViews(dailyViewsData);
+
+        const weeklyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/weekly/downloads`);
         const weeklyDownloadsData = await weeklyDownloadsResponse.json();
         setWeeklyDownloads(weeklyDownloadsData);
 
-        const weeklyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/weekly/citations?year=${year}`);
+        const weeklyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/weekly/citations`);
         const weeklyCitationsData = await weeklyCitationsResponse.json();
         setWeeklyCitations(weeklyCitationsData);
 
-        const monthlyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/monthly/downloads?year=${year}`);
+        const weeklyViewsResponse = await fetch(`https://ccsrepo.onrender.com/weekly/views`);
+        const weeklyViewsData = await weeklyViewsResponse.json();
+        setWeeklyViews(weeklyViewsData);
+
+        const monthlyDownloadsResponse = await fetch(`https://ccsrepo.onrender.com/monthly/downloads`);
         const monthlyDownloadsData = await monthlyDownloadsResponse.json();
         setMonthlyDownloads(monthlyDownloadsData);
 
-        const monthlyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/monthly/citations?year=${year}`);
+        const monthlyCitationsResponse = await fetch(`https://ccsrepo.onrender.com/monthly/citations`);
         const monthlyCitationsData = await monthlyCitationsResponse.json();
         setMonthlyCitations(monthlyCitationsData);
+
+        const monthlyViewsResponse = await fetch(`https://ccsrepo.onrender.com/monthly/views`);
+        const monthlyViewsData = await monthlyViewsResponse.json();
+        setMonthlyViews(monthlyViewsData);
       } catch (error) {
         console.error('Error fetching dashboard data:', error);
       }
@@ -91,25 +107,35 @@ const DashboardContent = () => {
   useEffect(() => {
     if (modalData.show) {
       const updatedChartData = aggregateData(
-        modalData.type === 'downloads' ? dailyDownloads : dailyCitations,
-        modalData.type === 'downloads' ? weeklyDownloads : weeklyCitations,
-        modalData.type === 'downloads' ? monthlyDownloads : monthlyCitations,
+        modalData.type === 'downloads' ? dailyDownloads : modalData.type === 'citations' ? dailyCitations : dailyViews,
+        modalData.type === 'downloads' ? weeklyDownloads : modalData.type === 'citations' ? weeklyCitations : weeklyViews,
+        modalData.type === 'downloads' ? monthlyDownloads : modalData.type === 'citations' ? monthlyCitations : monthlyViews,
         timeRange,
         modalData.type
       );
       setChartData(updatedChartData);
     }
-  }, [timeRange, dailyDownloads, weeklyDownloads, monthlyDownloads, dailyCitations, weeklyCitations, monthlyCitations, modalData]);
+  }, [timeRange, dailyDownloads, weeklyDownloads, monthlyDownloads, dailyCitations, weeklyCitations, monthlyCitations, dailyViews, weeklyViews, monthlyViews, modalData]);
 
   const aggregateData = (dailyData, weeklyData, monthlyData, range, type) => {
     let labels = [];
     let data = [];
 
     if (range === 'daily') {
-      labels = dailyData.map((item) =>
-        new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date(item.date))
-      );
-      data = dailyData.map((item) => item[type]);
+      const daysOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
+      labels = daysOfWeek;
+      const weeklyDataMap = new Map();
+      daysOfWeek.forEach(day => weeklyDataMap.set(day, 0));
+
+      dailyData.forEach(item => {
+        const dayOfWeek = new Intl.DateTimeFormat('en-US', { weekday: 'long' }).format(new Date(item.date));
+        if (weeklyDataMap.has(dayOfWeek)) {
+          weeklyDataMap.set(dayOfWeek, weeklyDataMap.get(dayOfWeek) + item[type]);
+        }
+      });
+
+      data = daysOfWeek.map(day => weeklyDataMap.get(day));
+
     } else if (range === 'weekly') {
       labels = weeklyData.map((item) => `Week ${item.week}`);
       data = weeklyData.map((item) => item[type]);
@@ -118,14 +144,15 @@ const DashboardContent = () => {
         'January', 'February', 'March', 'April', 'May', 'June',
         'July', 'August', 'September', 'October', 'November', 'December'
       ];
+
+      const monthlyDataMap = new Map();
+      monthlyData.forEach(item => {
+        const monthName = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(`${item.year}-${item.month}-01`));
+        monthlyDataMap.set(monthName, item[type]);
+      });
+
       labels = allMonths;
-      const monthlyDataMap = new Map(
-        monthlyData.map((item) => [
-          new Intl.DateTimeFormat('en-US', { month: 'long' }).format(new Date(`${item.month}-01`)),
-          item[type]
-        ])
-      );
-      data = labels.map((month) => monthlyDataMap.get(month) || 0);
+      data = allMonths.map(month => monthlyDataMap.get(month) || 0);
     }
 
     return { labels, data };
@@ -133,7 +160,7 @@ const DashboardContent = () => {
 
   const openModal = (type) => {
     setModalData({
-      title: type === 'downloads' ? 'Total Downloads' : 'Total Citations',
+      title: type === 'downloads' ? 'Total Downloads' : type === 'citations' ? 'Total Citations' : 'Total Views',
       type,
       show: true,
     });
@@ -144,11 +171,11 @@ const DashboardContent = () => {
   };
 
   const handleTimeRangeChange = (range) => {
-    setTimeRange(range);  // Automatically triggers chart update
+    setTimeRange(range);
   };
 
   const handleYearChange = (selectedYear) => {
-    setYear(selectedYear); // Change year and fetch data for that year
+    setYear(selectedYear);
   };
 
   return (
@@ -192,17 +219,7 @@ const DashboardContent = () => {
               <Dropdown.Item onClick={() => handleTimeRangeChange('monthly')}>Monthly</Dropdown.Item>
             </Dropdown.Menu>
           </Dropdown>
-          <Dropdown>
-            <Dropdown.Toggle variant="secondary" id="dropdown-year">
-              Year: {year}
-            </Dropdown.Toggle>
-            <Dropdown.Menu>
-              <Dropdown.Item onClick={() => handleYearChange(2025)}>2025</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleYearChange(2024)}>2024</Dropdown.Item>
-              <Dropdown.Item onClick={() => handleYearChange(2023)}>2023</Dropdown.Item>
-              {/* Add more years as needed */}
-            </Dropdown.Menu>
-          </Dropdown>
+
           <Line
             data={{
               labels: chartData.labels,

@@ -86,12 +86,14 @@ const Login = () => {
 
       // Decode the token to extract roleId and other info
       const decodedToken = jwtDecode(token);
-      const { roleId, userId } = decodedToken;
+      const { roleId, userId,firstName } = decodedToken;
 
       // Store token and roleId in localStorage
       localStorage.setItem('token', token);
       localStorage.setItem('roleId', roleId);
       localStorage.setItem('userId', userId);
+      localStorage.setItem('userId', firstName);
+
 
       // Send heartbeat data after login
       sendHeartbeat(userId, token);
@@ -100,6 +102,15 @@ const Login = () => {
       setInterval(() => {
         sendHeartbeat(userId, token);
       }, 10000); // Every 60 seconds
+
+      
+      
+        // Show the SweetAlert every time the dashboard is loaded after login
+        Swal.fire({
+          title: `Welcome, ${decodedToken.firstName || 'User'}!`,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
 
       // Navigate based on roleId
       if (roleId === 1) {
@@ -126,15 +137,15 @@ const Login = () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id_token: response.credential })
       });
-
+  
       if (!res.ok) {
         const errorMessage = await res.json();
         throw new Error(errorMessage.error || 'Google login failed');
       }
-
+  
       const data = await res.json();
       const { token, userExists, email, name } = data;
-
+  
       // Ensure that `name` is defined before attempting to split
       let first_name = '';
       let last_name = '';
@@ -143,50 +154,53 @@ const Login = () => {
         first_name = nameParts[0];
         last_name = nameParts.slice(1).join(' ');
       }
-
+  
       // If user is already registered, log them in directly
       if (userExists) {
         // Decode the token to extract user information
         const decodedToken = jwtDecode(token);
-        const { roleId, userId, picture } = decodedToken;
-
+        const { roleId, userId, picture, firstName } = decodedToken;
+  
         // Store token and roleId in localStorage
         localStorage.setItem('token', token);
         localStorage.setItem('roleId', roleId);
         localStorage.setItem('userId', userId);
         localStorage.setItem('picture', picture);
-
-        // Store name if available
-        localStorage.setItem('firstName', first_name || ''); // Default to empty string if undefined
-        localStorage.setItem('lastName', last_name || '');
-
+        localStorage.setItem('firstName', firstName);
+  
         // Send heartbeat data after login
         sendHeartbeat(userId, token);
-
+  
         // Set up interval to send heartbeat every 60 seconds
         setInterval(() => {
           sendHeartbeat(userId, token);
         }, 60000); // Every 60 seconds
-
+  
+        // Show the SweetAlert every time the dashboard is loaded after login
+        Swal.fire({
+          title: `Welcome, ${firstName || 'User'}!`,
+          icon: 'success',
+          confirmButtonText: 'OK'
+        });
+  
         // Redirect based on role
         if (roleId === 1) {
           navigate('/admin/dashboard'); // Admin dashboard
         } else {
           navigate('/user/dashboard'); // User dashboard
         }
-        window.location.reload(); // Refresh the page state
       } else {
         // If user doesn't exist, check if email is from 'gbox.ncf.edu.ph'
         const isGboxEmail = email.endsWith('@gbox.ncf.edu.ph');
         const roleId = isGboxEmail ? 2 : undefined;
         const institutionId = isGboxEmail ? 16 : undefined;
-
+  
         // Redirect to sign-up page with additional info (including firstName and lastName if available)
         navigate('/signup', {
           state: { email, roleId, institutionId, first_name, last_name }
         });
       }
-
+  
     } catch (error) {
       Swal.fire({
         icon: 'error',
@@ -195,6 +209,7 @@ const Login = () => {
       });
     }
   };
+  
 
   return (
     <div>

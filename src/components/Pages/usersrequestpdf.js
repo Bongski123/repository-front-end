@@ -20,7 +20,6 @@ const PdfRequests = () => {
     selectedRequest: null,
   });
   const [isPlaneFlying, setIsPlaneFlying] = useState(false);
-  const [isActionLoading, setIsActionLoading] = useState(false);
 
   const userId = getCurrentUserId();
   const token = getToken();
@@ -87,63 +86,79 @@ const PdfRequests = () => {
   };
 
   const sendEmail = async (request) => {
-    try {
-      setIsActionLoading(true);
-      const response = await axios.post(`https://ccsrepo.onrender.com/send-pdf/${request.research_id}`, {
-        requester_email: request.requester_email,
-        researchTitle: request.research_title,
-        researchId: request.research_id,
-      });
+    const confirmResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to send the PDF to this requester?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, send it!',
+      cancelButtonText: 'Cancel',
+    });
 
-      if (response.status === 200) {
-        Swal.fire({
-          title: 'Success!',
-          text: 'Email sent successfully.',
-          icon: 'success',
-          confirmButtonText: 'Okay',
+    if (confirmResult.isConfirmed) {
+      try {
+        const response = await axios.post(`https://ccsrepo.onrender.com/send-pdf/${request.research_id}`, {
+          requester_email: request.requester_email,
+          researchTitle: request.research_title,
+          researchId: request.research_id,
         });
-        fetchPdfRequests(); // Refresh list after action
-        closeModal(); // Auto-close modal
-      } else {
-        throw new Error('Email sending failed');
+
+        if (response.status === 200) {
+          Swal.fire({
+            title: 'Success!',
+            text: 'Email sent successfully.',
+            icon: 'success',
+            confirmButtonText: 'Okay',
+          });
+          fetchPdfRequests();
+          closeModal();
+        } else {
+          throw new Error('Email sending failed');
+        }
+      } catch (error) {
+        Swal.fire({
+          title: 'Error!',
+          text: 'Failed to send email.',
+          icon: 'error',
+          confirmButtonText: 'Try Again',
+        });
       }
-    } catch (error) {
-      Swal.fire({
-        title: 'Error!',
-        text: 'Failed to send email.',
-        icon: 'error',
-        confirmButtonText: 'Try Again',
-      });
-    } finally {
-      setIsActionLoading(false);
     }
   };
 
   const rejectRequest = async (request) => {
-    try {
-      setIsActionLoading(true);
-      const response = await axios.post(`https://ccsrepo.onrender.com/reject-pdf-request/${request.request_id}`);
-      if (response.status === 200) {
+    const confirmResult = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'Do you want to reject this request?',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Yes, reject it!',
+      cancelButtonText: 'Cancel',
+    });
+
+    if (confirmResult.isConfirmed) {
+      try {
+        const response = await axios.post(`https://ccsrepo.onrender.com/reject-pdf-request/${request.request_id}`);
+        if (response.status === 200) {
+          Swal.fire({
+            title: 'Rejected!',
+            text: 'The request has been rejected successfully.',
+            icon: 'success',
+            confirmButtonText: 'Okay',
+          });
+          fetchPdfRequests();
+          closeModal();
+        } else {
+          throw new Error('Rejection failed');
+        }
+      } catch (error) {
         Swal.fire({
-          title: 'Rejected!',
-          text: 'The request has been rejected successfully.',
-          icon: 'success',
-          confirmButtonText: 'Okay',
+          title: 'Error!',
+          text: 'Failed to reject the request.',
+          icon: 'error',
+          confirmButtonText: 'Try Again',
         });
-        fetchPdfRequests(); // Refresh list after rejection
-        closeModal(); // Auto-close modal
-      } else {
-        throw new Error('Rejection failed');
       }
-    } catch (error) {
-      Swal.fire({
-        title: 'Error!',
-        text: 'Failed to reject the request.',
-        icon: 'error',
-        confirmButtonText: 'Try Again',
-      });
-    } finally {
-      setIsActionLoading(false);
     }
   };
 
@@ -195,13 +210,12 @@ const PdfRequests = () => {
               </table>
             ) : (
               <div className="d-flex justify-content-center align-items-center" style={{ height: '50vh' }}>
-              <p>No PDF requests found.</p>
-          </div>
+                <p>No PDF requests found.</p>
+              </div>
             )}
           </>
         )}
 
-        {/* Enhanced Modal Design */}
         <Modal show={privacyModal.show} onHide={closeModal} centered>
           <Modal.Header closeButton>
             <Modal.Title className="modal-title">Request Details</Modal.Title>
@@ -217,19 +231,25 @@ const PdfRequests = () => {
             )}
           </Modal.Body>
           <Modal.Footer>
-            <Button variant="success" onClick={() => sendEmail(privacyModal.selectedRequest)} disabled={isActionLoading} className="modal-btn">
-              {isActionLoading ? 'Sending...' : 'Send PDF'}
+            <Button 
+              variant="success" 
+              onClick={() => sendEmail(privacyModal.selectedRequest)} 
+              disabled={isPlaneFlying} 
+              className="modal-btn"
+            >
+              Send PDF
             </Button>
-            <Button variant="danger" onClick={() => rejectRequest(privacyModal.selectedRequest)} disabled={isActionLoading} className="modal-btn">
-              {isActionLoading ? 'Rejecting...' : 'Reject'}
-            </Button>
-            <Button variant="secondary" onClick={closeModal} className="modal-btn">
-              Close
+            <Button 
+              variant="danger" 
+              onClick={() => rejectRequest(privacyModal.selectedRequest)} 
+              disabled={isPlaneFlying} 
+              className="modal-btn"
+            >
+              Reject
             </Button>
           </Modal.Footer>
         </Modal>
 
-        {/* Plane animation */}
         {isPlaneFlying && (
           <div className="plane-animation">
             <div className="plane"></div>

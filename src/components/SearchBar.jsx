@@ -58,9 +58,9 @@ function SearchBar({ suggestions = [], small = false }) {
   const handleInputChange = (value) => {
     setInput(value);
     if (debounceTimer) clearTimeout(debounceTimer);
-
+  
     debounceTimer = setTimeout(() => {
-      if (value.length > 0) {
+      if (value.trim().length > 0) {
         const filtered = suggestions.filter((s) =>
           s.toLowerCase().includes(value.toLowerCase())
         );
@@ -104,9 +104,11 @@ function SearchBar({ suggestions = [], small = false }) {
   };
 
   const handleSearchSubmit = () => {
-    performSearch(input);
+    if (input.trim()) {
+      performSearch(input);
+    }
   };
-
+  
   const handleSuggestionClick = (suggestion) => {
     setInput(suggestion);
     setFilteredSuggestions([]);
@@ -156,7 +158,7 @@ function SearchBar({ suggestions = [], small = false }) {
           </button>
         )}
         <button onClick={handleSearchSubmit} disabled={loading}>
-          {loading ? "Loading..." : "Search"}
+          {loading ? "Searching..." : "Search"}
         </button>
         <button onClick={handleVoiceSearch} disabled={loading}>
           <FaMicrophone />
