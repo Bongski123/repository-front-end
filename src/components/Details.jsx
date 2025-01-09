@@ -208,7 +208,14 @@ function Details() {
                         
                             <div className="button-group">
                                 <Button variant="info" onClick={handleCite} className="cite-button">Cite</Button>
-                                <Button variant="success" onClick={handleAddToCollection} className="add-to-collection-button">Add to Collection</Button>
+                                <Button
+    onClick={handleAddToCollection}
+    className="add-to-collection-button"
+    style={{ backgroundColor: "#044413", borderColor: "#044413", color: "white" }}
+>
+    Add to Collection
+</Button>
+
                             </div>
                      
                     </div>
@@ -241,15 +248,20 @@ function Details() {
                             )
                         ) : (
                             <div className="private-file-section">
-                                <img src={pdficon} alt="PDF icon" style={{ width: "100px" }} />
-                                <p>To read the full-text of this research, you can request a copy directly from the authors.</p>
-                                <Button variant="primary" onClick={handleRequestPDF}>Request full-text PDF</Button>
-                            </div>
+    <img src={pdficon} alt="PDF icon" style={{ width: "100px" }} />
+    <p>To read the full-text of this research, you can request a copy directly from the authors.</p>
+    <Button
+        style={{ backgroundColor: "#044413", borderColor: "#044413" }}
+        onClick={handleRequestPDF}
+    >
+        Request full-text PDF
+    </Button>
+</div>
+
                         )}
                     </div>
                 </Col>
             </Row>
-
             {/* Modal for citation */}
             <Modal show={showCitationModal} onHide={handleCloseCitationModal}>
                 <Modal.Header closeButton>
