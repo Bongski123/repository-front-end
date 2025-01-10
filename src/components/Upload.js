@@ -166,7 +166,7 @@ const Upload = () => {
 
     return (
         <Container className="up-container">
-            <Form onSubmit={handleSubmit} className="p-3 shadow-sm bg-light rounded">
+            <Form onSubmit={handleSubmit} className="p-3 shadow-sm bg-white rounded">
                 <FloatingLabel controlId="researchTitle" label="Research Title" className="mb-3">
                     <Form.Control
                         type="text"
