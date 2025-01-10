@@ -137,3 +137,30 @@
 .research-table td:hover {
   background-color: #f9f9f9;
 }
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  padding: 5px;
+}
+
+.icon-button:hover {
+  color: #007bff; /* Highlight on hover */
+}
+
+.delete-btn {
+  color: red; /* Red color for delete button */
+}
+
+.delete-btn:hover {
+  color: darkred; /* Dark red on hover */
+}
+
+.privacy-btn {
+  color: green; /* Set default color to green */
+}
+
+.privacy-btn:hover {
+  color: darkgreen; /* Dark green on hover */
+}

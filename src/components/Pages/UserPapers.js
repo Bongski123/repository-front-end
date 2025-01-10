@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
-import { Modal, Button } from 'react-bootstrap';
+import { Modal } from 'react-bootstrap';
 import Swal from 'sweetalert2';
 import UserSidebar from '../UserSidebar';
 import { jwtDecode } from 'jwt-decode';
+import { FaTrash, FaLock, FaUnlock } from 'react-icons/fa'; // Importing icons
 import '../CSS/UserPaper.css';
 
 const getCurrentUserId = () => localStorage.getItem('userId');
@@ -93,7 +94,7 @@ const UserPaper = () => {
 
   const updatePrivacy = async (privacy) => {
     const { selectedResearch } = privacyModal;
-  
+
     const result = await Swal.fire({
       title: 'Are you sure?',
       text: `Do you want to set this research to ${privacy} privacy?`,
@@ -103,17 +104,17 @@ const UserPaper = () => {
       cancelButtonColor: '#d33',
       confirmButtonText: 'Yes, update it!',
     });
-  
+
     if (!result.isConfirmed) {
       return; // Exit if the user cancels the action
     }
-  
+
     try {
       const response = await axios.put(
         `https://ccsrepo.onrender.com/research/${selectedResearch.research_id}/privacy`,
         { privacy }
       );
-  
+
       if (response.status === 202) {
         Swal.fire({
           icon: 'success',
@@ -134,7 +135,44 @@ const UserPaper = () => {
       closePrivacyModal();
     }
   };
-  
+
+  const deleteResearch = async (researchId) => {
+    const result = await Swal.fire({
+      title: 'Are you sure?',
+      text: 'This will permanently delete this research and all associated records.',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!',
+    });
+
+    if (!result.isConfirmed) {
+      return; // Exit if the user cancels the action
+    }
+
+    try {
+      const response = await axios.delete(`https://ccsrepo.onrender.com/delete-research/${researchId}`);
+
+      if (response.status === 200) {
+        Swal.fire({
+          icon: 'success',
+          title: 'Deleted!',
+          text: 'Research has been deleted successfully.',
+          confirmButtonText: 'OK',
+        });
+        fetchResearches(); // Reload the list after deletion
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: 'error',
+        title: 'Error',
+        text: `Failed to delete research: ${err.response?.data?.message || err.message}`,
+        confirmButtonText: 'OK',
+      });
+    }
+  };
+
   // Ensure roleId is valid before rendering content
   if (roleId === null) {
     return <div>Loading...</div>; // Show loading while roleId is decoding
@@ -171,7 +209,11 @@ const UserPaper = () => {
                 <tbody>
                   {researches.map((research) => (
                     <tr key={research.research_id}>
-                      <td>{research.title}</td>
+                      <td>
+                        {research.title.length > 30
+                          ? `${research.title.substring(0, 60)}...`
+                          : research.title}
+                      </td>
                       <td
                         style={{
                           color:
@@ -187,9 +229,20 @@ const UserPaper = () => {
                       <td>{research.file_privacy || 'Not Set'}</td>
                       <td>{new Date(research.publish_date).toLocaleDateString()}</td>
                       <td>
-                        <Button variant="success" onClick={() => openPrivacyModal(research)}>
-                          Set Privacy
-                        </Button>
+                        <button
+                          className="icon-button privacy-btn"
+                          onClick={() => openPrivacyModal(research)}
+                          title="Set Privacy"
+                        >
+                          {research.file_privacy === PRIVACY_VALUES.PUBLIC ? <FaUnlock /> : <FaLock />}
+                        </button>
+                        <button
+                          className="icon-button delete-btn"
+                          onClick={() => deleteResearch(research.research_id)}
+                          title="Delete"
+                        >
+                          <FaTrash />
+                        </button>
                       </td>
                     </tr>
                   ))}
@@ -209,18 +262,20 @@ const UserPaper = () => {
         <Modal.Body>
           <p>Choose a privacy setting for this research:</p>
           <div className="d-flex justify-content-around">
-            <Button
-              variant="success"
-              onClick={() => updatePrivacy(PRIVACY_VALUES.PUBLIC)}
-            >
-              Public
-            </Button>
-            <Button
-              variant="secondary"
-              onClick={() => updatePrivacy(PRIVACY_VALUES.PRIVATE)}
-            >
-              Private
-            </Button>
+          <button
+  className="icon-button privacy-btn"
+  onClick={() => updatePrivacy(PRIVACY_VALUES.PUBLIC)}
+  title="Set to Public"
+>
+  <FaUnlock />
+</button>
+<button
+  className="icon-button privacy-btn"
+  onClick={() => updatePrivacy(PRIVACY_VALUES.PRIVATE)}
+  title="Set to Private"
+>
+  <FaLock />
+</button>
           </div>
         </Modal.Body>
       </Modal>
