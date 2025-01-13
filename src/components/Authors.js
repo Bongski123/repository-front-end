@@ -57,7 +57,7 @@ export default function Authors() {
 
             <Container>
             <h2 className="category-card-title">Browse by Author</h2>
-                <div className="search-bar" style={{ marginBottom: '20px' }}>
+               
   <Form.Control
     type="text"
     placeholder="Search authors..."
@@ -65,7 +65,7 @@ export default function Authors() {
     onChange={(e) => setSearchQuery(e.target.value)}
     className="search-input"
   />
-</div>
+
 
                 <div className="alphabet-bar" style={{ marginBottom: '20px', textAlign: 'center' }}>
                     {'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('').map(letter => (

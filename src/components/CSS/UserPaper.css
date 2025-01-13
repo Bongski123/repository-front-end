@@ -150,17 +150,17 @@
 }
 
 .delete-btn {
-  color: red; /* Red color for delete button */
+  color: rgb(0, 90, 31); /* Red color for delete button */
 }
 
 .delete-btn:hover {
-  color: darkred; /* Dark red on hover */
+  color: rgb(255, 7, 7); /* Dark red on hover */
 }
 
 .privacy-btn {
-  color: green; /* Set default color to green */
+  color: rgb(1, 95, 1); /* Set default color to green */
 }
 
 .privacy-btn:hover {
-  color: darkgreen; /* Dark green on hover */
+  color: rgb(255, 222, 7); /* Dark green on hover */
 }

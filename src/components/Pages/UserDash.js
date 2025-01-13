@@ -43,11 +43,11 @@ const TopContent = ({ roleId }) => {
       <div className="top-content">
         {/* Top Downloads Section */}
         <section className="top-downloads">
-          <h2>Top 10 Most Downloaded Papers</h2>
+          <h2>Top 3 Most Downloaded Papers</h2>
           <ul>
             {topDownloads.map((item, index) => (
               <li key={item.research_id}>
-                {index + 1}.{' '}
+                {index + 1}.{''}
                 <Link
                   to={`/details`}
                   state={{ result: item }}
@@ -65,7 +65,7 @@ const TopContent = ({ roleId }) => {
 
         {/* Trending Searches Section */}
         <section className="trending-searches">
-          <h2>Top 10 Most Popular Searches</h2>
+          <h2>Top 3 Most Popular Searches</h2>
           <ul>
             {trendingSearches.map((item, index) => (
               <li key={index}>

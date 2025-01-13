@@ -222,7 +222,7 @@ const Login = () => {
       </div>
 
       <div className="login-container">
-        <h2>Login</h2>
+        <h2>Sign In</h2>
         <Form onSubmit={handleSubmit}>
           <Form.Group controlId="email">
             <Form.Control
@@ -249,6 +249,8 @@ const Login = () => {
           </Button>
         </Form>
 
+        OR 
+
         <div className="google-login">
           <GoogleOAuthProvider clientId={GOOGLE_CLIENT_ID}>
             <GoogleLogin
@@ -261,6 +263,7 @@ const Login = () => {
         <p>Don't have an account? <Link to="/signup" className="no-underline">Register</Link></p>
         <p><Link to="/forgot-password" className="no-underline">Forgot Password?</Link></p>
       </div>
+     
     </div>
   );
 };

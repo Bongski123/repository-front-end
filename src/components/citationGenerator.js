@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import Swal from "sweetalert2"; // Import SweetAlert
+import Swal from "sweetalert2";
 
 function CitationGeneratorDropdown({ result }) {
   const [selectedFormat, setSelectedFormat] = useState("APA");
@@ -7,11 +7,10 @@ function CitationGeneratorDropdown({ result }) {
 
   // Memoized function to generate citation based on selected format
   const generateCitation = useCallback(() => {
-    // Safely handle missing data in 'result'
     const authors = Array.isArray(result?.authors) ? result.authors.join(", ") : result?.authors || "Unknown author";
     const title = result?.title || "Untitled";
     const categoryName = result?.category_name || "Unknown category";
-    const url = result?.url || "#"; // Fallback URL if missing
+    const url = result?.url || "#";
 
     let citation;
     switch (selectedFormat) {
@@ -30,12 +29,12 @@ function CitationGeneratorDropdown({ result }) {
     return citation;
   }, [result, selectedFormat]);
 
-  // Function to handle citation format change
+  // Handle citation format change
   const handleFormatChange = (e) => {
     setSelectedFormat(e.target.value);
   };
 
-  // Function to handle citation generation and copy to clipboard
+  // Handle citation copy
   const handleCopyCitation = () => {
     const citation = generateCitation();
     setGeneratedCitation(citation);
@@ -52,7 +51,7 @@ function CitationGeneratorDropdown({ result }) {
           timerProgressBar: true,
         });
       })
-      .catch(err => {
+      .catch((err) => {
         Swal.fire({
           title: 'Error',
           text: 'Failed to copy citation',
@@ -67,7 +66,6 @@ function CitationGeneratorDropdown({ result }) {
       });
   };
 
-  // Generate initial citation when the component mounts or when `result` changes
   useEffect(() => {
     if (result) {
       setGeneratedCitation(generateCitation());
@@ -75,22 +73,18 @@ function CitationGeneratorDropdown({ result }) {
   }, [generateCitation, result]);
 
   return (
-    <div className="citation-modal" role="dialog" aria-modal="true" aria-labelledby="citation-modal-title" aria-describedby="citation-modal-description">
-      <div className="citation-modal-content">
-        <h2 id="citation-modal-title">Citation</h2>
-        <p id="citation-modal-description">Select a citation format and copy the generated citation.</p>
-        <select 
-          value={selectedFormat} 
-          onChange={handleFormatChange} 
-          aria-label="Select citation format"
-        >
-          <option value="APA">APA</option>
-          <option value="MLA">MLA</option>
-          <option value="Harvard">Harvard</option>
-        </select>
-        <button onClick={handleCopyCitation} aria-label="Copy citation">Copy Citation</button>
-        {generatedCitation && <p className="generated-citation">{generatedCitation}</p>}
-      </div>
+    <div className="custom-citation-dropdown">
+      <h2 className="dropdown-title">Citation</h2>
+      <p className="dropdown-description">Select a citation format and copy the generated citation.</p>
+      <select value={selectedFormat} onChange={handleFormatChange} className="dropdown-select">
+        <option value="APA">APA</option>
+        <option value="MLA">MLA</option>
+        <option value="Harvard">Harvard</option>
+      </select>
+      <button onClick={handleCopyCitation} className="dropdown-copy-btn">
+        Copy Citation
+      </button>
+      {generatedCitation && <p className="dropdown-citation">{generatedCitation}</p>}
     </div>
   );
 }

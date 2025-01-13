@@ -187,7 +187,7 @@ function NavigationBar({ activeTab }) {
     return (
         <Navbar expand="lg" className="bg-body-tertiary">
             <Container>
-                <Navbar.Brand href="#home">
+                <Navbar.Brand href="/">
                     <Image
                         src={require('../assets/ncf-logo-green.png')}
                         alt="NCF Logo"

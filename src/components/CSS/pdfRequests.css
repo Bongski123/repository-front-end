@@ -1,16 +1,13 @@
 /* Scoped styles for PdfRequests component */
-
-
 .pdf-requests-title {
-
   font-size: 3rem;
   font-weight: 400;
   color: #000000;
   margin-bottom: 20px;
   text-align: center;
-   padding-left: 50px;
+  padding-left: 50px;
+  text-transform: capitalize; /* Added for styling consistency */
 }
-
 
 /* Containers - Main wrapper */
 .pdf-requests-container {
@@ -24,6 +21,7 @@
   padding: 20px;
   background-color: #fff;
   transition: margin-left 0.3s ease;
+  overflow-y: auto; /* Ensures content is scrollable when needed */
 }
 
 .pdf-requests-with-sidebar {
@@ -34,7 +32,6 @@
   margin-left: 0;
 }
 
-
 .pdf-requests-spinner-container {
   display: flex;
   justify-content: center;
@@ -43,8 +40,8 @@
 }
 
 .pdf-requests-spinner {
-  border: 4px solid #f3f3f3; /* Light gray */
-  border-top: 4px solid #3498db; /* Blue */
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #3498db;
   border-radius: 50%;
   width: 40px;
   height: 40px;
@@ -66,12 +63,12 @@
   width: 100%;
   border-collapse: collapse;
   margin-top: 20px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Added a subtle shadow for better contrast */
 }
 
 .pdf-requests-table th,
 .pdf-requests-table td {
-  padding: 10px 5px;
- 
+  padding: 12px 10px;
   text-align: left;
   border-bottom: 1px solid #ddd;
 }
@@ -119,6 +116,7 @@
   border-radius: 8px;
   padding: 20px;
   border: 1px solid #ddd;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Add shadow for modal */
 }
 
 .pdf-requests-modal-header {
@@ -127,9 +125,9 @@
 }
 
 .pdf-requests-modal-title {
-  font-size: 1.5rem;
+  font-size: 1.6rem;
   color: #333;
-  font-family:'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif; /* Custom font */
+  font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
 }
 
 .pdf-requests-modal-body {
@@ -140,6 +138,20 @@
 .pdf-requests-modal-footer {
   border-top: 1px solid #ddd;
   padding-top: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.modal-btn:hover {
+  background-color: #07491d;
+  color: white;
 }
 
 /* Sidebar Styles */
@@ -153,7 +165,6 @@
   top: 0;
   left: 0;
   transition: transform 0.3s ease;
-  
 }
 
 .pdf-requests-sidebar.hide {
@@ -202,37 +213,38 @@
 
   .pdf-requests-table th,
   .pdf-requests-table td {
-    padding: 10px;
+    padding: 8px 6px;
   }
 }
+
 .plane-animation {
   position: fixed;
-  top: 50%; /* Center vertically */
-  left: 50%; /* Center horizontally */
-  transform: translate(-50%, -50%); /* Adjust to the exact center */
-  z-index: 9999; /* Ensure it's above other content */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 9999;
 }
 
 .plane {
   width: 100px;
   height: 100px;
-  background-image: url('/src/assets/paper-plane.png'); /* Replace with your uploaded image */
+  background-image: url('/src/assets/paper-plane.png');
   background-size: cover;
   position: absolute;
-  animation: move-plane 3s ease-out infinite; /* Animate smoothly */
+  animation: move-plane 3s ease-out infinite;
 }
 
 @keyframes move-plane {
   0% {
-    transform: translate(0, 0); /* Start at the center */
-    opacity: 1; /* Fully visible */
+    transform: translate(0, 0);
+    opacity: 1;
   }
   50% {
-    transform: translate(50px, -30px); /* Move slightly right and up */
-    opacity: 0.8; /* Slight fade */
+    transform: translate(50px, -30px);
+    opacity: 0.8;
   }
   100% {
-    transform: translate(100px, -60px); /* Move further right and up */
-    opacity: 0.6; /* Fade out more */
+    transform: translate(100px, -60px);
+    opacity: 0.6;
   }
 }

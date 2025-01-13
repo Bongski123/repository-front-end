@@ -216,11 +216,11 @@ const PdfRequests = () => {
           </>
         )}
 
-        <Modal show={privacyModal.show} onHide={closeModal} centered>
-          <Modal.Header closeButton>
+        <Modal show={privacyModal.show} onHide={closeModal} centered className="custom-modal">
+          <Modal.Header closeButton className="modal-header">
             <Modal.Title className="modal-title">Request Details</Modal.Title>
           </Modal.Header>
-          <Modal.Body style={{ maxHeight: '400px', overflowY: 'auto' }} className="modal-body">
+          <Modal.Body className="modal-body">
             {privacyModal.selectedRequest && (
               <div>
                 <p><strong>Name:</strong> {privacyModal.selectedRequest.requester_name}</p>
@@ -230,7 +230,7 @@ const PdfRequests = () => {
               </div>
             )}
           </Modal.Body>
-          <Modal.Footer>
+          <Modal.Footer className="modal-footer">
             <Button 
               variant="success" 
               onClick={() => sendEmail(privacyModal.selectedRequest)} 

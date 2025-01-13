@@ -46,20 +46,7 @@ function SearchResult({ result }) {
     }
   };
 
-  // Handle citation generation based on the selected format
-  const generateCitation = () => {
-    const currentYear = new Date().getFullYear();
-    switch (selectedFormat) {
-      case "APA":
-        return `${result.authors}. (${currentYear}). "${result.title}".`;
-      case "MLA":
-        return `${result.authors}. "${result.title}." ${currentYear}.`;
-      case "Chicago":
-        return `${result.authors}. "${result.title}." ${currentYear}.`;
-      default:
-        return "Unknown citation format";
-    }
-  };
+ 
 
   // Handle navigation to the details page
   const handleNavigate = () => {
