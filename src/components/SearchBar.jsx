@@ -6,19 +6,56 @@ import { Modal, Button } from "react-bootstrap";
 import "./CSS/Searchbar.css";
 import Footer from "./Footer";
 
-function SearchBar({ suggestions = [], small = false }) {
+// Manual fuzzy search function
+// Manual fuzzy search function with support for long words
+const fuzzySearch = (query, target) => {
+  if (!query || !target) return 0; // Return 0 if no query or target
+  let i = 0;
+  let j = 0;
+  let score = 0;
+
+  while (i < query.length && j < target.length) {
+    if (query[i].toLowerCase() === target[j].toLowerCase()) {
+      score++; // Increment score for each match
+      i++;
+    }
+    j++;
+  }
+  return score; // Return the score based on character matches
+};
+
+// Function to highlight matching text, including in long abstracts
+const highlightText = (text, query) => {
+  if (!text || !query) return text; // Return original text if no query or text
+  const regex = new RegExp(`(${query})`, "gi"); // Match query as substring (case-insensitive)
+  return text.replace(regex, "<strong>$1</strong>"); // Wrap matched text in <strong> tags
+};
+
+
+function SearchBar({ small = false }) {
   const [input, setInput] = useState("");
-  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
+  const [filteredResearches, setFilteredResearches] = useState([]);
   const [recentSearches, setRecentSearches] = useState([]);
   const [showRecentSearches, setShowRecentSearches] = useState(false);
   const [loading, setLoading] = useState(false);
   const [modalShow, setModalShow] = useState(false);
   const [modalText, setModalText] = useState("Listening...");
+  const [researchData, setResearchData] = useState([]);
   const navigate = useNavigate();
   let debounceTimer;
   let recognition;
 
   useEffect(() => {
+    // Fetch research data
+    fetch("https://ccsrepo.onrender.com/researches")
+      .then((response) => response.json())
+      .then((data) => {
+        setResearchData(data);
+      })
+      .catch((error) => {
+        console.error("Error fetching research data:", error);
+      });
+
     recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.continuous = false;
     recognition.interimResults = false;
@@ -58,15 +95,42 @@ function SearchBar({ suggestions = [], small = false }) {
   const handleInputChange = (value) => {
     setInput(value);
     if (debounceTimer) clearTimeout(debounceTimer);
-  
+
     debounceTimer = setTimeout(() => {
       if (value.trim().length > 0) {
-        const filtered = suggestions.filter((s) =>
-          s.toLowerCase().includes(value.toLowerCase())
-        );
-        setFilteredSuggestions(filtered);
+        const startTime = performance.now();
+
+        const filtered = researchData.map((research) => {
+          const titleScore = fuzzySearch(value, research.title ?? "") * 2; // Double weight for title
+          const authorsScore = fuzzySearch(value, research.authors ?? "");
+          const keywordsScore = fuzzySearch(value, research.keywords ?? "");
+          const abstractScore = fuzzySearch(value, research.abstract ?? "") * 0.6; // 1.5x weight for abstract
+          const categoryScore = fuzzySearch(value, research.category ?? "");
+
+          const totalScore = titleScore + authorsScore + keywordsScore + abstractScore + categoryScore;
+
+          const matchIndex = (research.abstract ?? "").toLowerCase().indexOf(value.toLowerCase());
+          const snippet = matchIndex >= 0
+            ? research.abstract.substring(Math.max(matchIndex - 30, 0), Math.min(matchIndex + 30, research.abstract.length))
+            : "";
+
+          return {
+            ...research,
+            score: totalScore,
+            snippet,
+          };
+        });
+
+        const sortedFiltered = filtered
+          .filter((research) => research.score > 0)
+          .sort((a, b) => b.score - a.score);
+
+        const endTime = performance.now();
+        console.log(`Search time: ${endTime - startTime} ms`);
+
+        setFilteredResearches(sortedFiltered);
       } else {
-        setFilteredSuggestions([]);
+        setFilteredResearches([]);
       }
     }, 300);
   };
@@ -80,44 +144,67 @@ function SearchBar({ suggestions = [], small = false }) {
     if (value && !recentSearches.includes(value)) {
       setRecentSearches((prevSearches) => [value, ...prevSearches].slice(0, 5));
     }
-
-    fetch(`https://ccsrepo.onrender.com/search/fuse`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ query: value }),
-    })
-      .then((response) => response.json())
-      .then((json) => {
-        setLoading(false);
-        if (Array.isArray(json.results)) {
-          navigate(`/results?query=${encodeURIComponent(value)}`, {
-            state: { results: json.results },
-          });
-        } else {
-          console.error("Invalid results format");
-        }
-      })
-      .catch((error) => {
-        setLoading(false);
-        console.error("Error fetching data:", error);
+  
+    const startTime = performance.now();
+  
+    const filteredResults = researchData.map((research) => {
+      const titleScore = fuzzySearch(value, research.title ?? "") * 2;
+      const authorsScore = fuzzySearch(value, research.authors ?? "");
+      const keywordsScore = fuzzySearch(value, research.keywords ?? "");
+      const abstractScore = fuzzySearch(value, research.abstract ?? "") * 1.5; // Enhance the weight for abstract
+      const categoryScore = fuzzySearch(value, research.category ?? "");
+  
+      const totalScore = titleScore + authorsScore + keywordsScore + abstractScore + categoryScore;
+  
+      // Update snippet generation to handle long abstracts better
+      const matchIndex = (research.abstract ?? "").toLowerCase().indexOf(value.toLowerCase());
+      let snippet = "";
+      if (matchIndex >= 0) {
+        const snippetStart = Math.max(matchIndex - 30, 0); // 30 characters before the match
+        const snippetEnd = Math.min(matchIndex + 30 + value.length, research.abstract.length); // 30 characters after the match
+        snippet = research.abstract.substring(snippetStart, snippetEnd);
+      }
+  
+      return {
+        ...research,
+        score: totalScore,
+        snippet,
+      };
+    });
+  
+    const sortedFilteredResults = filteredResults
+      .filter((research) => research.score > 0)
+      .sort((a, b) => b.score - a.score);
+  
+    const endTime = performance.now();
+    console.log(`Search time: ${endTime - startTime} ms`);
+  
+    setLoading(false);
+    if (sortedFilteredResults.length > 0) {
+      navigate(`/results?query=${encodeURIComponent(value)}`, {
+        state: { results: sortedFilteredResults },
       });
+    } else {
+      console.error("No results found");
+    }
   };
+  
 
   const handleSearchSubmit = () => {
     if (input.trim()) {
       performSearch(input);
     }
   };
-  
-  const handleSuggestionClick = (suggestion) => {
-    setInput(suggestion);
-    setFilteredSuggestions([]);
-    performSearch(suggestion);
+
+  const handleSuggestionClick = (research) => {
+    setInput(research.title);
+    setFilteredResearches([]);
+    performSearch(research.title);
   };
 
   const handleRecentSearchClick = (search) => {
     setInput(search);
-    setFilteredSuggestions([]);
+    setFilteredResearches([]);
     performSearch(search);
     setShowRecentSearches(false);
   };
@@ -129,7 +216,7 @@ function SearchBar({ suggestions = [], small = false }) {
 
   const handleClearInput = () => {
     setInput("");
-    setFilteredSuggestions([]);
+    setFilteredResearches([]);
     setShowRecentSearches(false);
   };
 
@@ -165,12 +252,17 @@ function SearchBar({ suggestions = [], small = false }) {
         </button>
       </div>
 
-      {/* Suggestions List */}
-      {filteredSuggestions.length > 0 && (
+      {/* Autocomplete Suggestions List */}
+      {filteredResearches.length > 0 && (
         <ul className="suggestions-list">
-          {filteredSuggestions.map((suggestion, index) => (
-            <li key={index} onClick={() => handleSuggestionClick(suggestion)}>
-              {suggestion}
+          {filteredResearches.slice(0, 5).map((research, index) => (
+            <li key={index} onClick={() => handleSuggestionClick(research)}>
+              <div
+                className="highlighted-text"
+                dangerouslySetInnerHTML={{
+                  __html: `${highlightText(research.title, input)} by ${highlightText(research.authors, input)}`,
+                }}
+              />
             </li>
           ))}
         </ul>

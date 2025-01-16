@@ -73,6 +73,11 @@
     margin-bottom: 1.5rem;
 }
 
+
+.ql-editor {
+    font-family: 'Arial', 'Georgia', 'Courier New', 'Tahoma', 'Verdana', 'Times New Roman', 'Comic Sans MS', 'Trebuchet MS', 'Lucida Console', sans-serif;
+  }
+
 .select__control {
     border: 1px solid #cccccc;
     border-radius: 6px;

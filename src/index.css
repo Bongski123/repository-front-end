@@ -13,3 +13,8 @@ body {
     font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
       monospace;
   }
+
+  .ql-editor {
+    font-family: 'Arial', 'Georgia', 'Courier New', 'Tahoma', 'Verdana', 'Times New Roman', 'Comic Sans MS', 'Trebuchet MS', 'Lucida Console', sans-serif;
+  }
+  

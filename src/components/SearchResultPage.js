@@ -1,3 +1,4 @@
+// SearchResultsPage.js
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import { SearchResultList } from "./SearchResultList"; // Ensure this path is correct
@@ -16,10 +17,8 @@ function SearchResultsPage() {
 
   useEffect(() => {
     const fetchResults = async () => {
-      const searchAlgorithm = "fuse";
-
       try {
-        const response = await fetch(`https://ccsrepo.onrender.com/search/${searchAlgorithm}`, {
+        const response = await fetch(`https://ccsrepo.onrender.com/search/fuse`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ query }),
@@ -30,14 +29,7 @@ function SearchResultsPage() {
         }
 
         const json = await response.json();
-        if (Array.isArray(json.results)) {
-          const sortedResults = json.results.sort((a, b) => {
-            return b.relevance - a.relevance; // Sort in descending order of relevance
-          });
-          setResults(sortedResults);
-        } else {
-          console.error("JSON data is not an array");
-        }
+        setResults(json.results || []);
       } catch (error) {
         console.error("Error fetching data:", error);
       } finally {
@@ -55,15 +47,15 @@ function SearchResultsPage() {
       <Container className="loading-container">
         <div className="spinner"></div>
       </Container>
-    ); // Loading state with spinner
+    );
   }
 
   return (
     <Container fluid className="search-results-page">
       <h2>Search Results for "{query}"</h2>
       <div className="search-results-layout">
-        <SearchBar suggestions={results.map(result => `${result.title} by ${result.authors}`)} small />
-        <SearchResultList results={results} />
+        <SearchBar suggestions={results.map((result) => result.title)} small />
+        <SearchResultList results={results} query={query} />
       </div>
     </Container>
   );

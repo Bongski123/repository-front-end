@@ -9,6 +9,7 @@
 .results-list {
   display: flex;
   flex-direction: column;
+  cursor: pointer; /* Set pointer cursor on hover */
 }
 
 .search-result {
