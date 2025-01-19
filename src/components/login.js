@@ -32,6 +32,26 @@ const Login = () => {
     return () => clearInterval(interval);
   }, []);
 
+
+  useEffect(() => {
+    // Check if user is already logged in
+    const token = localStorage.getItem('token');
+    if (token) {
+      try {
+        const decodedToken = jwtDecode(token);
+        const { roleId } = decodedToken;
+
+        // Redirect based on roleId
+        if (roleId === 1) {
+          navigate('/admin/dashboard');
+        } else {
+          navigate('/user/dashboard');
+        }
+      } catch (error) {
+        console.error('Error decoding token:', error);
+      }
+    }
+  }, [navigate]);
   // Function to send heartbeat data
   const sendHeartbeat = (userId, token) => {
     fetch(`https://ccsrepo.onrender.com/heartbeat/${userId}`, {
