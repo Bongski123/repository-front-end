@@ -12,7 +12,7 @@ import 'katex/dist/katex.min.css';
 import './CSS/Upload.css';
 import { Quill } from 'react-quill';
 import GoogleFontsLoader from './Pages/GoogleFontsLoader';
-
+import { useNavigate } from 'react-router-dom'; // Add this to your imports
 const BlockMath = Quill.import('formats/blockquote');
 Quill.register('formats/math', BlockMath);
 
@@ -27,7 +27,7 @@ const Upload = () => {
     const [categories, setCategories] = useState([]);
     const [keywordOptions, setKeywordOptions] = useState([]);
     const [isAuthorFieldEditable, setIsAuthorFieldEditable] = useState(false);
-
+    const navigate = useNavigate(); // Initialize navigate
     const badWords = [
         // Profanity list remains the same...
     ];
@@ -139,6 +139,7 @@ const Upload = () => {
 
             if (response.status === 201) {
                 Swal.fire('Success', 'Upload successful!', 'success').then(() => window.location.reload());
+                navigate(-1); // Go back to the previous page
             } else {
                 Swal.fire('Error', response.data.error || 'Upload failed', 'error');
             }
@@ -210,26 +211,15 @@ const Upload = () => {
     placeholder="Enter the abstract"
     modules={{
         toolbar: [
-            [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
-            [{ 'font': []}], // Add more fonts here
-            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-            [{ 'align': [] }],
+            [{ header: [1, 2, 3, false] }],
             ['bold', 'italic', 'underline'],
-            ['link'],
-            [{ 'script': 'sub'}, { 'script': 'super' }],
-            [{ 'color': [] }, { 'background': [] }],
-            [{ 'size': ['small', 'medium', 'large', 'huge'] }],
-            ['blockquote', 'code-block'],
-            ['clean'],
-            [{ 'math': 'inline' }, { 'math': 'block' }] // Adds support for KaTeX
-        ],
-          theme: 'snow'
+            [{ list: 'ordered' }, { list: 'bullet' }],
+            ['link', 'blockquote', 'code-block']
+        ]
     }}
-    style={{
-        height: '500px',
-        marginBottom: '70px',
-    }}
+    style={{ height: '500px', marginBottom: '70px' }}
 />
+
 
                 </div>
 
