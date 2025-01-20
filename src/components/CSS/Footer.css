@@ -2,10 +2,11 @@
   position: fixed;
   right: 2%; /* Keeps the footer on the right side */
   bottom: 2%; /* Keeps the footer at the bottom */
-  z-index: -9999;
+  z-index: 9999;
   padding: 0; /* Remove padding for consistency */
+  height: 50px;
   margin: 0; /* Remove margin to avoid unnecessary space */
-  padding-left: 2500px;
+  padding-left: 1400px;
 }
 
 #footer-icons {
@@ -29,25 +30,29 @@
 }
 
 /* Media query for smaller screens */
-@media (max-width: 1920px) {
+@media (max-width: 768px) {
   .footer-fixed-right {
     right: 5%; /* Adjust right spacing for smaller screens */
     bottom: 5%; /* Adjust bottom spacing for smaller screens */
-    padding-left: 1490px;
+    padding-left: 1200px;
   }
 
-    
   #footer-icons {
     width: 15vw; /* Adjust circle size for smaller screens */
     height: 15vw; /* Adjust circle size for smaller screens */
     font-size: 6vw; /* Adjust icon size for smaller screens */
   }
 }
-
-
-@media (max-width: 800px) {
+@media (max-width: 1920px) {
   .footer-fixed-right {
     right: 5%; /* Adjust right spacing for smaller screens */
     bottom: 5%; /* Adjust bottom spacing for smaller screens */
-    padding-left: 2000px;
-  }}
+    padding-left: 2500px;
+  }
+
+  #footer-icons {
+    width: 15vw; /* Adjust circle size for smaller screens */
+    height: 15vw; /* Adjust circle size for smaller screens */
+    font-size: 6vw; /* Adjust icon size for smaller screens */
+  }
+}
