@@ -186,7 +186,7 @@ function Details() {
                         )}
                         <div className="research-info">
                             <p><strong>Authors:</strong> {result.authors}</p>
-                            <div
+                             <div
         dangerouslySetInnerHTML={{
             __html: result.abstract,
         }}
@@ -222,7 +222,7 @@ function Details() {
                                 <div className="pdf-container" style={{ height: "600px", overflowY: "auto" }}>
                                     <Document file={pdfBlobUrl} onLoadSuccess={onDocumentLoadSuccess}>
                                         {Array.from(new Array(numPages), (el, index) => (
-                                            <Page key={index} pageNumber={index + 1} width={500} />
+                                            <Page key={index} pageNumber={index + 1} width={500} renderTextLayer={false} />
                                         ))}
                                     </Document>
                                     <Button variant="contained" onClick={handleDownload}>
