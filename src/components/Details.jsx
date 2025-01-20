@@ -186,7 +186,11 @@ function Details() {
                         )}
                         <div className="research-info">
                             <p><strong>Authors:</strong> {result.authors}</p>
-                            <p><strong>Abstract:</strong> {result.abstract}</p>
+                            <div
+        dangerouslySetInnerHTML={{
+            __html: result.abstract,
+        }}
+    />
                             <p><strong>Category:</strong> {result.category}</p>
                             <p><strong>Keywords:</strong> {result.keywords}</p>
                         </div>
