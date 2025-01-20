@@ -318,10 +318,15 @@ function ResearchDetail() {
           <h3>Authors:</h3>
           <p>{research.authors}</p>
         </div>
-        <div style={styles.section}>
-          <h3>Abstract:</h3>
-          <p>{research.abstract}</p>
-        </div>
+       <div style={styles.section}>
+    <h3>Abstract:</h3>
+    <div
+        dangerouslySetInnerHTML={{
+            __html: research.abstract,
+        }}
+    />
+</div>
+
 
         <div style={styles.section}>
           <h3>Published Date</h3>
