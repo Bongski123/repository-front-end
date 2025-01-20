@@ -51,6 +51,8 @@ function App() {
   const LocationAwareFooter = () => {
     const location = useLocation();
     return location.pathname === "/" ? <Footer /> : null;
+
+    
   };
 
   return (

@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Accordion from "react-bootstrap/Accordion";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import './CSS/Footer.css';
 
 import { BiChat } from "react-icons/bi";
@@ -150,7 +150,7 @@ function MyVerticallyCenteredModal(props) {
 
                1.Click on the “Help” or “Support” tab in the system menu.<br></br>
                2.Fill out the contact form with your issue and details.<br></br>
-               3.Submit the form or email the support team at ncfresearchnexus@gmail.com or chat our 24/7 chat support.<br></br>
+               3.Submit the form or email the support team at ncfresearchnexus@gmail.com.<br></br>
                4.You’ll receive a response within 24-48 hours.<br></br>
 
                 </Accordion.Body>
@@ -167,24 +167,7 @@ function MyVerticallyCenteredModal(props) {
 }
 
 function ChatModal(props) {
-
-  useEffect(() => {
-    // Dynamically load the Tawk.to script
-    const script = document.createElement("script");
-    script.type = "text/javascript";
-    script.async = true;
-    script.src = "https://embed.tawk.to/678e7e65825083258e07f2a2/1ii29rf38";
-    script.charset = "UTF-8";
-    script.setAttribute("crossorigin", "*");
-    
-    // Append the script to the document body when the modal is shown
-    document.body.appendChild(script);
-
-    // Cleanup the script when the modal is closed
-    return () => {
-      document.body.removeChild(script);
-    };
-  }, []);
+  
   return (
     <Modal 
         {...props}
@@ -228,7 +211,14 @@ function Footer() {
 >
   <BiHelpCircle />
 </Button>
-
+<Button
+  size="lg"
+  className="me-3 custom-button"
+  id="footer-icons"
+  onClick={handleShowChat}
+>
+  <BiChat />
+</Button>
 
   </Container>
 
