@@ -1,32 +1,43 @@
 .footer-fixed-right {
-    position: fixed;
-    right: 20px;
-    bottom: 20px;
-    z-index: 9999;
-    padding-left: 1400px;
-    height: 50px;
-    margin-bottom: 2px;
-  }
-  
-  #footer-icons {
-    width: 40px; /* Size of the circle */
-    height: 40px; /* Size of the circle */
-    border-radius: 50%; /* Make the button circular */
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 0; /* Remove padding for a perfect circle */
-    font-size: 20px; /* Adjust icon size */
-  }
-/* Footer.css */
+  position: fixed;
+  right: 2%; /* Keeps the footer on the right side */
+  bottom: 2%; /* Keeps the footer at the bottom */
+  z-index: -9999;
+  padding: 0; /* Remove padding for consistency */
+  margin: 0; /* Remove margin to avoid unnecessary space */
+  padding-left: 1400px;
+}
+
 #footer-icons {
-  background-color: #07570f; /* Your desired color */
-  border: none;
+  width: 10vw; /* Circle size based on viewport width */
+  height: 10vw; /* Circle size based on viewport width */
+  max-width: 50px; /* Max width to prevent the circle from growing too large */
+  max-height: 50px; /* Max height to prevent the circle from growing too large */
+  border-radius: 50%; /* Make it circular */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 4vw; /* Icon size based on viewport width */
   color: white;
+  background-color: #07570f;
+  border: none;
   box-shadow: none;
 }
 
 #footer-icons:hover {
   background-color: #d0e831; /* Hover effect */
 }
-  
+
+/* Media query for smaller screens */
+@media (max-width: 768px) {
+  .footer-fixed-right {
+    right: 5%; /* Adjust right spacing for smaller screens */
+    bottom: 5%; /* Adjust bottom spacing for smaller screens */
+  }
+
+  #footer-icons {
+    width: 15vw; /* Adjust circle size for smaller screens */
+    height: 15vw; /* Adjust circle size for smaller screens */
+    font-size: 6vw; /* Adjust icon size for smaller screens */
+  }
+}
