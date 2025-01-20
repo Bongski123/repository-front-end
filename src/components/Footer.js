@@ -4,7 +4,7 @@ import Modal from "react-bootstrap/Modal";
 import Accordion from "react-bootstrap/Accordion";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import './CSS/Footer.css';
 
 import { BiChat } from "react-icons/bi";
@@ -38,14 +38,11 @@ function MyVerticallyCenteredModal(props) {
                   How to find for a document in Research Nexus?
                 </Accordion.Header>
                 <Accordion.Body className="accordion-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                1.Log in to your account: Use your credentials to access the Research Nexus system.<br></br>
+                2.Navigate to the Search Section: Locate the search functionality on the dashboard.<br></br>
+                3.Enter Keywords: Type in the title, author, keywords, or related terms of the document you're looking for.<br></br>
+                4.Filter Options: Use filters (e.g., research field, publication year, or author) to refine your search results.<br></br>
+                5.View Document: Select a result from the list to view the document details or download the file if available.<br></br>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="2">
@@ -53,14 +50,14 @@ function MyVerticallyCenteredModal(props) {
                   How to sign up for an account in Research Nexus?
                 </Accordion.Header>
                 <Accordion.Body className="accordion-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                1.Visit the Registration Page: Open the Research Nexus platform and go to the "Sign Up" section.<br></br>
+                2.Fill Out the Registration Form:<br></br>
+                3.Provide your personal details (e.g., full name, email address, and affiliation).<br></br>
+                4.Create a secure password.<br></br>
+                5.Submit and Verify:<br></br>
+                6.Click "Sign Up" to submit your form.<br></br>
+                7.Check your email for a verification link. Click the link to confirm your account.<br></br>
+                8.Account Approval: Wait for the system admin to approve your registration if manual approval is required.
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="3">
@@ -68,29 +65,32 @@ function MyVerticallyCenteredModal(props) {
                   How to login your account in Research Nexus?
                 </Accordion.Header>
                 <Accordion.Body className="accordion-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                 1.Access the Login Page: Open the Research Nexus system and go to the "Login" section.<br></br>
+                 2.Enter Your Credentials:<br></br>
+                 3.Input your registered email address.<br></br>
+                 4.Enter your password.<br></br>
+                 5.You can use Google or Gbox Directly.<br></br>
+                 6.Click Log In: Press the "Login" button to proceed.
+                 7.Access Your Dashboard: Upon successful login, you’ll be redirected to the system dashboard where you can explore and manage research documents.<br></br>
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="4">
                 <Accordion.Header>
-                  How to login your account in Research Nexus?
+                How to submit a new research document in Research Nexus?
                 </Accordion.Header>
                 <Accordion.Body className="accordion-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                1.Log in to Your Account: Access the Research Nexus system using your credentials.<br></br>
+                2.Go to the "Submit Research" Section: From the dashboard, navigate to the "Submit Research" or "Upload Document" tab.<br></br>
+                3.Fill Out the Submission Form: Provide the required details, including:<br></br>
+                  *Title: Enter the title of your research.<br></br>
+                  *Abstract: Add a brief summary of your research.<br></br>
+                  *Keywords: Include relevant keywords for easier searchability.<br></br>
+                  *Authors: List all contributing authors.<br></br>
+                  *Category/Field: Select the appropriate research field or category.<br></br>
+                4.Upload Your Document: Attach your research file (e.g., PDF, Word document) by clicking the "Upload File" button.<br></br>
+                5.Review and Submit: Double-check the details and click "Submit" to finalize your submission.<br></br>
+                6.Wait for Approval: If required, your document will be reviewed by an admin or moderator before being published in the system.<br></br>
+
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
@@ -100,62 +100,59 @@ function MyVerticallyCenteredModal(props) {
             <Accordion defaultActiveKey="0">
               <Accordion.Item eventKey="1">
                 <Accordion.Header className="accordion-header">
-                  How to find for a document in Research Nexus?
+                How do I reset my password in Research Nexus?
                 </Accordion.Header>
                 <Accordion.Body className="accordion-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                If you’ve forgotten your password, follow these steps:<br></br><br></br>
+               1. Go to the login page and click on “Forgot Password?”.<br></br>
+               2.Enter your registered email address and submit the form.<br></br>
+               3.Check your email for a password reset link.<br></br>
+               4.Click the link and create a new password.<br></br>
+               5.Log in using your new credentials.<br></br>
+
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="2">
                 <Accordion.Header>
-                  How to sign up for an account in Research Nexus?
+                Can I edit or delete a research document I submitted?
                 </Accordion.Header>
                 <Accordion.Body className="accordion-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                Yes, you can edit or delete your submitted research documents:<br></br><br></br>
+
+               1.Log in to your account.<br></br>
+               2.Navigate to the “My Submissions” or “My Documents” section.<br></br>
+               3.Select the research document you want to edit or delete.<br></br>
+               4.Use the “Edit” button to update details or upload a new file, or click “Delete” to remove the document permanently.<br></br>
+               <br></br>Note: Changes may require admin approval before being reflected in the system.
+
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="3">
                 <Accordion.Header>
-                  How to login your account in Research Nexus?
+                Who can access the documents in Research Nexus?
                 </Accordion.Header>
                 <Accordion.Body className="accordion-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                Access levels depend on your system's permissions:<br></br><br></br>
+
+               1.Public Documents: Available to all registered users or visitors.<br></br>
+               2.Restricted Documents: Accessible only to users with specific roles (e.g., faculty or students).<br></br>
+               3.Private Documents: Visible only to the document owner and system administrators.<br></br>
+               4.Check the document’s access level before submitting or sharing.<br></br>
+
                 </Accordion.Body>
               </Accordion.Item>
               <Accordion.Item eventKey="4">
                 <Accordion.Header>
-                  How to login your account in Research Nexus?
+                How can I contact support for technical issues?
                 </Accordion.Header>
                 <Accordion.Body className="accordion-body">
-                  Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                  do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-                  Ut enim ad minim veniam, quis nostrud exercitation ullamco
-                  laboris nisi ut aliquip ex ea commodo consequat. Duis aute
-                  irure dolor in reprehenderit in voluptate velit esse cillum
-                  dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-                  cupidatat non proident, sunt in culpa qui officia deserunt
-                  mollit anim id est laborum.
+                For technical assistance, follow these steps:<br></br><br></br>
+
+               1.Click on the “Help” or “Support” tab in the system menu.<br></br>
+               2.Fill out the contact form with your issue and details.<br></br>
+               3.Submit the form or email the support team at ncfresearchnexus@gmail.com or chat our 24/7 chat support.<br></br>
+               4.You’ll receive a response within 24-48 hours.<br></br>
+
                 </Accordion.Body>
               </Accordion.Item>
             </Accordion>
@@ -170,6 +167,24 @@ function MyVerticallyCenteredModal(props) {
 }
 
 function ChatModal(props) {
+
+  useEffect(() => {
+    // Dynamically load the Tawk.to script
+    const script = document.createElement("script");
+    script.type = "text/javascript";
+    script.async = true;
+    script.src = "https://embed.tawk.to/678e7e65825083258e07f2a2/1ii29rf38";
+    script.charset = "UTF-8";
+    script.setAttribute("crossorigin", "*");
+    
+    // Append the script to the document body when the modal is shown
+    document.body.appendChild(script);
+
+    // Cleanup the script when the modal is closed
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
   return (
     <Modal 
         {...props}
@@ -205,24 +220,16 @@ function Footer() {
   return (
 <div>
   <Container fluid className="footer-container footer-fixed-right">
-    <Button
-      variant="success"
-      size="lg"
-      className="me-3"
-      id="footer-icons"
-      onClick={handleShowHelp}
-    >
-      <BiHelpCircle />
-    </Button>
-    <Button
-      variant="success"
-      size="lg"
-      className="me-3"
-      id="footer-icons"
-      onClick={handleShowChat}
-    >
-      <BiChat />
-    </Button>
+  <Button
+  size="lg"
+  className="me-3 custom-button"
+  id="footer-icons"
+  onClick={handleShowHelp}
+>
+  <BiHelpCircle />
+</Button>
+
+
   </Container>
 
   <MyVerticallyCenteredModal

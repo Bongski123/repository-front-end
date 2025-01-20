@@ -103,6 +103,7 @@ function SearchResult({ result, query }) {
         dangerouslySetInnerHTML={{
           __html: highlightedAbstract, // Render truncated abstract with highlighted query letters
         }}
+        
       />
     </div>
   );

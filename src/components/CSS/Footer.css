@@ -1,7 +1,7 @@
 .footer-fixed-right {
     position: fixed;
     right: 20px;
-    bottom: 20px;
+    bottom: 27px;
     z-index: 9999;
     padding-left: 1400px;
     height: 50px;
@@ -9,13 +9,25 @@
   }
   
   #footer-icons {
-    width: 40px; /* Size of the circle */
-    height: 40px; /* Size of the circle */
+    width: 60px; /* Size of the circle */
+    height: 60px; /* Size of the circle */
     border-radius: 50%; /* Make the button circular */
     display: flex;
     align-items: center;
     justify-content: center;
     padding: 0; /* Remove padding for a perfect circle */
     font-size: 20px; /* Adjust icon size */
+   
   }
-  
+/* Footer.css */
+#footer-icons {
+  background-color: #07570f; /* Your desired color */
+  border: none;
+  color: white;
+  box-shadow: none;
+}
+
+#footer-icons:hover {
+  background-color: #07570f; /* Hover effect */
+}
+
