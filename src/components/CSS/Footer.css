@@ -29,15 +29,25 @@
 }
 
 /* Media query for smaller screens */
-@media (max-width: 768px) {
+@media (max-width: 1920px) {
   .footer-fixed-right {
     right: 5%; /* Adjust right spacing for smaller screens */
     bottom: 5%; /* Adjust bottom spacing for smaller screens */
+    padding-left: 1490px;
   }
 
+    
   #footer-icons {
     width: 15vw; /* Adjust circle size for smaller screens */
     height: 15vw; /* Adjust circle size for smaller screens */
     font-size: 6vw; /* Adjust icon size for smaller screens */
   }
 }
+
+
+@media (max-width: 800px) {
+  .footer-fixed-right {
+    right: 5%; /* Adjust right spacing for smaller screens */
+    bottom: 5%; /* Adjust bottom spacing for smaller screens */
+    padding-left: 2000px;
+  }}
