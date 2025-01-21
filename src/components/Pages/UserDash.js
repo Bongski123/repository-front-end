@@ -43,44 +43,44 @@ const TopContent = ({ roleId }) => {
       <div className="top-content">
         {/* Top Downloads Section */}
         <section className="top-downloads">
-          <h2>Top 3 Most Downloaded Papers</h2>
-          <ul>
-            {topDownloads.map((item, index) => (
-              <li key={item.research_id}>
-                {index + 1}.{''}
-                <Link
-                  to={`/details`}
-                  state={{ result: item }}
-                  style={{ textDecoration: 'none', color: 'green' }}
-                >
-                  {item.title}
-                </Link>{' '}
-                - {item.downloadCount} downloads
-                <br />
-                <strong>Authors:</strong> {item.authors}
-              </li>
-            ))}
-          </ul>
-        </section>
+  <h2>Top 3 Most Downloaded Papers</h2>
+  <ul>
+    {topDownloads.slice(0, 3).map((item, index) => (
+      <li key={item.research_id}>
+        {index + 1}.{''}
+        <Link
+          to={`/details`}
+          state={{ result: item }}
+          style={{ textDecoration: 'none', color: 'green' }}
+        >
+          {item.title}
+        </Link>{' '}
+        - {item.downloadCount} downloads
+        <br />
+        
+      </li>
+    ))}
+  </ul>
+</section>
 
-        {/* Trending Searches Section */}
-        <section className="trending-searches">
-          <h2>Top 3 Most Popular Searches</h2>
-          <ul>
-            {trendingSearches.map((item, index) => (
-              <li key={index}>
-                {index + 1}.{' '}
-                <Link
-                  to={`/details`}
-                  state={{ result: item }}
-                  style={{ textDecoration: 'none', color: 'green' }}
-                >
-                  {item.title}
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </section>
+<section className="trending-searches">
+  <h2>Top 3 Most Popular Searches</h2>
+  <ul>
+    {trendingSearches.slice(0, 3).map((item, index) => (
+      <li key={index}>
+        {index + 1}.{' '}
+        <Link
+          to={`/details`}
+          state={{ result: item }}
+          style={{ textDecoration: 'none', color: 'green' }}
+        >
+          {item.title}
+        </Link>
+      </li>
+    ))}
+  </ul>
+</section>
+
       </div>
     )
   );
