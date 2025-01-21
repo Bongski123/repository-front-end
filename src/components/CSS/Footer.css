@@ -34,7 +34,7 @@
   .footer-fixed-right {
     right: 5%; /* Adjust right spacing for smaller screens */
     bottom: 5%; /* Adjust bottom spacing for smaller screens */
-    padding-left: 1100px;
+    padding-left: 1200px;
   }
 
   #footer-icons {
@@ -45,9 +45,9 @@
 }
 @media (max-width: 1920px) {
   .footer-fixed-right {
-    right: 5%; /* Adjust right spacing for smaller screens */
+    right: 10%; /* Adjust right spacing for smaller screens */
     bottom: 5%; /* Adjust bottom spacing for smaller screens */
-    padding-left: 2200px;
+    padding-left: 2500px;
   }
 
   #footer-icons {
