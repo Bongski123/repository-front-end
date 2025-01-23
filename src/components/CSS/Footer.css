@@ -26,7 +26,7 @@
 }
 
 #footer-icons:hover {
-  background-color:transparent; /* Hover effect */
+  transform: scale(1.3);
 }
 
 /* Media query for smaller screens */
@@ -77,4 +77,13 @@
 
 #footer-mobile-icon:hover {
   background-color: transparent; /* Hover effect */
+}
+
+#footer-mobile-icon {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+#footer-mobile-icon:hover {
+  transform: scale(1.3);  /* Slightly enlarges the icon */
+  
 }
