@@ -3,6 +3,8 @@ import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Accordion from "react-bootstrap/Accordion";
 import Tab from "react-bootstrap/Tab";
+import { FaMobileAlt } from 'react-icons/fa';
+
 import Tabs from "react-bootstrap/Tabs";
 import { useState } from "react";
 import './CSS/Footer.css';
@@ -203,6 +205,15 @@ function Footer() {
   return (
 <div>
   <Container fluid className="footer-container footer-fixed-right">
+  <Button
+  size="lg"
+  className="me-3 custom-button"
+  id="footer-mobile-icon"
+  onClick={() => window.open('https://mega.nz/file/1G8gEZbI#C9C9MgyAzsnZHj4YssonfafaxNcOInIdGJGT1iG9vvQ', '_blank')}
+>
+  <FaMobileAlt />
+</Button>
+
   <Button
   size="lg"
   className="me-3 custom-button"
