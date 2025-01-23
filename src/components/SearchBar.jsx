@@ -7,7 +7,7 @@ import "./CSS/Searchbar.css";
 import Footer from "./Footer";
 
 // Manual fuzzy search function
-// Manual fuzzy search function with support for long words
+
 const fuzzySearch = (query, target) => {
   if (!query || !target) return 0; // Return 0 if no query or target
   let i = 0;
@@ -21,14 +21,14 @@ const fuzzySearch = (query, target) => {
     }
     j++;
   }
-  return score; // Return the score based on character matches
+  return score; 
 };
 
 // Function to highlight matching text, including in long abstracts
 const highlightText = (text, query) => {
-  if (!text || !query) return text; // Return original text if no query or text
-  const regex = new RegExp(`(${query})`, "gi"); // Match query as substring (case-insensitive)
-  return text.replace(regex, "<strong>$1</strong>"); // Wrap matched text in <strong> tags
+  if (!text || !query) return text; 
+  const regex = new RegExp(`(${query})`, "gi"); 
+  return text.replace(regex, "<strong>$1</strong>"); 
 };
 
 
@@ -104,7 +104,7 @@ function SearchBar({ small = false }) {
           const titleScore = fuzzySearch(value, research.title ?? "") * 2; // Double weight for title
           const authorsScore = fuzzySearch(value, research.authors ?? "");
           const keywordsScore = fuzzySearch(value, research.keywords ?? "");
-          const abstractScore = fuzzySearch(value, research.abstract ?? "") * 0.6; // 1.5x weight for abstract
+          const abstractScore = fuzzySearch(value, research.abstract ?? "") * 1.6; // 1.5x weight for abstract
           const categoryScore = fuzzySearch(value, research.category ?? "");
 
           const totalScore = titleScore + authorsScore + keywordsScore + abstractScore + categoryScore;
@@ -252,7 +252,7 @@ function SearchBar({ small = false }) {
         </button>
       </div>
 
-      {/* Autocomplete Suggestions List */}
+      
       {filteredResearches.length > 0 && (
         <ul className="suggestions-list">
           {filteredResearches.slice(0, 5).map((research, index) => (

@@ -2,19 +2,17 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-// Function to highlight matching text
 const highlightText = (text, query) => {
-  if (!query || !text) return text; // Return text as is if no query or text
-  const regex = new RegExp(`(${query})`, "gi"); // Match query as substring (case-insensitive)
-  return text.replace(regex, "<strong>$1</strong>"); // Wrap matched text in <strong> tag to bold it
+  if (!query || !text) return text; 
+  const regex = new RegExp(`(${query})`, "gi"); 
+  return text.replace(regex, "<strong>$1</strong>"); 
 };
 
-// Function to truncate text to a specified number of words
 const truncateText = (text, wordLimit = 20) => {
   if (!text) return "";
-  const words = text.split(/\s+/); // Split text into words
-  const truncated = words.slice(0, wordLimit).join(" "); // Take the first 'wordLimit' words
-  return truncated + (words.length > wordLimit ? "..." : ""); // Add ellipsis if text is truncated
+  const words = text.split(/\s+/); 
+  const truncated = words.slice(0, wordLimit).join(" ");
+  return truncated + (words.length > wordLimit ? "..." : ""); 
 };
 
 function SearchResult({ result, query }) {
@@ -23,7 +21,6 @@ function SearchResult({ result, query }) {
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
-  // Fetch PDF when the component mounts or result changes
   useEffect(() => {
     if (!result?.research_id) return;
 
@@ -48,7 +45,6 @@ function SearchResult({ result, query }) {
     fetchPDF();
   }, [result]);
 
-  // Function to log a search when a result is clicked
   const logSearch = async (researchId) => {
     try {
       const response = await axios.post("https://ccsrepo.onrender.com/log-search", {
@@ -60,24 +56,17 @@ function SearchResult({ result, query }) {
     }
   };
 
-  // Handle navigation to the details page
   const handleNavigate = () => {
-    // Log the search before navigating to details
     logSearch(result.research_id);
     navigate("/details", { state: { result } });
   };
 
-  // Return null if there's no valid result
   if (!result) return null;
 
-  // Highlight and truncate abstract
   const truncatedAbstract = truncateText(result.abstract, 20);
   const highlightedAbstract = highlightText(truncatedAbstract, query);
-
-  // Debugging logs
-  console.log("Original Abstract:", result.abstract);
-  console.log("Query:", query);
-  console.log("Processed Abstract:", highlightedAbstract);
+  const formattedAuthors = result.authors.split(",").join(", ");
+  const formattedKeywords = result.keywords.split(",").join(", ");
 
   return (
     <div
@@ -96,14 +85,23 @@ function SearchResult({ result, query }) {
           fontStyle: "italic",
         }}
       >
-        Authors: {result.authors}
+        Authors: {formattedAuthors}
+      </p>
+      <p
+        style={{
+          fontSize: "14px",
+          margin: "0",
+          fontFamily: "sans-serif",
+          fontStyle: "italic",
+        }}
+      >
+        Keywords: {formattedKeywords}
       </p>
       <p
         style={{ fontSize: "15px", margin: "0", color: "#333" }}
         dangerouslySetInnerHTML={{
-          __html: highlightedAbstract, // Render truncated abstract with highlighted query letters
+          __html: highlightedAbstract,
         }}
-        
       />
     </div>
   );

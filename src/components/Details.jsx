@@ -13,6 +13,7 @@ import Dialog from "@mui/material/Dialog";
 import DialogTitle from "@mui/material/DialogTitle";
 import DialogContent from "@mui/material/DialogContent";
 import DialogActions from "@mui/material/DialogActions";
+
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
 
@@ -158,7 +159,6 @@ function Details() {
     const handleCite = async () => {
         await updateCount("cite");
     };
-    
 
     const handleRequestPDF = () => {
         navigate("/requestpdf", {
@@ -172,6 +172,7 @@ function Details() {
     };
 
     const formatDate = (dateString) => new Date(dateString).toLocaleDateString();
+    console.log("Authors data:", result.authors);
 
     return (
         <Container className="details-container">
@@ -185,20 +186,27 @@ function Details() {
                             </p>
                         )}
                         <div className="research-info">
-                            <p><strong>Authors:</strong> {result.authors}</p>
-                             <div
-        dangerouslySetInnerHTML={{
-            __html: result.abstract,
-        }}
-    />
+                        <p>
+    <strong>Authors:</strong>{" "}
+    <em>{result.authors.split("\n").join(", ")}</em>
+</p>
+
+
+                            <div
+                                dangerouslySetInnerHTML={{
+                                    __html: result.abstract,
+                                }}
+                            />
                             <p><strong>Category:</strong> {result.category}</p>
-                            <p><strong>Keywords:</strong> {result.keywords}</p>
+                            <p><strong>Keywords:</strong> {result.keywords.split("\n").join(",   ")}</p>
+
                         </div>
                         <div className="button-group">
-                        <Button
+                            <Button
                                 variant="contained"
                                 style={{ backgroundColor: "#044413", color: "white" }}
-                             onClick={handleCite}>
+                                onClick={handleCite}
+                            >
                                 Cite
                             </Button>
                             <Button

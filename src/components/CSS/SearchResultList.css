@@ -51,4 +51,15 @@
     opacity: 0.5; /* Make disabled buttons semi-transparent */
     cursor: not-allowed; /* Not allowed cursor for disabled buttons */
   }
+  .search-result-title {
+    color: #043307; /* Title text color */
+    text-decoration: underline; /* Underline the title */
+    text-decoration-color: #043307; /* Set the color of the underline */
+    text-shadow: 0 0 5px rgba(140, 217, 136, 0.5); /* Apply blur to the title text */
+    transition: text-shadow 0.3s ease; /* Add smooth transition effect */
+  }
+  
+  .search-result-title:hover {
+    text-shadow: 0 0 10px rgba(202, 246, 7, 0.7); /* Stronger blur on hover */
+  }
   

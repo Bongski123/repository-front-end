@@ -100,7 +100,7 @@ function SearchResultList({ results, query }) {
       <div className="results-list">
         {currentResults.map((result) => {
           const highlightedTitle = highlightText(result.title, query);
-          const highlightedAuthors = highlightText(result.authors, query);
+          const highlightedAuthors = highlightText(result.authors.split("\n").join(", "), query); // Split and join authors with commas
           const highlightedSnippet = generateSnippet(result.abstract, query);
 
           return (
@@ -110,15 +110,17 @@ function SearchResultList({ results, query }) {
               onClick={() => handleNavigate(result)}
             >
               <h3
-                style={{
-                  fontSize: "18px",
-                  fontWeight: "500",
-                  margin: "0",
-                }}
-                dangerouslySetInnerHTML={{
-                  __html: highlightedTitle, // Render the highlighted title
-                }}
-              />
+  className="search-result-title"
+  style={{
+    fontSize: "18px",
+    fontWeight: "500",
+    margin: "0",
+  }}
+  dangerouslySetInnerHTML={{
+    __html: highlightedTitle, // Render the highlighted title
+  }}
+/>
+
               <p
                 style={{
                   fontSize: "14px",
@@ -149,35 +151,34 @@ function SearchResultList({ results, query }) {
 
         {/* Pagination Controls */}
         <div className="pagination" style={{ marginTop: "20px" }}>
-  {sortedResults.length >= 10 && (
-    <>
-      <Button
-        className={currentPage === 1 ? "disabled" : ""}
-        disabled={currentPage === 1}
-        onClick={() => handlePageChange(currentPage - 1)}
-      >
-        Previous
-      </Button>
-      <span
-        style={{
-          margin: "0 10px",
-          fontSize: "14px",
-          fontFamily: "Arial, sans-serif",
-        }}
-      >
-        Page {currentPage} of {totalPages}
-      </span>
-      <Button
-        className={currentPage === totalPages ? "disabled" : ""}
-        disabled={currentPage === totalPages}
-        onClick={() => handlePageChange(currentPage + 1)}
-      >
-        Next
-      </Button>
-    </>
-  )}
-</div>
-
+          {sortedResults.length >= 10 && (
+            <>
+              <Button
+                className={currentPage === 1 ? "disabled" : ""}
+                disabled={currentPage === 1}
+                onClick={() => handlePageChange(currentPage - 1)}
+              >
+                Previous
+              </Button>
+              <span
+                style={{
+                  margin: "0 10px",
+                  fontSize: "14px",
+                  fontFamily: "Arial, sans-serif",
+                }}
+              >
+                Page {currentPage} of {totalPages}
+              </span>
+              <Button
+                className={currentPage === totalPages ? "disabled" : ""}
+                disabled={currentPage === totalPages}
+                onClick={() => handlePageChange(currentPage + 1)}
+              >
+                Next
+              </Button>
+            </>
+          )}
+        </div>
       </div>
     </Container>
   );
